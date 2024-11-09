@@ -14,6 +14,7 @@
     <?php include '../includes/dashboard.php'; ?>
     <?php include '../includes/header.php'; ?>
     
+<<<<<<< HEAD
         <div class="profile-section p-10 m-6 mt-10 pb-16 shadow-xl">
             <h3 class="text-xl font-semibold text-gray-700 mb-4">PROFILE</h3>
             <div class="profile-container flex gap-6">
@@ -21,6 +22,32 @@
                 <div class="profile-left  rounded-lg p-6 flex flex-col items-center w-1/4 shadow-lg">
                     <div class="profile-picture mb-4">
                     <img src="<?php echo htmlspecialchars($userImagePath); ?>" alt="Profile Picture" class="w-24 h-24 rounded-full">
+=======
+    <div class="dashboard">
+        <div class="header">
+            <h2>IP Asset Management and Information System</h2>
+            <img src="../images/pilipinaslogo.png" alt="Logo" class="header-logo">
+        </div>
+            <hr class="custom-line">
+
+            <div class="profile-section p-10 m-6 mt-10 pb-16 shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">PROFILE</h3>
+                <div class="profile-container flex gap-6">
+                    <!-- Left Profile Card -->
+                    <div class="profile-left  rounded-lg p-6 flex flex-col items-center w-1/4 shadow-lg">
+                        <div class="profile-picture mb-4">
+                        <img src="<?php echo htmlspecialchars($userImagePath); ?>" alt="Profile Picture" class="w-24 h-24 rounded-full">
+                        </div>
+                        <div class="profile-info text-center">
+                            <p class="profile-name text-lg font-semibold text-gray-800">Silvers Rayleigh</p>
+                            <p class="profile-role text-sm text-gray-500">ADMIN</p>
+                            <a href="adminEdit.php">
+                                <button class="edit-profile bg-gold-500 text-white rounded mt-4 py-2 px-4 hover:bg-gold-600">
+                                    Edit Profile
+                                </button>
+                            </a>
+                        </div>
+>>>>>>> 490b04d03e0c46edcc9ffbb17ad00cf202c76edd
                     </div>
                     <div class="profile-info text-center">
                         <p class="profile-name text-lg font-semibold text-gray-800">Silvers Rayleigh</p>
