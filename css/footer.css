@@ -1,0 +1,14 @@
+.foot {
+    margin-top: auto;
+    padding: 20px;
+    color: #6c757d;
+    text-align: center;
+    font-weight: 700;
+    width: 100%; 
+    position: relative;
+}
+
+.foot p:hover {
+    color: #c79542; /* Hover color to match gold theme */
+    text-decoration: underline;
+}

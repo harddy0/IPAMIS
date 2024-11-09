@@ -1,0 +1,102 @@
+.sidebar {
+    width: 250px; /* Adjust width as needed */
+    background-color: #0b2a55; /* Dark blue background as fallback */
+    color: white;
+    height: 100%; /* Full height of body */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar img.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.3; /* Adjust opacity for better text contrast */
+}
+
+.sidebar-content {
+    z-index: 2; /* Ensures content appears over the background image */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1; /* Takes remaining space */
+}
+
+.sidebar-content img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-top: 20px;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #c79542; /* Gold color */
+}
+
+.admin {
+    background-color: #647a9e; /* Light blue background */
+    padding: 10px 20px;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: white;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.menu-item:hover {
+    background-color: #c79542; /* Gold hover effect */
+    cursor: pointer;
+}
+
+.menu-item span.icon {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
+
+.logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: transparent; /* No background color */
+    margin-top: auto;
+    z-index: 2; /* Ensure hover works by putting it above background image */
+}
+
+.logout:hover {
+    background-color: #c79542; /* Gold hover effect */
+    cursor: pointer;
+}
+
+.logout span.icon {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
