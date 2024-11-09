@@ -14,7 +14,7 @@
             <div class="header flex items-center justify-center mb-6 relative">
                 <img src="../images/ctulogo.png" alt="Logo 1" class="w-12 h-12 mr-2">
                 <h1 class="text-2xl font-bold text-gold mx-2">IPAMIS</h1>
-                <img src="../images/pilipinaslogo.png" alt="Logo 2" class="w-14 h-14 ml-2">
+                <img src="../images/pilipinaslogo.png" alt="Logo 2" class="w-14 h-14">
                 <span class="border-line absolute left-0"></span>
             </div>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="space-y-4">
