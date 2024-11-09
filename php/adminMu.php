@@ -28,68 +28,68 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-3.5 3.5m0 0L8 20m7-8.5A6.5 6.5 0 1114 7a6.5 6.5 0 011 7.5z"></path></svg>
                 </button>
             </div>
+        </div>
 
-            <div class="grid grid-cols-3 gap-4">
-                <!-- Left Column: User List -->
-                <div>
-                    <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">ID Number</div>
-                    <ul class="bg-gray-300 text-gray-800 rounded-b">
-                        <?php 
-                        $users = [
-                            ['id' => '01', 'name' => 'John Arado'],
-                            ['id' => '02', 'name' => 'Faye Genson'],
-                            ['id' => '03', 'name' => 'Kingston Canales'],
-                            ['id' => '04', 'name' => 'Mae Jubahib'],
-                            ['id' => '05', 'name' => 'Janneth Ugang']
-                        ];
-                        foreach ($users as $user) {
-                            echo "<li class='px-4 py-2 border-b'>{$user['id']} - {$user['name']}</li>";
-                        }
-                        ?>
-                    </ul>
-                </div>
+        <div class="grid grid-cols-3 gap-4">
+            <!-- Left Column: User List -->
+            <div>
+                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">ID Number</div>
+                <ul class="bg-gray-300 text-gray-800 rounded-b">
+                    <?php 
+                    $users = [
+                        ['id' => '01', 'name' => 'John Arado'],
+                        ['id' => '02', 'name' => 'Faye Genson'],
+                        ['id' => '03', 'name' => 'Kingston Canales'],
+                        ['id' => '04', 'name' => 'Mae Jubahib'],
+                        ['id' => '05', 'name' => 'Janneth Ugang']
+                    ];
+                    foreach ($users as $user) {
+                        echo "<li class='px-4 py-2 border-b'>{$user['id']} - {$user['name']}</li>";
+                    }
+                    ?>
+                </ul>
+            </div>
 
-                <!-- Middle Column: Faculty Requests -->
-                <div>
-                    <div class="bg-blue-700 text-white font-semibold rounded-t px-4 py-2 flex items-center justify-between">
-                        Faculty Request
-                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4h2v2H9v-2zm0-8h2v6H9V6z"></path></svg>
-                    </div>
-                    <div class="bg-gray-300 rounded-b">
-                        <?php 
-                        $requests = [
-                            'Shekinah Olarte',
-                            'Dahlia Genson'
-                        ];
-                        foreach ($requests as $request) {
-                            echo "<div class='px-4 py-2 flex items-center justify-between'>
-                                    <span>$request</span>
-                                    <div>
-                                        <button class='bg-yellow-500 text-white px-2 py-1 rounded mr-2'>Accept</button>
-                                        <button class='bg-gray-500 text-white px-2 py-1 rounded'>Decline</button>
-                                    </div>
-                                  </div>";
-                        }
-                        ?>
-                    </div>
+            <!-- Middle Column: Faculty Requests -->
+            <div>
+                <div class="bg-blue-700 text-white font-semibold rounded-t px-4 py-2 flex items-center justify-between">
+                    Faculty Request
+                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4h2v2H9v-2zm0-8h2v6H9V6z"></path></svg>
                 </div>
+                <div class="bg-gray-300 rounded-b">
+                    <?php 
+                    $requests = [
+                        'Shekinah Olarte',
+                        'Dahlia Genson'
+                    ];
+                    foreach ($requests as $request) {
+                        echo "<div class='px-4 py-2 flex items-center justify-between'>
+                                <span>$request</span>
+                                <div>
+                                    <button class='bg-yellow-500 text-white px-2 py-1 rounded mr-2'>Accept</button>
+                                    <button class='bg-gray-500 text-white px-2 py-1 rounded'>Decline</button>
+                                </div>
+                              </div>";
+                    }
+                    ?>
+                </div>
+            </div>
 
-                <!-- Right Column: User Actions -->
-                <div>
-                    <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">Name</div>
-                    <ul class="bg-gray-300 text-gray-800 rounded-b">
-                        <?php 
-                        foreach ($users as $user) {
-                            echo "<li class='px-4 py-2 border-b flex items-center justify-between'>
-                                    <span>{$user['name']}</span>
-                                    <button class='text-gray-500 hover:text-red-500'>
-                                        <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path></svg>
-                                    </button>
-                                  </li>";
-                        }
-                        ?>
-                    </ul>
-                </div>
+            <!-- Right Column: User Actions -->
+            <div>
+                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">Name</div>
+                <ul class="bg-gray-300 text-gray-800 rounded-b">
+                    <?php 
+                    foreach ($users as $user) {
+                        echo "<li class='px-4 py-2 border-b flex items-center justify-between'>
+                                <span>{$user['name']}</span>
+                                <button class='text-gray-500 hover:text-red-500'>
+                                    <svg class='w-5 h-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path></svg>
+                                </button>
+                              </li>";
+                    }
+                    ?>
+                </ul>
             </div>
         </div>
     </div>
