@@ -3,25 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Admin Manage IP Assets</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/adminMu.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-=======
-    <title>Admin Manage Users</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/adminMu.css">
->>>>>>> 490b04d03e0c46edcc9ffbb17ad00cf202c76edd
 </head>
 <body>
    
     <?php include '../includes/dashboard.php'; ?>
     <?php include '../includes/header.php'; ?>
 
-<<<<<<< HEAD
     <div class="container p-4 mt-10 pb-10 shadow-xl">
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Manage Users</h1>
@@ -33,36 +26,7 @@
                 <input type="text" class="bg-gray-300 rounded-full py-2 px-4 text-gray-700" placeholder="Search">
                 <button class="absolute right-2 top-2 text-gray-500 focus:outline-none">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-3.5 3.5m0 0L8 20m7-8.5A6.5 6.5 0 1114 7a6.5 6.5 0 011 7.5z"></path></svg>
-=======
-            <div class="logout">
-                <span class="icon">🚪</span> Log out
-            </div>
-        </div>
-    </div>
-    
-    <div class="dashboard">
-        <div class="header">
-            <h2>IP Asset Management and Information System</h2>
-            <img src="../images/pilipinaslogo.png" alt="Logo" class="header-logo">
-        </div>
-        
-        <hr class="custom-line">
-        
-        <!-- Main container for Manage Users content -->
-        <div class="container p-10 m-6 mt-10 pb-16 shadow-xl">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Manage Users</h3>
-                <button class="bg-yellow-500 text-white font-semibold py-1 px-4 rounded flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    ADD
->>>>>>> 490b04d03e0c46edcc9ffbb17ad00cf202c76edd
                 </button>
-                <div class="relative">
-                    <input type="text" class="bg-gray-300 rounded-full py-2 px-4 text-gray-700" placeholder="Search">
-                    <button class="absolute right-2 top-2 text-gray-500 focus:outline-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-3.5 3.5m0 0L8 20m7-8.5A6.5 6.5 0 1114 7a6.5 6.5 0 011 7.5z"></path></svg>
-                    </button>
-                </div>
             </div>
 
             <div class="grid grid-cols-3 gap-4">
@@ -128,18 +92,9 @@
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
     </div>
     <?php include '../includes/footer.php'; ?>
     </div>
-=======
-
-        <div class="footer flex items-center justify-center">
-                <p class="text-gray-500 text-sm">Developed By: IPAMIS DevTeam | 2024 © IPAMIS</p>
-        </div>
-
-   </div>
->>>>>>> 490b04d03e0c46edcc9ffbb17ad00cf202c76edd
 
 
 </body>
