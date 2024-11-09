@@ -41,7 +41,7 @@
                     $user = $result->fetch_assoc();
                     $_SESSION['UserID'] = $user['UserID']; // Store user ID in session
                     $_SESSION['FirstName'] = $user['FirstName'];
-                    header("Location: adminEdit.php"); // Redirect to the dashboard or desired page
+                    header("Location: adminMpa.php"); // Redirect to the dashboard or desired page
                     exit();
                 } else {
                     // Invalid credentials
