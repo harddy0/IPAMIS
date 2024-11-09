@@ -6,7 +6,7 @@
     <title>Login</title>
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 <body class="bg-cover bg-center h-screen" style="background-image: url('../images/ctu1.png');">
     <div class="login-container flex items-center justify-center h-full">
