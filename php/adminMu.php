@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Manage Users</title>
-    <link rel="stylesheet" href="../css/adminMu.css">
+    <title>Admin Manage IP Assets</title>
+    <link rel="stylesheet" href="../css/adminMip.css">
 </head>
 <body>
     <div class="sidebar">
@@ -24,7 +24,7 @@
                 <a href="#" class="menu-item" onclick="window.location.href='adminMip.php';">
                     <span class="icon">💼</span> Manage IP Assets
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="window.location.href='adminVa.php';">
                     <span class="icon">📊</span> View Analytics
                 </a>
             </div>
@@ -36,8 +36,12 @@
     </div>
     
     <div class="dashboard">
-        <h2>IP Asset Management and Information System</h2>
-        <hr class="custom-line">
+        <div class="header">
+            <h2>IP Asset Management and Information System</h2>
+            <img src="../images/pilipinaslogo.png" alt="Logo" class="header-logo">
+        </div>
+            <hr class="custom-line">
     </div>
+
 </body>
 </html>
