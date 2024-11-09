@@ -131,7 +131,7 @@ body {
 .custom-line {
     width: 100%;
     border: none;
-    border-top: 1px solid #bfbfbf;
+    border-top: 2px solid #bfbfbf;
     margin-top: 10px; /* Adjust spacing as needed */
 }
 
