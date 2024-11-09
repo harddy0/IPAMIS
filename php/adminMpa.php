@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <script src="../javascript/smooth.js"></script>
 </head>
 <body>
     <?php include '../includes/dashboard.php'; ?>

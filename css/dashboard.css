@@ -67,10 +67,12 @@
     color: white;
     font-size: 1rem;
     text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .menu-item:hover {
     background-color: #c79542; /* Gold hover effect */
+    color: #ffffff;
     cursor: pointer;
 }
 
@@ -89,11 +91,14 @@
     background-color: transparent; /* No background color */
     margin-top: auto;
     z-index: 2; /* Ensure hover works by putting it above background image */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .logout:hover {
     background-color: #c79542; /* Gold hover effect */
+    color: #ffffff;
     cursor: pointer;
+    
 }
 
 .logout span.icon {
