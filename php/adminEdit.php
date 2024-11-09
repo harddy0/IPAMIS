@@ -16,16 +16,16 @@
             <div class="admin">ADMIN</div>
             
             <div class="menu">
-                <a href="#" class="menu-item active">
+                <a href="#" class="menu-item active" onclick="window.location.href='adminMpa.php';">
                     <span class="icon">👤</span> Manage Personal Account
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="window.location.href='adminMu.php';">
                     <span class="icon">⚙️</span> Manage Users
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="window.location.href='adminMip.php';">
                     <span class="icon">💼</span> Manage IP Assets
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="window.location.href='adminVa.php';">
                     <span class="icon">📊</span> View Analytics
                 </a>
             </div>
