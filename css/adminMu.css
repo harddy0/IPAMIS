@@ -13,4 +13,5 @@ body {
 .container{
     background-color: rgba(240, 240, 245, 0.6);
     border-radius: 5px;
+    margin-top: 60px;
 }

@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid grid-cols-3 gap-4 mt-10">
             <!-- Left Column: User List -->
             <div>
                 <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">ID Number</div>
