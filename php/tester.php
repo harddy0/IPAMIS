@@ -22,7 +22,7 @@
     <button onclick="showUploadPopup()">Upload PDF</button>
 
     <!-- Include the Upload Popup -->
-    <?php include '../includes/pop_upload.php'; ?>
+    <?php include '../includes/pop_download.php'; ?>
 
 </body>
 </html>
