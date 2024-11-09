@@ -10,16 +10,21 @@ body {
     font-family: Arial, sans-serif;
 }
 
+body, html {
+    overflow: hidden; /* This prevents scroll bars from appearing */
+    height: 100vh; /* Ensure the content fits within the viewport height */
+}
+
 .sidebar {
     width: 250px; /* Adjust width as needed */
     background-color: #0b2a55; /* Dark blue background as fallback */
     color: white;
-    height: 100%; /* Full height of body */
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
-    overflow: hidden;
+    overflow-y: auto; /* If content in the sidebar overflows, it can scroll within itself */
+    height: 100%;
 }
 
 .sidebar img.background-image {
@@ -118,7 +123,8 @@ body {
     padding-top: 5px;
     background-color: white;
     height: 100%; /* Full height of body */
-    overflow-y: auto; /* Adds scroll if content exceeds viewport height */
+    overflow: hidden; /* Prevents scroll bars within the dashboard */
+   
 }
 
 .dashboard h2 {
@@ -167,6 +173,7 @@ body {
 .container{
     background-color: rgba(240, 240, 245, 0.6);
     border-radius: 5px;
+    
 }
 
 .footer {
