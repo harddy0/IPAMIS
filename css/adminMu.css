@@ -131,8 +131,9 @@ body {
 .custom-line {
     width: 100%;
     border: none;
-    border-top: 2px solid #bfbfbf;
-    margin-top: 10px; /* Adjust spacing as needed */
+    border-top: 1px solid #bfbfbf;
+    margin-top: 10px; 
+    
 }
 
 .header {
@@ -146,6 +147,9 @@ body {
     padding-left: 20px;
     color: #91969f;
     margin: 0;
+    font-family: 'Monserrat';
+    font-weight: 900;
+    font-size: larger;
 }
 
 .header-logo {
@@ -153,3 +157,27 @@ body {
     height: auto;
     padding-right: 20px;
 }
+
+/* Add margin-top for spacing */
+.main-content {
+    margin-top: 1rem; /* Adjust as needed to move content down */
+    padding: 0 20px;
+}
+
+.container{
+    background-color: rgba(240, 240, 245, 0.6);
+    border-radius: 5px;
+}
+
+.footer {
+    padding-top: 70px;
+     color: #6c757d; /* Gray color for text */
+     text-align: center;
+     font-weight: 700;
+ }
+ 
+ .footer p:hover {
+     color: #c79542; /* Hover color to match gold theme */
+     text-decoration: underline; /* Underline on hover */
+ }
+ 
