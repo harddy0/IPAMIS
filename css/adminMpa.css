@@ -132,7 +132,8 @@ body {
     width: 100%;
     border: none;
     border-top: 1px solid #bfbfbf;
-    margin-top: 10px; /* Adjust spacing as needed */
+    margin-top: 10px; 
+    
 }
 
 .header {
@@ -146,6 +147,9 @@ body {
     padding-left: 20px;
     color: #91969f;
     margin: 0;
+    font-family: 'Monserrat';
+    font-weight: 900;
+    font-size: larger;
 }
 
 .header-logo {
@@ -153,3 +157,38 @@ body {
     height: auto;
     padding-right: 20px;
 }
+
+
+.bg-gold-500 {
+    background-color: #c79542; /* Gold color */
+}
+
+.hover\:bg-gold-600:hover {
+    background-color: #a67d35; /* Darker gold for hover */
+}
+
+/* For custom paddings and sizes if needed */
+.detail-box {
+    padding: 12px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.profile-section{
+    background-color: rgba(240, 240, 245, 0.6);
+    border-radius: 5px;
+}
+
+.footer {
+   padding-top: 70px;
+    color: #6c757d; /* Gray color for text */
+    text-align: center;
+    font-weight: 700;
+}
+
+.footer p:hover {
+    color: #c79542; /* Hover color to match gold theme */
+    text-decoration: underline; /* Underline on hover */
+}
+
+
