@@ -144,17 +144,22 @@
 <body>
 
 <div class="container">
-    <aside class="sidebar">
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <img src="ctulogo.png" alt="Logo" class="logo-left">
         <h2>IPAMIS</h2>
-        <p class="role">ADMIN</p>
-        <ul class="menu">
-            <li class="active"><a href="#">Manage Personal Account</a></li>
-            <li><a href="#">Manage Users</a></li>
-            <li><a href="#">Manage IP Assets</a></li>
-            <li><a href="#">View Analytics</a></li>
-            <li><a href="#">Log out</a></li>
-        </ul>
-    </aside>
+        <img src="pilipinas.png" alt="Logo" class="logo-right">
+    </div>
+    <p class="role">ADMIN</p>
+    <ul class="menu">
+        <li class="active"><a href="#">Manage Personal Account</a></li>
+        <li><a href="#">Manage Users</a></li>
+        <li><a href="#">Manage IP Assets</a></li>
+        <li><a href="#">View Analytics</a></li>
+        <li><a href="#">Log out</a></li>
+    </ul>
+</aside>
+
     
     <main class="profile-content">
         <h1>PROFILE</h1>
