@@ -115,7 +115,7 @@ body {
 
 .dashboard {
     flex-grow: 1;
-    padding-top: 20px;
+    padding-top: 5px;
     background-color: white;
     height: 100%; /* Full height of body */
     overflow-y: auto; /* Adds scroll if content exceeds viewport height */
@@ -123,7 +123,9 @@ body {
 
 .dashboard h2 {
     padding-left: 20px;
-    color: #91969f;
+    padding-top: 5px;
+    padding-bottom: 2px;
+    color: #91969f; 
 }
 
 .custom-line {
@@ -131,4 +133,23 @@ body {
     border: none;
     border-top: 1px solid #bfbfbf;
     margin-top: 10px; /* Adjust spacing as needed */
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+}
+
+.header h2 {
+    padding-left: 20px;
+    color: #91969f;
+    margin: 0;
+}
+
+.header-logo {
+    width: 75px; /* Adjust size as needed */
+    height: auto;
+    padding-right: 20px;
 }
