@@ -18,7 +18,7 @@
                 <span class="border-line absolute left-0"></span>
             </div>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="space-y-4">
-                <input type="text" name="username" placeholder="Username" required class="w-full px-4 py-2 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold">
+                <input type="text" name="Email-Address" placeholder="Email Address" required class="w-full px-4 py-2 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold">
                 <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-2 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold">
                 <div class="flex justify-between items-center text-sm">
                     <label class="inline-flex items-center">
@@ -29,7 +29,7 @@
                 </div>
                 <button type="submit" class="w-full py-2 bg-gold text-blue-900 font-semibold rounded-lg hover:bg-orange-600 focus:outline-none">LOGIN</button>
             </form>
-            <p class="mt-4 text-center text-xs">Need assistance? Contact us at <a href="mailto:support@example.com" class="text-lightblue hover:underline">janeth.ugang@ctu.edu.ph</a></p>
+            <p class="mt-4 text-center text-xs">Need assistance? Contact us at <a href="mailto:janeth.ugang@ctu.edu.ph" class="text-lightblue hover:underline">janeth.ugang@ctu.edu.ph</a></p>
         </div>
     </div>
 </body>
