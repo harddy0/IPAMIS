@@ -18,7 +18,7 @@
                 <span class="border-line absolute left-0"></span>
             </div>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="space-y-4">
-                <input type="text" name="username" placeholder="Username" required class="w-full px-4 py-2 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold">
+                <input type="text" name="Email-Address" placeholder="Email Address" required class="w-full px-4 py-2 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold">
                 <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-2 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-gold">
                 <div class="flex justify-between items-center text-sm">
                     <label class="inline-flex items-center">
