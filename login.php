@@ -29,7 +29,7 @@
                 </div>
                 <button type="submit" class="w-full py-2 bg-gold text-blue-900 font-semibold rounded-lg hover:bg-orange-600 focus:outline-none">LOGIN</button>
             </form>
-            <p class="mt-4 text-center text-xs">Need assistance? Contact us at <a href="mailto:support@example.com" class="text-lightblue hover:underline">janeth.ugang@ctu.edu.ph</a></p>
+            <p class="mt-4 text-center text-xs">Need assistance? Contact us at <a href="mailto:janeth.ugang@ctu.edu.ph" class="text-lightblue hover:underline">janeth.ugang@ctu.edu.ph</a></p>
         </div>
     </div>
 </body>
