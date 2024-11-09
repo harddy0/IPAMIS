@@ -22,10 +22,10 @@
                 <a href="#" class="menu-item" onclick="window.location.href='adminMu.php';">
                     <span class="icon">⚙️</span> Manage Users
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="window.location.href='adminMip.php';">
                     <span class="icon">💼</span> Manage IP Assets
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="window.location.href='adminVa.php';">
                     <span class="icon">📊</span> View Analytics
                 </a>
             </div>

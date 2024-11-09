@@ -132,3 +132,19 @@ body {
     border-top: 1px solid #bfbfbf;
     margin-top: 10px; /* Adjust spacing as needed */
 }
+
+/* Profile Information Section */
+.profile-section {
+    background-color: #6c85a7;
+}
+.profile-header {
+    background-color: #031c3e
+}
+
+.account-input-group {
+    background-color: #6c85a7;
+}
+
+.password-input-group {
+    background-color: #6c85a7;
+}
