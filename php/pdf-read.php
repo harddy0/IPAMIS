@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 use Smalot\PdfParser\Parser;
 
@@ -41,7 +41,7 @@ function extractAndProcessCode($pdfFilePath) {
 }
 
 // Example usage
-$pdfFilePath = 'asdd.pdf'; // Replace with the actual path to your PDF
+$pdfFilePath = '../asdd.pdf'; // Replace with the actual path to your PDF
 $result = extractAndProcessCode($pdfFilePath);
 
 echo "Full Code String: " . $result['full_code_string'] . "\n";
