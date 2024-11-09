@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/adminEdit.css">
 </head>
 <body>
-    <div class="sidebar">
+<div class="sidebar">
         <img src="../images/ctu1.png" alt="Sidebar Background Image" class="background-image">
         <div class="sidebar-content">
             <img src="../images/ctulogo.png" alt="Profile Image">
@@ -27,12 +27,11 @@
                 <a href="#" class="menu-item">
                     <span class="icon">📊</span> View Analytics
                 </a>
-                
             </div>
-        </div>
-        
-        <div class="logout">
-            <span class="icon">🚪</span> Log out
+
+            <div class="logout">
+                <span class="icon">🚪</span> Log out
+            </div>
         </div>
     </div>
     
