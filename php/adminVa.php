@@ -18,67 +18,63 @@
     <div class="main-wrapper">
         <!-- Sidebar -->
         <?php include '../includes/dashboard.php'; ?>
-      
-
         <!-- Content Area -->
         <div class="content-wrapper">
             <!-- Header -->
             <?php include '../includes/header.php'; ?>
             <!-- Main content -->
             <div class="main-content">
-    <div class="container mx-auto p-6">
-        <!-- Analytics Header -->
-        <h1 class="text-2xl font-bold mb-4 flex items-center">
-            <span class="mr-2"><i class="fas fa-chart-pie"></i></span> View Analytics
-        </h1>
+                <div class="container mx-auto p-6">
+                    <!-- Analytics Header -->
+                    <h1 class="text-2xl font-bold mb-4 flex items-center">
+                        <span class="mr-2"><i class="fas fa-chart-pie"></i></span> View Analytics
+                    </h1>
 
-        <!-- Flex container for the graph and data boxes -->
-        <div class="content-box">
-            <!-- Graph Container -->
-            <div class="graph-container">
-                <h2 class="text-lg font-semibold mb-4">As of November</h2>
-                <canvas id="pieChart"></canvas>
-            </div>
+                    <!-- Flex container for the graph and data boxes -->
+                    <div class="content-box">
+                        <!-- Graph Container -->
+                        <div class="graph-container">
+                            <h2 class="text-lg font-semibold mb-4">As of November</h2>
+                            <canvas id="pieChart"></canvas>
+                        </div>
 
-            <!-- Data Boxes Container -->
-            <div class="data-boxes-container">
-                <div class="data-box">
-                    <span>Patent (Invention)</span>
-                    <span class="data-value">30</span>
-                </div>
-                <div class="data-box">
-                    <span>Industrial Design</span>
-                    <span class="data-value">17</span>
-                </div>
-                <div class="data-box">
-                    <span>Trade Secret</span>
-                    <span class="data-value">10</span>
-                </div>
-                <div class="data-box">
-                    <span>Utility Model</span>
-                    <span class="data-value">15</span>
-                </div>
-                <div class="data-box">
-                    <span>Copyright</span>
-                    <span class="data-value">15</span>
-                </div>
-                <div class="data-box">
-                    <span>Geographical Indication</span>
-                    <span class="data-value">12</span>
-                </div>
-                <div class="data-box">
-                    <span>Trademark</span>
-                    <span class="data-value">35</span>
+                        <!-- Data Boxes Container -->
+                        <div class="data-boxes-container">
+                            <div class="data-box">
+                                <span>Patent (Invention)</span>
+                                <span class="data-value">30</span>
+                            </div>
+                            <div class="data-box">
+                                <span>Industrial Design</span>
+                                <span class="data-value">17</span>
+                            </div>
+                            <div class="data-box">
+                                <span>Trade Secret</span>
+                                <span class="data-value">10</span>
+                            </div>
+                            <div class="data-box">
+                                <span>Utility Model</span>
+                                <span class="data-value">15</span>
+                            </div>
+                            <div class="data-box">
+                                <span>Copyright</span>
+                                <span class="data-value">15</span>
+                            </div>
+                            <div class="data-box">
+                                <span>Geographical Indication</span>
+                                <span class="data-value">12</span>
+                            </div>
+                            <div class="data-box">
+                                <span>Trademark</span>
+                                <span class="data-value">35</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-
-            <!-- Footer -->
-            <?php include '../includes/footer.php'; ?>
-        </div>
+        <!-- Footer -->
+        <?php include '../includes/footer.php'; ?>
     </div>
 
     <!-- Chart.js Script -->
