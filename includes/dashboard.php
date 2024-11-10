@@ -29,7 +29,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'logout') {
             </a>
             <a href="adminVa.php" class="menu-item">
                 <span class="icon">📊</span>
-                <div class="text">Manage IP Assets</div>
+                <div class="text">View Analytics</div>
             </a>
         </div>
 
