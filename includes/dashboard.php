@@ -29,9 +29,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             </div>
 
         <a href="login.php?action=logout" class="logout">
-            <div class="logout">
+            <div>
                 <span class="icon">🚪</span> Log out
-             </div>
+            </div>
         </a>
     </div>
 </div>
