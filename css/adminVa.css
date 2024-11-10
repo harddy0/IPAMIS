@@ -1,3 +1,7 @@
+
+body {
+    font-family: Arial, sans-serif;
+}
 /* Main wrapper for sidebar and content */
 .main-wrapper {
     display: flex;
@@ -8,8 +12,9 @@
 .content-wrapper {
     display: flex;
     flex-direction: column;
-    width: calc(100% - 250px); /* Adjust width to fit next to sidebar */
+    width: calc(95% - 200px); /* Adjust width to fit next to sidebar */
     background-color: #f9fafb;
+    margin: auto;
 }
 
 /* Header and Footer styling to align beside the sidebar */
@@ -38,7 +43,7 @@ header, footer {
     border-radius: 1rem;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
     padding: 1.5rem; /* Reduced padding for a smaller appearance */
-    width: 70%; /* Reduced width for a more compact layout */
+    width: 65%; /* Reduced width for a more compact layout */
     height: 380px; /* Reduced height to align with smaller data boxes */
     display: flex;
     flex-direction: column;
@@ -52,8 +57,8 @@ header, footer {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 100px); /* Fixed height for uniform box size */
     gap: 1rem;
-    width: 25%; /* Reduced width for a more compact layout */
-    height: 10%;
+    width: 28%; /* Reduced width for a more compact layout */
+    height: 0%;
     position: relative;
     margin-left: auto; /* Align the data boxes container to the right */
 }
@@ -84,6 +89,6 @@ header, footer {
 
 /* Centering the last data box */
 .data-box:last-child {
-    grid-column: 1 / -1;
-    justify-self: center;
+    grid-column: auto; /* Ensure it doesn't span multiple columns */
+    justify-self: stretch; /* Ensures it stretches to fill its cell */
 }
