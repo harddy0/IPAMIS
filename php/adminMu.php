@@ -74,8 +74,8 @@
                         echo "<div class='px-4 py-2 flex items-center justify-between'>
                                 <span>$request</span>
                                 <div>
-                                    <button class='bg-yellow-500 text-white px-2 py-1 rounded mr-2'>Accept</button>
-                                    <button class='bg-gray-500 text-white px-2 py-1 rounded'>Decline</button>
+                                    <button class='accept-button mr-2'>Accept</button>
+                                    <button class='decline-button'>Decline</button>
                                 </div>
                               </div>";
                     }
