@@ -1,6 +1,4 @@
-<?php
-$currentPage = basename($_SERVER['PHP_SELF']); // Get the name of the current file
-?>
+
 <div class="sidebar">
         <img src="../images/ctu1.png" alt="Sidebar Background Image" class="background-image">
         <div class="sidebar-content">
@@ -27,8 +25,10 @@ $currentPage = basename($_SERVER['PHP_SELF']); // Get the name of the current fi
                 </a>
             </div>
 
+        <a href="login.php?action=logout" class="logout">
             <div class="logout">
                 <span class="icon">🚪</span> Log out
-            </div>
-        </div>
+             </div>
+        </a>
     </div>
+</div>
