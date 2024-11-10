@@ -12,7 +12,7 @@
                 <a href="#" class="menu-item" onclick="window.location.href='adminMu.php';">
                     <span class="icon">⚙️</span> Manage Users
                 </a>
-                <a href="#" class="menu-item" onclick="window.location.href='adminMip.php';">
+                <a href="#" class="menu-item" onclick="window.location.href='adminMipa.php';">
                     <span class="icon">💼</span> Manage IP Assets
                 </a>
                 <a href="#" class="menu-item" onclick="window.location.href='adminVa.php';">
