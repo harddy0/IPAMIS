@@ -100,62 +100,62 @@
                 </div>
             </div>
 
-            <!-- Profile Information Section -->
-<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
-    <div class="profile-info-section">
-        <div class="profile-info-header">PROFILE INFORMATION</div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label class="text-white">Employee ID Number</label>
-                <input type="text" name="employee_id" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" disabled>
-            </div>
-            <div>
-                <label class="text-white">User Type</label>
-                <input type="text" name="user_type" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['UserType'] ?? ''); ?>" disabled>
-            </div>
-            <div>
-                <label class="text-white">First Name</label>
-                <input type="text" name="first_name" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['FirstName'] ?? ''); ?>">
-            </div>
-            <div>
-                <label class="text-white">Middle Name</label>
-                <input type="text" name="middle_name" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['MiddleName'] ?? ''); ?>">
-            </div>
-            <div>
-                <label class="text-white">Last Name</label>
-                <input type="text" name="last_name" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['LastName'] ?? ''); ?>">
-            </div>
-            <div>
-                <label class="text-white">Campus</label>
-                <input type="text" name="campus" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['Campus'] ?? ''); ?>">
-            </div>
-            <div>
-                <label class="text-white">Department</label>
-                <input type="text" name="department" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['Department'] ?? ''); ?>">
-            </div>
-            <div>
-                <label class="text-white">Contact Number</label>
-                <input type="text" name="contact_number" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['ContactNumber'] ?? ''); ?>">
-            </div>
-        </div>
-    </div>
+            PHP code:
+<!-- Profile Information Section -->
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                <div class="bg-blue-500 p-6 rounded-lg mb-8">
+                    <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-white">Employee ID Number</label>
+                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" disabled>
+                        </div>
+                        <div>
+                            <label class="text-white">User Type</label>
+                            <input type="text" name="user_type" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserType'] ?? ''); ?>" disabled>
+                        </div>
+                        <div>
+                            <label class="text-white">First Name</label>
+                            <input type="text" name="first_name" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['FirstName'] ?? ''); ?>">
+                        </div>
+                        <div>
+                            <label class="text-white">Middle Name</label>
+                            <input type="text" name="middle_name" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['MiddleName'] ?? ''); ?>">
+                        </div>
+                        <div>
+                            <label class="text-white">Last Name</label>
+                            <input type="text" name="last_name" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['LastName'] ?? ''); ?>">
+                        </div>
+                        <div>
+                            <label class="text-white">Campus</label>
+                            <input type="text" name="campus" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['Campus'] ?? ''); ?>">
+                        </div>
+                        <div>
+                            <label class="text-white">Department</label>
+                            <input type="text" name="department" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['Department'] ?? ''); ?>">
+                        </div>
+                        <div>
+                            <label class="text-white">Contact Number</label>
+                            <input type="text" name="contact_number" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['ContactNumber'] ?? ''); ?>">
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Account Settings Section -->
-    <div class="account-settings-section">
-        <div class="account-settings-card">
-            <label class="text-white">Email Address</label>
-            <input type="email" name="email" class="account-settings-input" value="<?php echo htmlspecialchars($user_data['EmailAddress'] ?? ''); ?>">
-        </div>
-        <div class="account-settings-card">
-            <label class="text-white">New Password</label>
-            <input type="password" name="new_password" class="account-settings-input">
-        </div>
-        <div class="account-settings-card">
-            <label class="text-white">Confirm Password</label>
-            <input type="password" name="confirm_password" class="account-settings-input">
-        </div>
-    </div>
-</form>
+                <!-- Account Settings Section -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+                    <div class="bg-blue-500 p-5 rounded-lg">
+                        <label class="text-white">Email Address</label>
+                        <input type="email" name="email" class="w-full p-3 bg-gray-200 rounded text-gray-700" value="<?php echo htmlspecialchars($user_data['EmailAddress'] ?? ''); ?>">
+                    </div>
+                    <div class="bg-blue-500 p-5 rounded-lg">
+                        <label class="text-white">New Password</label>
+                        <input type="password" name="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
+                    </div>
+                    <div class="bg-blue-500 p-5 rounded-lg">
+                        <label class="text-white">Confirm Password</label>
+                        <input type="password" name="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
+                    </div>
+                </div>
 
                 <!-- Centered Update Button -->
                 <div class="flex justify-center mb-10">
