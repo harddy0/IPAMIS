@@ -157,7 +157,6 @@
     </div>
 </form>
 
-
                 <!-- Centered Update Button -->
                 <div class="flex justify-center mb-10">
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
