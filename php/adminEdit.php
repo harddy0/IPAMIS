@@ -51,33 +51,34 @@
                 </div>
             </div>
 
-            <!-- Profile Information Section -->
-            <div class="bg-blue-500 p-6 rounded-lg mb-8">
-                <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" placeholder="EMPLOYEE ID NUMBER" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="USER TYPE" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="FIRST NAME" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="MIDDLE NAME" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="LAST NAME" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="CAMPUS" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="DEPARTMENT" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                    <input type="text" placeholder="CONTACT NUMBER" class="p-3 bg-gray-200 rounded text-gray-700 w-full">
-                </div>
+           <!-- Profile Information Section -->
+        <div class="profile-info-section">
+            <div class="profile-info-header">PROFILE INFORMATION</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" placeholder="EMPLOYEE ID NUMBER" class="profile-info-input">
+                <input type="text" placeholder="USER TYPE" class="profile-info-input">
+                <input type="text" placeholder="FIRST NAME" class="profile-info-input">
+                <input type="text" placeholder="MIDDLE NAME" class="profile-info-input">
+                <input type="text" placeholder="LAST NAME" class="profile-info-input">
+                <input type="text" placeholder="CAMPUS" class="profile-info-input">
+                <input type="text" placeholder="DEPARTMENT" class="profile-info-input">
+                <input type="text" placeholder="CONTACT NUMBER" class="profile-info-input">
             </div>
+        </div>
 
-            <!-- Account Settings Section -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                <div class="bg-blue-500 p-5 rounded-lg">
-                    <input type="email" placeholder="EMAIL ADDRESS" class="w-full p-3 bg-gray-200 rounded text-gray-700">
-                </div>
-                <div class="bg-blue-500 p-5 rounded-lg">
-                    <input type="password" placeholder="NEW PASSWORD" class="w-full p-3 bg-gray-200 rounded text-gray-700">
-                </div>
-                <div class="bg-blue-500 p-5 rounded-lg">
-                    <input type="password" placeholder="CONFIRM PASSWORD" class="w-full p-3 bg-gray-200 rounded text-gray-700">
-                </div>
+        <!-- Account Settings Section -->
+        <div class="account-settings-section">
+            <div class="account-settings-card">
+                <input type="email" placeholder="EMAIL ADDRESS" class="account-settings-input">
             </div>
+            <div class="account-settings-card">
+                <input type="password" placeholder="NEW PASSWORD" class="account-settings-input">
+            </div>
+            <div class="account-settings-card">
+                <input type="password" placeholder="CONFIRM PASSWORD" class="account-settings-input">
+            </div>
+        </div>
+
 
             <!-- Centered Update Button -->
             <div class="flex justify-center mb-10">

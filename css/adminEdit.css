@@ -28,17 +28,55 @@ body {
 
 
 /* Profile Information Section */
-.profile-section {
-    background-color: #8fa3c0;
-}
-.profile-header {
-    background-color: #031c3e
-}
-
-.account-input-group {
-    background-color: #f9f9fb;
+.profile-info-section {
+    background-color: #d2d7f2; /* Background color for the Profile Information section */
+    padding: 1.5rem; /* Padding around the section */
+    border-radius: 0.5rem; /* Rounded corners */
+    margin-bottom: 2rem; /* Spacing at the bottom */
 }
 
-.password-input-group {
-    background-color: #f9f9fb;
+.profile-info-header {
+    background-color: #273c75; /* Background color for the Profile Information header */
+    color: #ffffff; /* Text color for the header */
+    text-align: center;
+    padding: 0.5rem;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.profile-info-input {
+    padding: 0.75rem;
+    background-color: #f0f4f8; /* Background color for the input fields */
+    color: #333333; /* Text color for the input fields */
+    border-radius: 0.25rem;
+    width: 100%;
+}
+
+/* Account Settings Section */
+.account-settings-section {
+    display: grid;
+    grid-template-columns: 1fr; /* Single-column on small screens */
+    gap: 1.25rem; /* Gap between items */
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .account-settings-section {
+        grid-template-columns: repeat(3, 1fr); /* Three columns on medium and larger screens */
+    }
+}
+
+.account-settings-card {
+    background-color: #d2d7f2; /* Background color for each account setting item */
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+}
+
+.account-settings-input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #f0f4f8; /* Background color for the input fields */
+    color: #333333; /* Text color for the input fields */
+    border-radius: 0.25rem;
 }
