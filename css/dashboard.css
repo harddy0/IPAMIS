@@ -75,6 +75,7 @@
     background-color: #c79542; /* Gold hover effect */
     color: #ffffff;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .menu-item span.icon {
