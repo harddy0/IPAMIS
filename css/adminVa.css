@@ -1,3 +1,7 @@
+
+body {
+    font-family: Arial, sans-serif;
+}
 /* Main wrapper for sidebar and content */
 .main-wrapper {
     display: flex;
@@ -8,8 +12,9 @@
 .content-wrapper {
     display: flex;
     flex-direction: column;
-    width: calc(100% - 250px); /* Adjust width to fit next to sidebar */
+    width: calc(95% - 200px); /* Adjust width to fit next to sidebar */
     background-color: #f9fafb;
+    margin: auto;
 }
 
 /* Header and Footer styling to align beside the sidebar */
@@ -22,15 +27,14 @@ header, footer {
 /* Main content layout */
 .main-content {
     flex-grow: 1;
-    padding: 1.5rem;
 }
 
 /* Content box layout under "View Analytics" */
 .content-box {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem; /* Reduced gap for a more compact layout */
     align-items: flex-start;
-    margin-top: 1rem;
+    margin-top: 0rem;
 }
 
 /* Container for the graph */
@@ -38,8 +42,9 @@ header, footer {
     background-color: #E5E7EB;
     border-radius: 1rem;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
-    padding: 2rem;
-    width: 60%;
+    padding: 1.5rem; /* Reduced padding for a smaller appearance */
+    width: 65%; /* Reduced width for a more compact layout */
+    height: 380px; /* Reduced height to align with smaller data boxes */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,10 +55,12 @@ header, footer {
 .data-boxes-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(3, 100px); /* Fixed height for uniform box size */
     gap: 1rem;
-    width: 35%;
+    width: 28%; /* Reduced width for a more compact layout */
+    height: 0%;
     position: relative;
+    margin-left: auto; /* Align the data boxes container to the right */
 }
 
 /* Individual data box styling */
@@ -61,19 +68,20 @@ header, footer {
     background-color: #FFFFFF;
     border-radius: 0.5rem;
     box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+    padding: 0.75rem; /* Reduced padding for a smaller appearance */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Slightly smaller font size for compactness */
     font-weight: 600;
+    height: 100%; /* Ensure each box takes the full row height */
 }
 
 /* Styling for data values */
 .data-value {
-    font-size: 2rem;
+    font-size: 1.5rem; /* Reduced font size to fit the smaller box */
     font-weight: bold;
     color: #1f2937;
     margin-top: 0.5rem;
@@ -81,6 +89,6 @@ header, footer {
 
 /* Centering the last data box */
 .data-box:last-child {
-    grid-column: 1 / -1;
-    justify-self: center;
+    grid-column: auto; /* Ensure it doesn't span multiple columns */
+    justify-self: stretch; /* Ensures it stretches to fill its cell */
 }
