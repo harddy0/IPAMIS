@@ -15,12 +15,61 @@
     <style>
         /* Ensure the main content occupies the full width minus the sidebar */
         .main-content {
-            margin-left: 16rem; /* Adjust for the sidebar width (64 in Tailwind is 16rem) */
+            margin-left: 16rem; /* Adjust for the sidebar width */
             width: calc(100% - 16rem);
         }
     </style>
 </head>
 <body>
+    <?php
+    session_start();
+    include '../includes/db_connect.php';
+
+    // Fetch the user data based on session UserID
+    $user_id = $_SESSION['UserID'];
+    $user_data = [];
+
+    if ($user_id) {
+        $stmt = $conn->prepare("SELECT * FROM user WHERE UserID = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $user_data = $result->fetch_assoc();
+        }
+        $stmt->close();
+    }
+
+    // Handle form submission
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $first_name = htmlspecialchars(trim($_POST['first_name']));
+        $middle_name = htmlspecialchars(trim($_POST['middle_name']));
+        $last_name = htmlspecialchars(trim($_POST['last_name']));
+        $campus = htmlspecialchars(trim($_POST['campus']));
+        $department = htmlspecialchars(trim($_POST['department']));
+        $contact_number = htmlspecialchars(trim($_POST['contact_number']));
+        $email = htmlspecialchars(trim($_POST['email']));
+        $new_password = htmlspecialchars(trim($_POST['new_password']));
+
+        // Update query
+        if (!empty($new_password)) {
+            $sql = "UPDATE user SET FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ?, Password = ? WHERE UserID = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssssssi", $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $new_password, $user_id);
+        } else {
+            $sql = "UPDATE user SET FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ? WHERE UserID = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssssssi", $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $user_id);
+        }
+        $stmt->execute();
+        $stmt->close();
+        
+        // Redirect to adminMpa.php after updating
+        header("Location: adminMpa.php");
+        exit();
+    }
+    ?>
+
     <!-- Fixed Dashboard on the Left -->
     <div class="fixed top-0 left-0 h-full w-64 bg-white shadow-md">
         <?php include '../includes/dashboard.php'; ?>
@@ -51,39 +100,69 @@
                 </div>
             </div>
 
-           <!-- Profile Information Section -->
-        <div class="profile-info-section">
-            <div class="profile-info-header">PROFILE INFORMATION</div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" placeholder="EMPLOYEE ID NUMBER" class="profile-info-input">
-                <input type="text" placeholder="USER TYPE" class="profile-info-input">
-                <input type="text" placeholder="FIRST NAME" class="profile-info-input">
-                <input type="text" placeholder="MIDDLE NAME" class="profile-info-input">
-                <input type="text" placeholder="LAST NAME" class="profile-info-input">
-                <input type="text" placeholder="CAMPUS" class="profile-info-input">
-                <input type="text" placeholder="DEPARTMENT" class="profile-info-input">
-                <input type="text" placeholder="CONTACT NUMBER" class="profile-info-input">
+            <!-- Profile Information Section -->
+<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+    <div class="profile-info-section">
+        <div class="profile-info-header">PROFILE INFORMATION</div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="text-white">Employee ID Number</label>
+                <input type="text" name="employee_id" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" disabled>
+            </div>
+            <div>
+                <label class="text-white">User Type</label>
+                <input type="text" name="user_type" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['UserType'] ?? ''); ?>" disabled>
+            </div>
+            <div>
+                <label class="text-white">First Name</label>
+                <input type="text" name="first_name" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['FirstName'] ?? ''); ?>">
+            </div>
+            <div>
+                <label class="text-white">Middle Name</label>
+                <input type="text" name="middle_name" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['MiddleName'] ?? ''); ?>">
+            </div>
+            <div>
+                <label class="text-white">Last Name</label>
+                <input type="text" name="last_name" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['LastName'] ?? ''); ?>">
+            </div>
+            <div>
+                <label class="text-white">Campus</label>
+                <input type="text" name="campus" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['Campus'] ?? ''); ?>">
+            </div>
+            <div>
+                <label class="text-white">Department</label>
+                <input type="text" name="department" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['Department'] ?? ''); ?>">
+            </div>
+            <div>
+                <label class="text-white">Contact Number</label>
+                <input type="text" name="contact_number" class="profile-info-input" value="<?php echo htmlspecialchars($user_data['ContactNumber'] ?? ''); ?>">
             </div>
         </div>
+    </div>
 
-        <!-- Account Settings Section -->
-        <div class="account-settings-section">
-            <div class="account-settings-card">
-                <input type="email" placeholder="EMAIL ADDRESS" class="account-settings-input">
-            </div>
-            <div class="account-settings-card">
-                <input type="password" placeholder="NEW PASSWORD" class="account-settings-input">
-            </div>
-            <div class="account-settings-card">
-                <input type="password" placeholder="CONFIRM PASSWORD" class="account-settings-input">
-            </div>
+    <!-- Account Settings Section -->
+    <div class="account-settings-section">
+        <div class="account-settings-card">
+            <label class="text-white">Email Address</label>
+            <input type="email" name="email" class="account-settings-input" value="<?php echo htmlspecialchars($user_data['EmailAddress'] ?? ''); ?>">
         </div>
+        <div class="account-settings-card">
+            <label class="text-white">New Password</label>
+            <input type="password" name="new_password" class="account-settings-input">
+        </div>
+        <div class="account-settings-card">
+            <label class="text-white">Confirm Password</label>
+            <input type="password" name="confirm_password" class="account-settings-input">
+        </div>
+    </div>
+</form>
 
 
-            <!-- Centered Update Button -->
-            <div class="flex justify-center mb-10">
-                <button class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
-            </div>
+                <!-- Centered Update Button -->
+                <div class="flex justify-center mb-10">
+                    <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
+                </div>
+            </form>
         </div>
 
         <!-- Footer -->
