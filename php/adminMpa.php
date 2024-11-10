@@ -21,7 +21,7 @@ if ($result->num_rows > 0) {
     $employeeID = $user['UserID'];
 } else {
     echo "User not found.";
-    exit();
+    //exit();
 }
 ?>
 <!DOCTYPE html>
