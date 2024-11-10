@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            PHP code:
+
 <!-- Profile Information Section -->
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
