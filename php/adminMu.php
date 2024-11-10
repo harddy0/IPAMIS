@@ -11,13 +11,9 @@
     <link rel="stylesheet" href="../css/footer.css">
     <script>
         function confirmDelete(userId, userName) {
-            document.getElementById('confirm-delete-modal').classList.remove('hidden');
-            document.getElementById('delete-user-id').value = userId;
-            document.getElementById('delete-user-name').textContent = userName;
-        }
-
-        function closeModal() {
-            document.getElementById('confirm-delete-modal').classList.add('hidden');
+            if (confirm(`Are you sure you want to delete ${userName}?`)) {
+                window.location.href = `adminMu.php?delete_id=${userId}`;
+            }
         }
     </script>
 </head>
@@ -25,38 +21,23 @@
     <?php
     include '../includes/db_connect.php';
 
-    // Check if connection was successful
-    if ($conn->connect_error) {
-        die("Database connection failed: " . $conn->connect_error);
-    }
-
-    // Handle delete action if delete_id is set in the POST request
-    if (isset($_POST['delete_id'])) {
-        $delete_id = intval($_POST['delete_id']);
+    // Handle delete action if delete_id is set in the URL
+    if (isset($_GET['delete_id'])) {
+        $delete_id = intval($_GET['delete_id']);
         $stmt = $conn->prepare("DELETE FROM user WHERE UserID = ?");
         $stmt->bind_param("i", $delete_id);
         $stmt->execute();
         $stmt->close();
 
-        // Redirect back to adminMu.php with a 'deleted' flag
-        header("Location: adminMu.php?deleted=true");
+        // Redirect to avoid resubmitting the delete action on refresh
+        header("Location: adminMu.php");
         exit();
     }
 
     // Fetch staff users from the database
     $staff_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Staff'";
     $staff_result = $conn->query($staff_query);
-
-    // Check if query was successful
-    if (!$staff_result) {
-        die("Query failed: " . $conn->error);
-    }
-
-    // Check if any staff members were found
-    $staff_users = [];
-    if ($staff_result->num_rows > 0) {
-        $staff_users = $staff_result->fetch_all(MYSQLI_ASSOC);
-    } 
+    $staff_users = $staff_result ? $staff_result->fetch_all(MYSQLI_ASSOC) : [];
     ?>
 
     <!-- Dashboard and Header -->
@@ -91,7 +72,9 @@
                     <?php if (!empty($staff_users)): ?>
                         <?php foreach ($staff_users as $user): ?>
                             <li class="px-4 py-2 border-b">
-                                <?php echo $user['UserID'] . " - " . $user['FullName']; ?>
+                                <a href="adminEditStaff.php?user_id=<?php echo $user['UserID']; ?>" class="text-blue-600 hover:underline">
+                                    <?php echo htmlspecialchars($user['UserID'] . " - " . $user['FullName']); ?>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -133,7 +116,9 @@
                     <?php if (!empty($staff_users)): ?>
                         <?php foreach ($staff_users as $user): ?>
                             <li class="px-4 py-2 border-b flex items-center justify-between">
-                                <span><?php echo $user['FullName']; ?></span>
+                                <a href="adminEditStaff.php?user_id=<?php echo $user['UserID']; ?>" class="text-blue-600 hover:underline">
+                                    <?php echo htmlspecialchars($user['FullName']); ?>
+                                </a>
                                 <button onclick="confirmDelete(<?php echo $user['UserID']; ?>, '<?php echo addslashes($user['FullName']); ?>')" class="text-gray-500 hover:text-red-500">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -146,21 +131,6 @@
                     <?php endif; ?>
                 </ul>
             </div>
-        </div>
-    </div>
-
-    <!-- Confirmation Modal -->
-    <div id="confirm-delete-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-yellow-500 rounded-lg p-6 w-full max-w-md text-center shadow-lg transform scale-105">
-            <h2 class="text-xl font-bold text-gray-900 mb-4">Confirm Deletion</h2>
-            <p class="text-gray-800 mb-6">Are you sure you want to delete <span id="delete-user-name" class="font-semibold text-gray-900"></span>?</p>
-            <form method="POST" action="adminMu.php">
-                <input type="hidden" name="delete_id" id="delete-user-id">
-                <div class="flex justify-center gap-4">
-                    <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700">Delete</button>
-                    <button type="button" onclick="closeModal()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded hover:bg-gray-300">Cancel</button>
-                </div>
-            </form>
         </div>
     </div>
 
