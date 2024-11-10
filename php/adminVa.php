@@ -18,10 +18,9 @@
     <div class="main-wrapper">
         <!-- Sidebar -->
         <?php include '../includes/dashboard.php'; ?>
+        <?php include '../includes/header.php'; ?>
         <!-- Content Area -->
         <div class="content-wrapper">
-            <!-- Header -->
-            <?php include '../includes/header.php'; ?>
             <!-- Main content -->
             <div class="main-content">
                 <div class="container mx-auto p-6">
@@ -75,7 +74,10 @@
         </div>
         <!-- Footer -->
         <?php include '../includes/footer.php'; ?>
+        </div>
     </div>
+   
+
 
     <!-- Chart.js Script -->
     <script>
