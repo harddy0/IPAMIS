@@ -35,11 +35,11 @@ header, footer {
 
 /* Container for the graph */
 .graph-container {
-    background-color: #F3F4F6;
+    background-color: #E5E7EB;
     border-radius: 1rem;
-    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
     padding: 2rem;
-    width: 50.66%;
+    width: 60%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -48,18 +48,20 @@ header, footer {
 
 /* Container for the data boxes */
 .data-boxes-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 33.33%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
+    gap: 1rem;
+    width: 35%;
+    position: relative;
 }
 
 /* Individual data box styling */
 .data-box {
     background-color: #FFFFFF;
     border-radius: 0.5rem;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -75,4 +77,10 @@ header, footer {
     font-weight: bold;
     color: #1f2937;
     margin-top: 0.5rem;
+}
+
+/* Centering the last data box */
+.data-box:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
 }
