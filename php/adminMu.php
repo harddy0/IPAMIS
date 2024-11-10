@@ -18,12 +18,12 @@
     <div class="container p-4 mt-10 pb-10 shadow-xl">
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Manage Users</h1>
-            <a href="addUser.php">
-            <button class="bg-yellow-500 text-white font-semibold py-1 px-4 rounded flex items-center">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                ADD USER
-            </button></a>
-            
+                <button class="custom-add-button">
+                <svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                 ADD
+                </button>
             <div class="relative">
                 <input type="text" class="bg-gray-300 rounded-full py-2 px-4 text-gray-700" placeholder="Search">
                 <button class="absolute right-2 top-2 text-gray-500 focus:outline-none">
@@ -33,7 +33,6 @@
                     </svg>
 
                 </button>
-            
             </div>
         </div>
 
