@@ -24,8 +24,9 @@
                 </a>
             </div>
 
-            <div class="logout">
+            <a href="login.php" class="logout"><div class="logout">
                 <span class="icon">🚪</span> Log out
             </div>
+            </a>
         </div>
     </div>
