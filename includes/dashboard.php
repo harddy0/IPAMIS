@@ -1,4 +1,7 @@
-
+<?php
+// Define the current page based on the filename
+$currentPage = basename($_SERVER['PHP_SELF']);
+?>
 <div class="sidebar">
         <img src="../images/ctu1.png" alt="Sidebar Background Image" class="background-image">
         <div class="sidebar-content">
