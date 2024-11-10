@@ -6,35 +6,13 @@
     <title>Edit Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/adminEdit.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/footer.css">
+
 </head>
 <body>
-    <div class="sidebar">
-        <img src="../images/ctu1.png" alt="Sidebar Background Image" class="background-image">
-        <div class="sidebar-content">
-            <img src="../images/ctulogo.png" alt="Profile Image">
-            <div class="title">IPAMIS</div>
-            <div class="admin">ADMIN</div>
-            
-            <div class="menu">
-                <a href="#" class="menu-item active" onclick="window.location.href='adminMpa.php';">
-                    <span class="icon">👤</span> Manage Personal Account
-                </a>
-                <a href="#" class="menu-item" onclick="window.location.href='adminMu.php';">
-                    <span class="icon">⚙️</span> Manage Users
-                </a>
-                <a href="#" class="menu-item" onclick="window.location.href='adminMip.php';">
-                    <span class="icon">💼</span> Manage IP Assets
-                </a>
-                <a href="#" class="menu-item" onclick="window.location.href='adminVa.php';">
-                    <span class="icon">📊</span> View Analytics
-                </a>
-            </div>
+    <?php include '../includes/dashboard.php'; ?>
 
-            <div class="logout">
-                <span class="icon">🚪</span> Log out
-            </div>
-        </div>
-    </div>
     
     <div class="dashboard p-10">
     <!-- Title Section for IP Asset Management -->
@@ -43,7 +21,7 @@
 
     <!-- New Edit Profile Section -->
     <div class="flex items-center mb-5">
-        <a href="#" class="text-dark blue-500 text-lg mr-3">←</a>
+        <a href="adminMpa.php" class="text-dark blue-500 text-lg mr-3">←</a>
         <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
     </div>
     <div class="flex items-center gap-4 mb-8">
@@ -93,7 +71,7 @@
     <button class="update-button px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
 </div>
 
-
+<?php include '../includes/footer.php'; ?>
 
 </body>
 </html>
