@@ -33,7 +33,7 @@
         <div class="grid grid-cols-3 gap-4 mt-10">
             <!-- Left Column: User List -->
             <div>
-                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">ID Number</div>
+                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">List of Staff</div>
                 <ul class="bg-gray-300 text-gray-800 rounded-b">
                     <?php 
                     $users = [
@@ -54,7 +54,9 @@
             <div>
                 <div class="bg-blue-700 text-white font-semibold rounded-t px-4 py-2 flex items-center justify-between">
                     Faculty Request
-                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4h2v2H9v-2zm0-8h2v6H9V6z"></path></svg>
+                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2a7 7 0 00-7 7v3.5l-1.26 2.52A1 1 0 005 17h14a1 1 0 00.86-1.48L18 12.5V9a7 7 0 00-7-7zm1 16h-2a2 2 0 004 0h-2z"></path>
+                    </svg>
                 </div>
                 <div class="bg-gray-300 rounded-b">
                     <?php 
@@ -77,7 +79,7 @@
 
             <!-- Right Column: User Actions -->
             <div>
-                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">Name</div>
+                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">Manage Staff</div>
                 <ul class="bg-gray-300 text-gray-800 rounded-b">
                     <?php 
                     foreach ($users as $user) {
