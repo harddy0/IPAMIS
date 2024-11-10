@@ -75,13 +75,13 @@
     background-color: #c79542; /* Gold hover effect */
     color: #ffffff;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .menu-item span.icon {
     margin-right: 15px;
     font-size: 1.5rem;
-    align-items: center;
+    align-items: center;    
 }
 
 .logout {
@@ -113,4 +113,10 @@
 .menu-item .text {
     display: flex;
     align-items: center; /* Aligns text vertically */
+}
+
+.menu-item.active {
+    background-color: #c79542; /* Gold color */
+    color: #ffffff;
+    font-weight: 600;
 }

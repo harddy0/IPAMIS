@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../css/footer.css">
 
 </head>
-<body>
+<body class="loaded">
     <?php include '../includes/dashboard.php'; ?>
     <?php include '../includes/header.php'; ?>
     

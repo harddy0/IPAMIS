@@ -6,7 +6,18 @@
     background-color: white;
     height: 100%; /* Full height of body */
     flex-direction: column;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards; /* Triggering the animation */
 }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 
 
 .custom-line {

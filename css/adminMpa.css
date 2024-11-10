@@ -28,17 +28,6 @@ body {
 .profile-section{
     background-color: rgba(240, 240, 245, 0.6);
     border-radius: 5px;
-    
-}
-
-.fade-in {
-    opacity: 1;
-    transition: opacity 0.3s ease-in;
-}
-
-.fade-out {
-    opacity: 0;
-    transition: opacity 0.3s ease-out;
 }
 
 
