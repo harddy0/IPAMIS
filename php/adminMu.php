@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Manage IP Assets</title>
+    <title>Admin Manage Users</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/adminMu.css">
     <link rel="stylesheet" href="../css/dashboard.css">
@@ -18,22 +18,29 @@
     <div class="container p-4 mt-10 pb-10 shadow-xl">
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl font-bold text-gray-800">Manage Users</h1>
+            <a href="addUser.php">
             <button class="bg-yellow-500 text-white font-semibold py-1 px-4 rounded flex items-center">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                ADD
-            </button>
+                ADD USER
+            </button></a>
+            
             <div class="relative">
                 <input type="text" class="bg-gray-300 rounded-full py-2 px-4 text-gray-700" placeholder="Search">
                 <button class="absolute right-2 top-2 text-gray-500 focus:outline-none">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-3.5 3.5m0 0L8 20m7-8.5A6.5 6.5 0 1114 7a6.5 6.5 0 011 7.5z"></path></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
+                        <line x1="16.65" y1="16.65" x2="21" y2="21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
+                    </svg>
+
                 </button>
+            
             </div>
         </div>
 
         <div class="grid grid-cols-3 gap-4 mt-10">
             <!-- Left Column: User List -->
             <div>
-                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">ID Number</div>
+                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">List of Staff</div>
                 <ul class="bg-gray-300 text-gray-800 rounded-b">
                     <?php 
                     $users = [
@@ -54,7 +61,9 @@
             <div>
                 <div class="bg-blue-700 text-white font-semibold rounded-t px-4 py-2 flex items-center justify-between">
                     Faculty Request
-                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-4h2v2H9v-2zm0-8h2v6H9V6z"></path></svg>
+                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2a7 7 0 00-7 7v3.5l-1.26 2.52A1 1 0 005 17h14a1 1 0 00.86-1.48L18 12.5V9a7 7 0 00-7-7zm1 16h-2a2 2 0 004 0h-2z"></path>
+                    </svg>
                 </div>
                 <div class="bg-gray-300 rounded-b">
                     <?php 
@@ -77,7 +86,7 @@
 
             <!-- Right Column: User Actions -->
             <div>
-                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">Name</div>
+                <div class="bg-gray-700 text-white font-semibold rounded-t px-4 py-2">Manage Staff</div>
                 <ul class="bg-gray-300 text-gray-800 rounded-b">
                     <?php 
                     foreach ($users as $user) {

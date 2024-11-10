@@ -21,15 +21,15 @@
 
     <!-- New Edit Profile Section -->
     <div class="flex items-center mb-5">
-        <a href="adminMpa.php" class="text-dark blue-500 text-lg mr-3">←</a>
-        <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
+        <a href="adminMu.php" class="text-dark blue-500 text-lg mr-3">←</a>
+        <h2 class="text-2xl font-semibold text-gray-800">Add User</h2>
     </div>
     <div class="flex items-center gap-4 mb-8">
         <div class="w-20 h-20 rounded-full border-2 border-gray-300 flex items-center justify-center">
             <img src="../images/profile-placeholder.png" alt="Profile Image" class="w-16 h-16 rounded-full">
         </div>
         <div>
-            <a href="#" class="text-blue-600 text-sm underline">Change profile picture</a>
+            <a href="#" class="text-blue-600 text-sm underline">Add profile picture</a>
         </div>
     </div>
 
@@ -62,7 +62,7 @@
 
 <!-- Centered Update Button -->
 <div class="flex justify-center mb-10">
-    <button class="update-button px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
+    <button class="update-button px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">ADD USER</button>
 </div>
 
 
