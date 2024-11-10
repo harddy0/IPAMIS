@@ -75,7 +75,8 @@
     background-color: #c79542; /* Gold hover effect */
     color: #ffffff;
     cursor: pointer;
-    font-weight: 500;
+    transform: scale(1.02); /* Slightly increase size */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
 .menu-item span.icon {
