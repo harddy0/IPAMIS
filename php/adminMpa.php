@@ -2,11 +2,6 @@
 session_start(); // Start the session to access session variables
 include '../includes/db_connect.php';
 
-// Check if the user is logged in using the UserID stored in the session
-if (!isset($_SESSION['UserID'])) {
-    header("Location: login.php"); // Redirect to login if not logged in
-    exit();
-}
 
 // Retrieve the logged-in user's ID
 $userID = $_SESSION['UserID'];
