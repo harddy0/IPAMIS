@@ -14,7 +14,7 @@ body {
     flex-direction: column;
     width: calc(95% - 200px); /* Adjust width to fit next to sidebar */
     background-color: #f9fafb;
-    margin: auto;
+    
 }
 
 /* Header and Footer styling to align beside the sidebar */
