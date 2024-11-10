@@ -10,10 +10,16 @@
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
     <script>
-        function confirmDelete(userId, userName) {
-            if (confirm(`Are you sure you want to delete ${userName}?`)) {
+        function openModal(userId, userName) {
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modalUserName').innerText = userName;
+            document.getElementById('confirmDeleteBtn').onclick = function () {
                 window.location.href = `adminMu.php?delete_id=${userId}`;
-            }
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
         }
     </script>
 </head>
@@ -21,20 +27,16 @@
     <?php
     include '../includes/db_connect.php';
 
-    // Handle delete action if delete_id is set in the URL
     if (isset($_GET['delete_id'])) {
         $delete_id = intval($_GET['delete_id']);
         $stmt = $conn->prepare("DELETE FROM user WHERE UserID = ?");
         $stmt->bind_param("i", $delete_id);
         $stmt->execute();
         $stmt->close();
-
-        // Redirect to avoid resubmitting the delete action on refresh
         header("Location: adminMu.php");
         exit();
     }
 
-    // Fetch staff users from the database
     $staff_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Staff'";
     $staff_result = $conn->query($staff_query);
     $staff_users = $staff_result ? $staff_result->fetch_all(MYSQLI_ASSOC) : [];
@@ -83,7 +85,7 @@
                 </ul>
             </div>
 
-            <!-- Middle Column: Faculty Requests (Placeholder) -->
+            <!-- Middle Column: Faculty Requests -->
             <div id="faculty-requests">
                 <div class="bg-blue-700 text-white font-semibold rounded-t px-4 py-2 flex items-center justify-between">
                     Faculty Request
@@ -91,19 +93,19 @@
                         <path d="M12 2a7 7 0 00-7 7v3.5l-1.26 2.52A1 1 0 005 17h14a1 1 0 00.86-1.48L18 12.5V9a7 7 0 00-7-7zm1 16h-2a2 2 0 004 0h-2z"></path>
                     </svg>
                 </div>
-                <div class="bg-gray-300 rounded-b">
+                <div class="bg-gray-300 rounded-b p-2">
                     <div class='px-4 py-2 flex items-center justify-between'>
                         <span>Shekinah Olarte</span>
                         <div>
-                            <button class='accept-button mr-2'>Accept</button>
-                            <button class='decline-button'>Decline</button>
+                            <button class='bg-yellow-500 text-white font-bold px-2 py-1 rounded mr-2 hover:bg-yellow-600'>Accept</button>
+                            <button class='bg-gray-500 text-white font-bold px-2 py-1 rounded hover:bg-gray-600'>Decline</button>
                         </div>
                     </div>
                     <div class='px-4 py-2 flex items-center justify-between'>
                         <span>Dahlia Genson</span>
                         <div>
-                            <button class='accept-button mr-2'>Accept</button>
-                            <button class='decline-button'>Decline</button>
+                            <button class='bg-yellow-500 text-white font-bold px-2 py-1 rounded mr-2 hover:bg-yellow-600'>Accept</button>
+                            <button class='bg-gray-500 text-white font-bold px-2 py-1 rounded hover:bg-gray-600'>Decline</button>
                         </div>
                     </div>
                 </div>
@@ -119,7 +121,7 @@
                                 <a href="adminEditStaff.php?user_id=<?php echo $user['UserID']; ?>" class="text-blue-600 hover:underline">
                                     <?php echo htmlspecialchars($user['FullName']); ?>
                                 </a>
-                                <button onclick="confirmDelete(<?php echo $user['UserID']; ?>, '<?php echo addslashes($user['FullName']); ?>')" class="text-gray-500 hover:text-red-500">
+                                <button onclick="openModal(<?php echo $user['UserID']; ?>, '<?php echo addslashes($user['FullName']); ?>')" class="text-gray-500 hover:text-red-500">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
@@ -130,6 +132,18 @@
                         <li class="px-4 py-2 text-gray-500">No staff available to manage.</li>
                     <?php endif; ?>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center border-t-4 border-yellow-500">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Delete</h2>
+            <p class="text-gray-700 mb-6">Are you sure you want to delete <span id="modalUserName" class="font-semibold"></span>?</p>
+            <div class="flex justify-between">
+                <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
             </div>
         </div>
     </div>
