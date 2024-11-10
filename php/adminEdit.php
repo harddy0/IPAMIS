@@ -48,28 +48,23 @@
     </div>
 </div>
 
-<!-- Account Settings Section -->
-<div class="account-settings grid grid-cols-2 gap-5 mb-8">
+<div class="account-settings grid grid-cols-3 gap-5 mb-8">
     <div class="account-input-group bg-blue-300 p-5 rounded-lg">
-        <input type="text" placeholder="USERNAME" class="account-input w-full p-3 bg-gray-200 rounded text-gray-700 mb-4">
         <input type="email" placeholder="EMAIL ADDRESS" class="account-input w-full p-3 bg-gray-200 rounded text-gray-700">
     </div>
     <div class="password-input-group bg-blue-300 p-5 rounded-lg">
-        <div class="relative mb-4">
-            <input type="password" placeholder="NEW PASSWORD" class="password-input w-full p-3 bg-gray-200 rounded text-gray-700">
-            <span class="eye-icon absolute right-3 top-3 text-gray-500">👁️</span>
-        </div>
-        <div class="relative">
-            <input type="password" placeholder="CONFIRM PASSWORD" class="password-input w-full p-3 bg-gray-200 rounded text-gray-700">
-            <span class="eye-icon absolute right-3 top-3 text-gray-500">👁️</span>
-        </div>
+        <input type="password" placeholder="NEW PASSWORD" class="password-input w-full p-3 bg-gray-200 rounded text-gray-700">
+    </div>
+    <div class="password-input-group bg-blue-300 p-5 rounded-lg">
+        <input type="password" placeholder="CONFIRM PASSWORD" class="password-input w-full p-3 bg-gray-200 rounded text-gray-700">
     </div>
 </div>
 
-<!-- Update Button -->
-<div class="update-button-container flex justify-end">
+<!-- Centered Update Button -->
+<div class="flex justify-center mb-10">
     <button class="update-button px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
 </div>
+
 
 <?php include '../includes/footer.php'; ?>
 
