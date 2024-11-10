@@ -68,17 +68,20 @@
     font-size: 1rem;
     text-decoration: none;
     transition: background-color 0.3s ease, color 0.3s ease;
+    line-height: 1.5; 
 }
 
 .menu-item:hover {
     background-color: #c79542; /* Gold hover effect */
     color: #ffffff;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .menu-item span.icon {
-    margin-right: 10px;
+    margin-right: 15px;
     font-size: 1.5rem;
+    align-items: center;
 }
 
 .logout {
@@ -104,4 +107,10 @@
 .logout span.icon {
     margin-right: 10px;
     font-size: 1.5rem;
+}
+
+
+.menu-item .text {
+    display: flex;
+    align-items: center; /* Aligns text vertically */
 }
