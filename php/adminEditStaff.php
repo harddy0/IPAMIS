@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Profile</title>
+    <title>Edit Staff Profile</title>
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <!-- Custom CSS -->
@@ -11,22 +11,19 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <!-- Additional Custom CSS -->
     <style>
-        /* Ensure the main content occupies the full width minus the sidebar */
         .main-content {
-            margin-left: 16rem; /* Adjust for the sidebar width */
+            margin-left: 16rem;
             width: calc(100% - 16rem);
         }
     </style>
 </head>
 <body>
     <?php
-    session_start();
     include '../includes/db_connect.php';
 
-    // Fetch the user data based on session UserID
-    $user_id = $_SESSION['UserID'];
+    // Get user_id from the URL to fetch and edit the targeted user
+    $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : null;
     $user_data = [];
 
     if ($user_id) {
@@ -38,9 +35,13 @@
             $user_data = $result->fetch_assoc();
         }
         $stmt->close();
+    } else {
+        // Redirect to adminMu.php if no user_id is provided
+        header("Location: adminMu.php");
+        exit();
     }
 
-    // Handle form submission
+    // Handle form submission to update the user's data
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $middle_name = htmlspecialchars(trim($_POST['middle_name']));
@@ -63,9 +64,9 @@
         }
         $stmt->execute();
         $stmt->close();
-        
-        // Redirect to adminMpa.php after updating
-        header("Location: adminMpa.php");
+
+        // Redirect back to the manage users page after updating
+        header("Location: adminMu.php");
         exit();
     }
     ?>
@@ -78,31 +79,16 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <!-- Header -->
-        <div>
-            <?php include '../includes/header.php'; ?>
-        </div>
+        <?php include '../includes/header.php'; ?>
 
         <!-- Form Content Wrapper -->
         <div class="p-10 mt-10">
-            <!-- Back Button and Title -->
             <div class="flex items-center mb-5">
-                <a href="adminMpa.php" class="text-blue-500 text-lg mr-3">←</a>
-                <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
+                <a href="adminMu.php" class="text-blue-500 text-lg mr-3">←</a>
+                <h2 class="text-2xl font-semibold text-gray-800">Edit Staff Profile</h2>
             </div>
 
-            <!-- Profile Picture Section -->
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-20 h-20 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                    <img src="../images/profile-placeholder.png" alt="Profile Image" class="w-16 h-16 rounded-full">
-                </div>
-                <div>
-                    <a href="#" class="text-blue-600 text-sm underline">Change profile picture</a>
-                </div>
-            </div>
-
-
-<!-- Profile Information Section -->
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,7 +127,6 @@
                     </div>
                 </div>
 
-                <!-- Account Settings Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                     <div class="bg-blue-500 p-5 rounded-lg">
                         <label class="text-white">Email Address</label>
@@ -157,7 +142,6 @@
                     </div>
                 </div>
 
-                <!-- Centered Update Button -->
                 <div class="flex justify-center mb-10">
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
                 </div>
@@ -165,9 +149,7 @@
         </div>
 
         <!-- Footer -->
-        <div>
-            <?php include '../includes/footer.php'; ?>
-        </div>
+        <?php include '../includes/footer.php'; ?>
     </div>
 </body>
 </html>
