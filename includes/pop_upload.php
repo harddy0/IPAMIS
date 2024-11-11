@@ -1,42 +1,99 @@
 <?php
-// Directory to save uploaded files
-$uploadDir = 'uploads/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
-}
+// Display all errors (for debugging purposes)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // Initialize upload message
 $uploadMessage = '';
 
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
-        $fileTmpPath = $_FILES['file']['tmp_name'];
-        $fileName = $_FILES['file']['name'];
-        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
+    $fileType = $_POST['fileType'] ?? '';
+    $fileTmpPath = $_FILES['file']['tmp_name'];
+    $fileName = $_FILES['file']['name'];
+    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-        // Validate file type (only PDFs allowed)
-        if ($fileExtension === 'pdf') {
-            $destPath = $uploadDir . basename($fileName);
-            if (move_uploaded_file($fileTmpPath, $destPath)) {
-                $uploadMessage = "<p class='success'>File uploaded successfully: <a href='$destPath' target='_blank'>$fileName</a></p>";
+    // Validate file type (only PDFs allowed)
+    if ($fileExtension === 'pdf') {
+        // Read the file content as binary data
+        $fileContent = file_get_contents($fileTmpPath);
+
+        // Include your database connection
+        include '../includes/db_connect.php';
+
+        // Insert into the correct table based on fileType
+        if ($fileType === 'soa') {
+            $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
+            if ($stmt) {
+                $inventionDisclosureCode = 'ID123'; // Example value for InventionDisclosureCode
+                $ipophlReceivedDate = '2023-01-01'; // Example date
+
+                $null = NULL; // Used for binary data placeholder
+                $stmt->bind_param("sssb", $fileName, $inventionDisclosureCode, $ipophlReceivedDate, $null);
+                $stmt->send_long_data(3, $fileContent); // Sending binary data to the fourth parameter
+
+                if ($stmt->execute()) {
+                    $uploadMessage = "<p class='success'>SOA file uploaded successfully: $fileName</p>";
+                } else {
+                    $uploadMessage = "<p class='error'>Failed to upload SOA file: " . $stmt->error . "</p>";
+                }
+                $stmt->close();
             } else {
-                $uploadMessage = "<p class='error'>There was an error moving the uploaded file.</p>";
+                $uploadMessage = "<p class='error'>Prepare failed: (" . $conn->errno . ") " . $conn->error . "</p>";
+            }
+
+        } elseif ($fileType === 'or') {
+            $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
+            if ($stmt) {
+                $inventionDisclosureCode = 'ID456'; // Example value for InventionDisclosureCode
+                $eorDate = '2023-02-15'; // Example date
+
+                $null = NULL;
+                $stmt->bind_param("sssb", $fileName, $inventionDisclosureCode, $eorDate, $null);
+                $stmt->send_long_data(3, $fileContent);
+
+                if ($stmt->execute()) {
+                    $uploadMessage = "<p class='success'>OR file uploaded successfully: $fileName</p>";
+                } else {
+                    $uploadMessage = "<p class='error'>Failed to upload OR file: " . $stmt->error . "</p>";
+                }
+                $stmt->close();
+            } else {
+                $uploadMessage = "<p class='error'>Prepare failed: (" . $conn->errno . ") " . $conn->error . "</p>";
+            }
+
+        } elseif ($fileType === 'formality') {
+            $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
+            if ($stmt) {
+                $inventionDisclosureCode = 'ID789'; // Example value for InventionDisclosureCode
+                $receivedDate = '2023-03-10'; // Example date
+
+                $null = NULL;
+                $stmt->bind_param("sssb", $fileName, $inventionDisclosureCode, $receivedDate, $null);
+                $stmt->send_long_data(3, $fileContent);
+
+                if ($stmt->execute()) {
+                    $uploadMessage = "<p class='success'>Formality Report uploaded successfully: $fileName</p>";
+                } else {
+                    $uploadMessage = "<p class='error'>Failed to upload Formality Report: " . $stmt->error . "</p>";
+                }
+                $stmt->close();
+            } else {
+                $uploadMessage = "<p class='error'>Prepare failed: (" . $conn->errno . ") " . $conn->error . "</p>";
             }
         } else {
-            $uploadMessage = "<p class='error'>Only PDF files are allowed.</p>";
+            $uploadMessage = "<p class='error'>Invalid file type specified.</p>";
         }
     } else {
-        $uploadMessage = "<p class='error'>Error uploading file: " . $_FILES['file']['error'] . "</p>";
+        $uploadMessage = "<p class='error'>Only PDF files are allowed.</p>";
     }
 }
 ?>
 
 <!-- Popup Container -->
-<div class="popup-container" id="uploadPopup" style="display: none;">
+<div class="popup-container" id="uploadPopup">
     <div class="container">
-        <!-- Close Button -->
-        <span class="close-btn" onclick="closeUploadPopup()">×</span>
+        <span class="close-btn" onclick="closeUploadModal()">×</span>
 
         <h2>Upload Document</h2>
 
@@ -47,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <!-- Drag-and-Drop Area -->
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="fileType" value="<?php echo htmlspecialchars($fileType); ?>">
             <div id="drag-drop-area" class="drag-drop-area">
                 <p>Drag and drop your PDF file here</p>
                 <p>or</p>
@@ -62,53 +120,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 <script>
-    // JavaScript function to show the popup
-    function showUploadPopup() {
-        document.getElementById('uploadPopup').style.display = 'flex';
-    }
-
-    // JavaScript function to close the popup
-    function closeUploadPopup() {
-        document.getElementById('uploadPopup').style.display = 'none';
-    }
-
-    // Drag-and-Drop functionality
-    const dragDropArea = document.getElementById('drag-drop-area');
     const fileInput = document.getElementById('file-input');
     const fileStatus = document.getElementById('file-status');
-
-    dragDropArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dragDropArea.classList.add('dragging');
-    });
-
-    dragDropArea.addEventListener('dragleave', () => {
-        dragDropArea.classList.remove('dragging');
-    });
-
-    dragDropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dragDropArea.classList.remove('dragging');
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type === 'application/pdf') {
-            fileInput.files = files;
-            fileStatus.textContent = `File ready to upload: ${files[0].name}`;
-            fileStatus.classList.add('ready');
-        } else {
-            alert('Only PDF files are allowed!');
-        }
-    });
+    const dragDropArea = document.getElementById('drag-drop-area');
 
     fileInput.addEventListener('change', () => {
+        fileStatus.textContent = fileInput.files[0] ? `File ready to upload: ${fileInput.files[0].name}` : 'No file selected';
         if (fileInput.files[0]) {
-            fileStatus.textContent = `File ready to upload: ${fileInput.files[0].name}`;
             fileStatus.classList.add('ready');
         } else {
-            fileStatus.textContent = 'No file selected';
             fileStatus.classList.remove('ready');
         }
     });
 </script>
+
+<style>
+    /* General styling as before */
+</style>
+
 
 <style>
     /* General Styling */
@@ -134,7 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         width: 400px;
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         text-align: center;
         position: relative;
     }
