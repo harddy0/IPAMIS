@@ -18,47 +18,21 @@
     <div class="dashboard p-10">
         <h2 class="text-2xl font-semibold text-gray-700 mb-8">Manage IP Assets</h2>
 
-        <?php
-            // Handle file upload
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $targetDir = "";
-                if (isset($_POST['upload_soa'])) {
-                    $targetDir = "uploads/soa/";
-                } elseif (isset($_POST['upload_or'])) {
-                    $targetDir = "uploads/or/";
-                } elseif (isset($_POST['upload_formality'])) {
-                    $targetDir = "uploads/formality/";
-                }
-
-                if (!empty($targetDir) && isset($_FILES['fileToUpload'])) {
-                    $targetFile = $targetDir . basename($_FILES['fileToUpload']['name']);
-                    $fileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-
-                    if ($fileType == "pdf" && move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $targetFile)) {
-                        echo "<p class='text-green-500'>File uploaded successfully.</p>";
-                    } else {
-                        echo "<p class='text-red-500'>Only PDF files are allowed.</p>";
-                    }
-                }
-            }
-
-            // Function to display files in a directory
-            function displayFiles($directory) {
-                $files = glob("$directory/*.pdf");
-                foreach ($files as $file) {
-                    $fileName = basename($file);
-                    echo "<li class='bg-blue-100 text-blue-600 p-2 rounded'><a href='$file' target='_blank'>$fileName</a></li>";
-                }
-            }
-        ?>
-
         <!-- Columns Section -->
         <div class="grid grid-cols-3 gap-5">
             <!-- Statement of Account Column -->
             <div class="bg-white rounded-lg shadow-md p-5">
                 <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Statement Of Account</div>
                 <ul class="mt-4 space-y-2">
-                    <?php displayFiles("uploads/soa"); ?>
+                    <!-- Static PDF Sample with Download Icon -->
+                    <li class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
+                        <a href="uploads/soa/sample.pdf" target="_blank">sample_soa.pdf</a>
+                        <a href="uploads/soa/sample.pdf" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                            </svg>
+                        </a>
+                    </li>
                 </ul>
                 <form action="" method="POST" enctype="multipart/form-data" class="mt-5">
                     <input type="file" name="fileToUpload" id="fileToUpload_soa" class="hidden" onchange="this.form.submit()">
@@ -70,7 +44,15 @@
             <div class="bg-white rounded-lg shadow-md p-5">
                 <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">OR</div>
                 <ul class="mt-4 space-y-2">
-                    <?php displayFiles("uploads/or"); ?>
+                    <!-- Static PDF Sample with Download Icon -->
+                    <li class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
+                        <a href="uploads/or/sample.pdf" target="_blank">sample_or.pdf</a>
+                        <a href="uploads/or/sample.pdf" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                            </svg>
+                        </a>
+                    </li>
                 </ul>
                 <form action="" method="POST" enctype="multipart/form-data" class="mt-5">
                     <input type="file" name="fileToUpload" id="fileToUpload_or" class="hidden" onchange="this.form.submit()">
@@ -82,7 +64,15 @@
             <div class="bg-white rounded-lg shadow-md p-5">
                 <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Formality Report</div>
                 <ul class="mt-4 space-y-2">
-                    <?php displayFiles("uploads/formality"); ?>
+                    <!-- Static PDF Sample with Download Icon -->
+                    <li class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
+                        <a href="uploads/formality/sample.pdf" target="_blank">sample_formality.pdf</a>
+                        <a href="uploads/formality/sample.pdf" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                            </svg>
+                        </a>
+                    </li>
                 </ul>
                 <form action="" method="POST" enctype="multipart/form-data" class="mt-5">
                     <input type="file" name="fileToUpload" id="fileToUpload_formality" class="hidden" onchange="this.form.submit()">
