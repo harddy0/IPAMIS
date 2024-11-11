@@ -2,41 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Staff Profile</title>
+    <title>Edit Profile</title>
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/adminEdit.css">
-    <link rel="stylesheet" href="../css/adminMpa.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/staffEdit.css">
+    <link rel="stylesheet" href="../css/staffMpa.css">
+    <link rel="stylesheet" href="../css/dashboard_staff.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <!-- Additional Custom CSS -->
     <style>
+        /* Ensure the main content occupies the full width minus the sidebar */
         .main-content {
-            margin-left: 16rem;
+            margin-left: 16rem; /* Adjust for the sidebar width */
             width: calc(100% - 16rem);
         }
     </style>
-    <script>
-        function openDeactivateModal() {
-            document.getElementById('deactivateModal').classList.remove('hidden');
-        }
-
-        function closeDeactivateModal() {
-            document.getElementById('deactivateModal').classList.add('hidden');
-        }
-
-        function confirmDeactivate() {
-            document.getElementById('deactivateForm').submit();
-        }
-    </script>
 </head>
 <body>
     <?php
+    session_start();
     include '../includes/db_connect.php';
 
-    // Get user_id from the URL to fetch and edit the targeted user
-    $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : null;
+    // Fetch the user data based on session UserID
+    $user_id = $_SESSION['UserID'];
     $user_data = [];
 
     if ($user_id) {
@@ -48,14 +38,10 @@
             $user_data = $result->fetch_assoc();
         }
         $stmt->close();
-    } else {
-        // Redirect to adminMu.php if no user_id is provided
-        header("Location: adminMu.php");
-        exit();
     }
 
-    // Handle form submission to update the user's data
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
+    // Handle form submission
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $middle_name = htmlspecialchars(trim($_POST['middle_name']));
         $last_name = htmlspecialchars(trim($_POST['last_name']));
@@ -77,21 +63,9 @@
         }
         $stmt->execute();
         $stmt->close();
-
-        // Redirect back to the manage users page after updating
-        header("Location: adminMu.php");
-        exit();
-    }
-
-    // Handle deactivation request
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deactivate_user'])) {
-        $stmt = $conn->prepare("UPDATE user SET Status = 'Inactive' WHERE UserID = ?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $stmt->close();
-
-        // Redirect back to the manage users page after deactivation
-        header("Location: adminMu.php");
+        
+        // Redirect to adminMpa.php after updating
+        header("Location: adminMpa.php");
         exit();
     }
     ?>
@@ -104,17 +78,31 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <!-- Header -->
-        <?php include '../includes/header.php'; ?>
+        <div>
+            <?php include '../includes/header.php'; ?>
+        </div>
 
         <!-- Form Content Wrapper -->
         <div class="p-10 mt-10">
+            <!-- Back Button and Title -->
             <div class="flex items-center mb-5">
-                <a href="adminMu.php" class="text-blue-500 text-lg mr-3">←</a>
-                <h2 class="text-2xl font-semibold text-gray-800">Edit Staff Profile</h2>
+                <a href="adminMpa.php" class="text-blue-500 text-lg mr-3">←</a>
+                <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
             </div>
 
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST">
-                <input type="hidden" name="update_profile">
+            <!-- Profile Picture Section -->
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-20 h-20 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                    <img src="../images/profile-placeholder.png" alt="Profile Image" class="w-16 h-16 rounded-full">
+                </div>
+                <div>
+                    <a href="#" class="text-blue-600 text-sm underline">Change profile picture</a>
+                </div>
+            </div>
+
+
+<!-- Profile Information Section -->
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -153,6 +141,7 @@
                     </div>
                 </div>
 
+                <!-- Account Settings Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                     <div class="bg-blue-500 p-5 rounded-lg">
                         <label class="text-white">Email Address</label>
@@ -168,33 +157,17 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center space-x-4 mb-10">
+                <!-- Centered Update Button -->
+                <div class="flex justify-center mb-10">
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
-                    <button type="button" onclick="openDeactivateModal()" class="px-10 py-3 bg-red-600 text-white font-bold rounded hover:bg-red-500">DEACTIVATE</button>
                 </div>
-            </form>
-
-            <!-- Deactivate Confirmation Modal -->
-            <div id="deactivateModal" class="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50 hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center border-t-4 border-yellow-500 transform -translate-y-1/2 -translate-x-1/2">
-                    <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Deactivation</h2>
-                        <p class="text-gray-700 mb-6">Are you sure you want to deactivate this user?</p>
-                <div class="flex justify-between">
-                        <button onclick="closeDeactivateModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
-                        <button onclick="confirmDeactivate()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Deactivate</button>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Hidden form for deactivation -->
-            <form id="deactivateForm" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST">
-                <input type="hidden" name="deactivate_user">
             </form>
         </div>
 
         <!-- Footer -->
-        <?php include '../includes/footer.php'; ?>
+        <div>
+            <?php include '../includes/footer.php'; ?>
+        </div>
     </div>
 </body>
 </html>
