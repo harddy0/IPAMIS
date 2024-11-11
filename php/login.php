@@ -41,7 +41,14 @@
                     $user = $result->fetch_assoc();
                     $_SESSION['UserID'] = $user['UserID']; // Store user ID in session
                     $_SESSION['FirstName'] = $user['FirstName'];
-                    header("Location: adminMpa.php"); // Redirect to the dashboard or desired page
+                    $_SESSION['UserType'] = $user['UserType'];
+
+                    // Redirect based on UserType
+                    if ($user['UserType'] == 'Admin') {
+                        header("Location: adminMpa.php"); // Redirect to admin dashboard
+                    } elseif ($user['UserType'] == 'Staff') {
+                        header("Location: staffmpa.php"); // Redirect to staff page
+                    }
                     exit();
                 } else {
                     // Invalid credentials

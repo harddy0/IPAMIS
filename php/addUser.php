@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/adminEdit.css">
-    <link rel="stylesheet" href="../css/adminMpa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
@@ -75,12 +74,12 @@
     <!-- Main Content Area -->
     <div class="main-content">
         <!-- Header -->
-        <div>
-            <?php include '../includes/header.php'; ?>
-        </div>
+        
+        <?php include '../includes/header.php'; ?>
+        
 
         <!-- Main Add User Content Wrapper -->
-        <div class="p-10 mt-10">
+        <div class="p-10 pt-2 mt-4">
             <div class="flex items-center mb-5">
                 <a href="adminMpa.php" class="text-blue-500 text-lg mr-3">←</a>
                 <h2 class="text-2xl font-semibold text-gray-800">Add User</h2>
@@ -145,15 +144,15 @@
 
                 <!-- Account Settings Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                    <div class="bg-blue-500 p-5 rounded-lg">
+                    <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Email Address</label>
                         <input type="email" name="email" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="EMAIL ADDRESS" required>
                     </div>
-                    <div class="bg-blue-500 p-5 rounded-lg">
+                    <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">New Password</label>
                         <input type="password" name="password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="NEW PASSWORD" required>
                     </div>
-                    <div class="bg-blue-500 p-5 rounded-lg">
+                    <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Confirm Password</label>
                         <input type="password" name="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="CONFIRM PASSWORD" required>
                     </div>
