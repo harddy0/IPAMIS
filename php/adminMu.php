@@ -14,7 +14,7 @@
             document.getElementById('modal').classList.remove('hidden');
             document.getElementById('modalUserName').innerText = userName;
             document.getElementById('confirmDeleteBtn').onclick = function () {
-                window.location.href = `adminMu.php?delete_id=${userId}`;
+                window.location.href = `adminMu.php?deactivate_id=${userId}`;
             };
         }
 
@@ -27,17 +27,20 @@
     <?php
     include '../includes/db_connect.php';
 
-    if (isset($_GET['delete_id'])) {
-        $delete_id = intval($_GET['delete_id']);
-        $stmt = $conn->prepare("DELETE FROM user WHERE UserID = ?");
-        $stmt->bind_param("i", $delete_id);
+    // Handle deactivate action if deactivate_id is set in the URL
+    if (isset($_GET['deactivate_id'])) {
+        $deactivate_id = intval($_GET['deactivate_id']);
+        $stmt = $conn->prepare("UPDATE user SET Status = 'Inactive' WHERE UserID = ?");
+        $stmt->bind_param("i", $deactivate_id);
         $stmt->execute();
         $stmt->close();
+        // Redirect to avoid re-triggering the action on page refresh
         header("Location: adminMu.php");
         exit();
     }
 
-    $staff_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Staff'";
+    // Fetch only active staff users from the database
+    $staff_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Staff' AND Status = 'Active'";
     $staff_result = $conn->query($staff_query);
     $staff_users = $staff_result ? $staff_result->fetch_all(MYSQLI_ASSOC) : [];
     ?>
@@ -80,7 +83,7 @@
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <li class="px-4 py-2 text-gray-500">No staff found.</li>
+                        <li class="px-4 py-2 text-gray-500">No active staff found.</li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -129,21 +132,21 @@
                             </li>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <li class="px-4 py-2 text-gray-500">No staff available to manage.</li>
+                        <li class="px-4 py-2 text-gray-500">No active staff available to manage.</li>
                     <?php endif; ?>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Deactivate Confirmation Modal -->
     <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
         <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center border-t-4 border-yellow-500">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Delete</h2>
-            <p class="text-gray-700 mb-6">Are you sure you want to delete <span id="modalUserName" class="font-semibold"></span>?</p>
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Deactivation</h2>
+            <p class="text-gray-700 mb-6">Are you sure you want to deactivate <span id="modalUserName" class="font-semibold"></span>?</p>
             <div class="flex justify-between">
                 <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
-                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Deactivate</button>
             </div>
         </div>
     </div>
