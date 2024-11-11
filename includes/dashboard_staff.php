@@ -10,7 +10,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <div class="admin">STAFF</div>
             
             <div class="menu">
-                <a href="#" class="menu-item <?php echo $currentPage == 'staffMpa.php' ? 'active' : ''; ?>" onclick="window.location.href='staffMpa.php';">
+                <a href="#" class="menu-item <?php echo $currentPage == 'staffmpa.php' ? 'active' : ''; ?>" onclick="window.location.href='staffmpa.php';">
                     <span class="icon">👤</span>
                     <div class="text ml-1">Manage Personal Account</div>
                 </a>

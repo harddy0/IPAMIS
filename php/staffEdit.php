@@ -6,8 +6,7 @@
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/staffEdit.css">
-    <link rel="stylesheet" href="../css/staffMpa.css">
+    <link rel="stylesheet" href="../css/adminMpa.css">
     <link rel="stylesheet" href="../css/dashboard_staff.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
@@ -65,28 +64,28 @@
         $stmt->close();
         
         // Redirect to adminMpa.php after updating
-        header("Location: adminMpa.php");
+        header("Location: staffmpa.php");
         exit();
     }
     ?>
 
     <!-- Fixed Dashboard on the Left -->
     <div class="fixed top-0 left-0 h-full w-64 bg-white shadow-md">
-        <?php include '../includes/dashboard.php'; ?>
+        <?php include '../includes/dashboard_staff.php'; ?>
     </div>
 
     <!-- Main Content Area -->
     <div class="main-content">
         <!-- Header -->
-        <div>
-            <?php include '../includes/header.php'; ?>
-        </div>
+        
+        <?php include '../includes/header.php'; ?>
+        
 
         <!-- Form Content Wrapper -->
-        <div class="p-10 mt-10">
+        <div class="p-10 pt-2 mt-4">
             <!-- Back Button and Title -->
             <div class="flex items-center mb-5">
-                <a href="adminMpa.php" class="text-blue-500 text-lg mr-3">←</a>
+                <a href="staffmpa.php" class="text-blue-500 text-lg mr-3">←</a>
                 <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
             </div>
 
@@ -101,7 +100,7 @@
             </div>
 
 
-<!-- Profile Information Section -->
+            <!-- Profile Information Section -->
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
@@ -143,15 +142,15 @@
 
                 <!-- Account Settings Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                    <div class="bg-blue-500 p-5 rounded-lg">
+                    <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Email Address</label>
                         <input type="email" name="email" class="w-full p-3 bg-gray-200 rounded text-gray-700" value="<?php echo htmlspecialchars($user_data['EmailAddress'] ?? ''); ?>">
                     </div>
-                    <div class="bg-blue-500 p-5 rounded-lg">
+                    <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">New Password</label>
                         <input type="password" name="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
-                    <div class="bg-blue-500 p-5 rounded-lg">
+                    <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Confirm Password</label>
                         <input type="password" name="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
