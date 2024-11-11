@@ -30,7 +30,8 @@
                         <a href="uploads/soa/sample.pdf" download>
                             <div class="p-2 rounded-full bg-blue-600 hover:bg-blue-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z" /> <!-- White box outline -->
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v6m0 0l-3-3m3 3l3-3" /> <!-- Centered downward arrow -->
                                 </svg>
                             </div>
                         </a>
@@ -52,7 +53,8 @@
                         <a href="uploads/or/sample.pdf" download>
                             <div class="p-2 rounded-full bg-blue-600 hover:bg-blue-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z" /> <!-- White box outline -->
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v6m0 0l-3-3m3 3l3-3" /> <!-- Centered downward arrow -->
                                 </svg>
                             </div>
                         </a>
@@ -74,7 +76,8 @@
                         <a href="uploads/formality/sample.pdf" download>
                             <div class="p-2 rounded-full bg-blue-600 hover:bg-blue-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v16H4z" /> <!-- White box outline -->
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v6m0 0l-3-3m3 3l3-3" /> <!-- Centered downward arrow -->
                                 </svg>
                             </div>
                         </a>
