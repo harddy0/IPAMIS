@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Manage IP Assets</title>
+    <title>Admin Manage IP Assets</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/adminMpa.css">
     <link rel="stylesheet" href="../css/dashboard_staff.css">
@@ -24,13 +24,15 @@
             <div class="bg-white rounded-lg shadow-md p-5">
                 <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Statement Of Account</div>
                 <ul class="mt-4 space-y-2">
-                    <!-- Static PDF Sample with Download Icon -->
+                    <!-- Static PDF Sample with Enhanced Download Icon -->
                     <li class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
                         <a href="uploads/soa/sample.pdf" target="_blank">sample_soa.pdf</a>
                         <a href="uploads/soa/sample.pdf" download>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
-                            </svg>
+                            <div class="p-2 rounded-full bg-blue-600 hover:bg-blue-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                                </svg>
+                            </div>
                         </a>
                     </li>
                 </ul>
@@ -44,13 +46,15 @@
             <div class="bg-white rounded-lg shadow-md p-5">
                 <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">OR</div>
                 <ul class="mt-4 space-y-2">
-                    <!-- Static PDF Sample with Download Icon -->
+                    <!-- Static PDF Sample with Enhanced Download Icon -->
                     <li class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
                         <a href="uploads/or/sample.pdf" target="_blank">sample_or.pdf</a>
                         <a href="uploads/or/sample.pdf" download>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
-                            </svg>
+                            <div class="p-2 rounded-full bg-blue-600 hover:bg-blue-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                                </svg>
+                            </div>
                         </a>
                     </li>
                 </ul>
@@ -64,13 +68,15 @@
             <div class="bg-white rounded-lg shadow-md p-5">
                 <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Formality Report</div>
                 <ul class="mt-4 space-y-2">
-                    <!-- Static PDF Sample with Download Icon -->
+                    <!-- Static PDF Sample with Enhanced Download Icon -->
                     <li class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
                         <a href="uploads/formality/sample.pdf" target="_blank">sample_formality.pdf</a>
                         <a href="uploads/formality/sample.pdf" download>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
-                            </svg>
+                            <div class="p-2 rounded-full bg-blue-600 hover:bg-blue-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm4 10h8m-4-6v6m-2-2h4"/>
+                                </svg>
+                            </div>
                         </a>
                     </li>
                 </ul>
