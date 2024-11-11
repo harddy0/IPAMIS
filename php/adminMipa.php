@@ -112,6 +112,11 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
             gap: 10px;
         }
     </style>
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this file?");
+        }
+    </script>
 </head>
 <body class="bg-gray-100">
 
@@ -135,7 +140,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
                                 </svg>
                             </a>
-                            <form method="POST">
+                            <form method="POST" onsubmit="return confirmDelete();">
                                 <input type="hidden" name="fileType" value="soa">
                                 <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
                                 <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
@@ -172,7 +177,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
                                 </svg>
                             </a>
-                            <form method="POST">
+                            <form method="POST" onsubmit="return confirmDelete();">
                                 <input type="hidden" name="fileType" value="or">
                                 <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
                                 <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
@@ -209,7 +214,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
                                 </svg>
                             </a>
-                            <form method="POST">
+                            <form method="POST" onsubmit="return confirmDelete();">
                                 <input type="hidden" name="fileType" value="formality">
                                 <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
                                 <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
