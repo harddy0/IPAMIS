@@ -14,10 +14,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <span class="icon">👤</span>
                     <div class="text ml-1">Manage Personal Account</div>
                 </a>
-                <a href="#" class="menu-item <?php echo $currentPage == 'adminMu.php' ? 'active' : ''; ?>" onclick="window.location.href='adminMu.php';">
-                    <span class="icon">⚙️</span>
-                    <div class="text">Manage Users</div>
-                </a>
                 <a href="#" class="menu-item <?php echo $currentPage == 'adminMipa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminMipa.php';">
                     <span class="icon">💼</span> 
                     <div class="text">Manage IP Assets</div>
