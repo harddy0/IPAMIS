@@ -6,8 +6,6 @@
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/staffEdit.css">
-    <link rel="stylesheet" href="../css/staffMpa.css">
     <link rel="stylesheet" href="../css/dashboard_staff.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
@@ -65,14 +63,14 @@
         $stmt->close();
         
         // Redirect to adminMpa.php after updating
-        header("Location: adminMpa.php");
+        header("Location: staffmpa.php");
         exit();
     }
     ?>
 
     <!-- Fixed Dashboard on the Left -->
     <div class="fixed top-0 left-0 h-full w-64 bg-white shadow-md">
-        <?php include '../includes/dashboard.php'; ?>
+        <?php include '../includes/dashboard_staff.php'; ?>
     </div>
 
     <!-- Main Content Area -->
