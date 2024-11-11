@@ -10,15 +10,15 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <div class="admin">STAFF</div>
             
             <div class="menu">
-                <a href="#" class="menu-item <?php echo $currentPage == 'adminMpa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminMpa.php';">
+                <a href="#" class="menu-item <?php echo $currentPage == 'staffMpa.php' ? 'active' : ''; ?>" onclick="window.location.href='staffMpa.php';">
                     <span class="icon">👤</span>
                     <div class="text ml-1">Manage Personal Account</div>
                 </a>
-                <a href="#" class="menu-item <?php echo $currentPage == 'adminMipa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminMipa.php';">
+                <a href="#" class="menu-item <?php echo $currentPage == 'staffMipa.php' ? 'active' : ''; ?>" onclick="window.location.href='staffMipa.php';">
                     <span class="icon">💼</span> 
                     <div class="text">Manage IP Assets</div>
                 </a>
-                <a href="#" class="menu-item <?php echo $currentPage == 'adminVa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminVa.php';">
+                <a href="#" class="menu-item <?php echo $currentPage == 'staffVA.php' ? 'active' : ''; ?>" onclick="window.location.href='staffVA.php';">
                     <span class="icon">📊</span>
                     <div class="text">View Analytics</div>
                 </a>
