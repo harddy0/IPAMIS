@@ -17,6 +17,19 @@
             width: calc(100% - 16rem);
         }
     </style>
+    <script>
+        function openDeactivateModal() {
+            document.getElementById('deactivateModal').classList.remove('hidden');
+        }
+
+        function closeDeactivateModal() {
+            document.getElementById('deactivateModal').classList.add('hidden');
+        }
+
+        function confirmDeactivate() {
+            document.getElementById('deactivateForm').submit();
+        }
+    </script>
 </head>
 <body>
     <?php
@@ -42,7 +55,7 @@
     }
 
     // Handle form submission to update the user's data
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $middle_name = htmlspecialchars(trim($_POST['middle_name']));
         $last_name = htmlspecialchars(trim($_POST['last_name']));
@@ -69,6 +82,18 @@
         header("Location: adminMu.php");
         exit();
     }
+
+    // Handle deactivation request
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deactivate_user'])) {
+        $stmt = $conn->prepare("UPDATE user SET Status = 'Inactive' WHERE UserID = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Redirect back to the manage users page after deactivation
+        header("Location: adminMu.php");
+        exit();
+    }
     ?>
 
     <!-- Fixed Dashboard on the Left -->
@@ -89,6 +114,7 @@
             </div>
 
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST">
+                <input type="hidden" name="update_profile">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -142,9 +168,28 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center mb-10">
+                <div class="flex justify-center space-x-4 mb-10">
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
+                    <button type="button" onclick="openDeactivateModal()" class="px-10 py-3 bg-red-600 text-white font-bold rounded hover:bg-red-500">DEACTIVATE</button>
                 </div>
+            </form>
+
+            <!-- Deactivate Confirmation Modal -->
+            <div id="deactivateModal" class="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50 z-50 hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-80 text-center border-t-4 border-yellow-500 transform -translate-y-1/2 -translate-x-1/2">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Deactivation</h2>
+                        <p class="text-gray-700 mb-6">Are you sure you want to deactivate this user?</p>
+                <div class="flex justify-between">
+                        <button onclick="closeDeactivateModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
+                        <button onclick="confirmDeactivate()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Deactivate</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Hidden form for deactivation -->
+            <form id="deactivateForm" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST">
+                <input type="hidden" name="deactivate_user">
             </form>
         </div>
 

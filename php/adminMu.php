@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function openModal(userId, userName) {
             document.getElementById('modal').classList.remove('hidden');
@@ -21,25 +22,51 @@
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
         }
+
+        // AJAX search functionality
+        function searchStaff() {
+            var searchQuery = $('#search-bar').val();
+            $.ajax({
+                url: 'searchStaff.php',
+                method: 'GET',
+                data: { query: searchQuery },
+                success: function(response) {
+                    $('#search-results').html(response).removeClass('hidden');
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('#search-bar').on('input', function() {
+                if ($(this).val().length > 0) {
+                    searchStaff();
+                } else {
+                    $('#search-results').addClass('hidden');
+                }
+            });
+
+            $(document).click(function(e) {
+                if (!$(e.target).closest('#search-bar, #search-results').length) {
+                    $('#search-results').addClass('hidden');
+                }
+            });
+        });
     </script>
 </head>
 <body>
     <?php
     include '../includes/db_connect.php';
 
-    // Handle deactivate action if deactivate_id is set in the URL
     if (isset($_GET['deactivate_id'])) {
         $deactivate_id = intval($_GET['deactivate_id']);
         $stmt = $conn->prepare("UPDATE user SET Status = 'Inactive' WHERE UserID = ?");
         $stmt->bind_param("i", $deactivate_id);
         $stmt->execute();
         $stmt->close();
-        // Redirect to avoid re-triggering the action on page refresh
         header("Location: adminMu.php");
         exit();
     }
 
-    // Fetch only active staff users from the database
     $staff_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Staff' AND Status = 'Active'";
     $staff_result = $conn->query($staff_query);
     $staff_users = $staff_result ? $staff_result->fetch_all(MYSQLI_ASSOC) : [];
@@ -59,13 +86,14 @@
                 ADD
             </button>
             <div class="relative">
-                <input type="text" class="bg-gray-300 rounded-full py-2 px-4 text-gray-700" placeholder="Search">
+                <input type="text" id="search-bar" class="bg-gray-300 rounded-full py-2 px-4 text-gray-700" placeholder="Search">
                 <button class="absolute right-2 top-2 text-gray-500 focus:outline-none">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <circle cx="11" cy="11" r="7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
                         <line x1="16.65" y1="16.65" x2="21" y2="21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></line>
                     </svg>
                 </button>
+                <ul id="search-results" class="absolute bg-white border rounded w-full mt-1 hidden z-10"></ul>
             </div>
         </div>
 
