@@ -67,9 +67,35 @@
         exit();
     }
 
+    if (isset($_GET['accept_id'])) {
+        $accept_id = intval($_GET['accept_id']);
+        $stmt = $conn->prepare("UPDATE user SET Status = 'Active' WHERE UserID = ?");
+        $stmt->bind_param("i", $accept_id);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: adminMu.php");
+        exit();
+    }
+
+    if (isset($_GET['decline_id'])) {
+        $decline_id = intval($_GET['decline_id']);
+        $stmt = $conn->prepare("DELETE FROM user WHERE UserID = ?");
+        $stmt->bind_param("i", $decline_id);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: adminMu.php");
+        exit();
+    }
+
+    // Query to get active staff
     $staff_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Staff' AND Status = 'Active'";
     $staff_result = $conn->query($staff_query);
     $staff_users = $staff_result ? $staff_result->fetch_all(MYSQLI_ASSOC) : [];
+
+    // Query to get pending faculty requests
+    $faculty_query = "SELECT UserID, CONCAT(FirstName, ' ', LastName) AS FullName FROM user WHERE UserType = 'Faculty' AND Status = 'Pending'";
+    $faculty_result = $conn->query($faculty_query);
+    $faculty_requests = $faculty_result ? $faculty_result->fetch_all(MYSQLI_ASSOC) : [];
     ?>
 
     <!-- Dashboard and Header -->
@@ -125,20 +151,19 @@
                     </svg>
                 </div>
                 <div class="bg-gray-300 rounded-b p-2">
-                    <div class='px-4 py-2 flex items-center justify-between'>
-                        <span>Shekinah Olarte</span>
-                        <div>
-                            <button class='bg-yellow-500 text-white font-bold px-2 py-1 rounded mr-2 hover:bg-yellow-600'>Accept</button>
-                            <button class='bg-gray-500 text-white font-bold px-2 py-1 rounded hover:bg-gray-600'>Decline</button>
-                        </div>
-                    </div>
-                    <div class='px-4 py-2 flex items-center justify-between'>
-                        <span>Dahlia Genson</span>
-                        <div>
-                            <button class='bg-yellow-500 text-white font-bold px-2 py-1 rounded mr-2 hover:bg-yellow-600'>Accept</button>
-                            <button class='bg-gray-500 text-white font-bold px-2 py-1 rounded hover:bg-gray-600'>Decline</button>
-                        </div>
-                    </div>
+                    <?php if (!empty($faculty_requests)): ?>
+                        <?php foreach ($faculty_requests as $faculty): ?>
+                            <div class='px-4 py-2 flex items-center justify-between'>
+                                <span><?php echo htmlspecialchars($faculty['FullName']); ?></span>
+                                <div>
+                                    <a href="adminMu.php?accept_id=<?php echo $faculty['UserID']; ?>" class='bg-yellow-500 text-white font-bold px-2 py-1 rounded mr-2 hover:bg-yellow-600'>Accept</a>
+                                    <a href="adminMu.php?decline_id=<?php echo $faculty['UserID']; ?>" class='bg-gray-500 text-white font-bold px-2 py-1 rounded hover:bg-gray-600'>Decline</a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="px-4 py-2 text-gray-500">No pending faculty requests.</div>
+                    <?php endif; ?>
                 </div>
             </div>
 
