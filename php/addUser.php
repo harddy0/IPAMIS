@@ -28,10 +28,10 @@
     $next_employee_id = 1;
 
     // Fetch the next Employee ID
-    $result = $conn->query("SELECT MAX(UserID) AS max_id FROM user");
-    if ($result && $row = $result->fetch_assoc()) {
-        $next_employee_id = $row['max_id'] + 1;
-    }
+    $result = $conn->query("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'user' AND TABLE_SCHEMA = DATABASE()");
+        if ($result && $row = $result->fetch_assoc()) {
+            $next_employee_id = $row['AUTO_INCREMENT'];
+        }
 
     // Process form submission
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
