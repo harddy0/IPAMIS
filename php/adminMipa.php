@@ -345,6 +345,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Manage IP Assets</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminMpa.css">
     <link rel="stylesheet" href="../css/dashboard_staff.css">
     <link rel="stylesheet" href="../css/header.css">

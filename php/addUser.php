@@ -5,6 +5,7 @@
     <title>Add User</title>
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../css/adminEdit.css">
     <link rel="stylesheet" href="../css/dashboard.css">
