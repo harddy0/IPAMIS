@@ -4,6 +4,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 include '../includes/db_connect.php';
+session_start();
+
+// Check if the user is logged in and get the logged-in user's name
+$current_user = isset($_SESSION['FirstName']) ? $_SESSION['FirstName'] : 'Unknown User';
 
 // Handle file deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && isset($_POST['fileType']) && isset($_POST['fileName'])) {
@@ -12,14 +16,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && isset($_
 
     switch ($fileType) {
         case 'soa':
+            // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
+            $update_ipasset = $conn->prepare("UPDATE ipasset SET SOARefCode = NULL, SOAAddedBy = NULL WHERE SOARefCode = ?");
+            $update_ipasset->bind_param("s", $fileName);
+            $update_ipasset->execute();
+            $update_ipasset->close();
+
+            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = NULL WHERE soa_reference_number = ?");
+            $update_disclosure->bind_param("s", $fileName);
+            $update_disclosure->execute();
+            $update_disclosure->close();
+
+            // Delete from the statementofaccount table last
             $stmt = $conn->prepare("DELETE FROM statementofaccount WHERE SOAReference = ?");
             break;
+
         case 'or':
+            // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
+            $update_ipasset = $conn->prepare("UPDATE ipasset SET eORRefCode = NULL, eORAddedBy = NULL WHERE eORRefCode = ?");
+            $update_ipasset->bind_param("s", $fileName);
+            $update_ipasset->execute();
+            $update_ipasset->close();
+
+            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = NULL WHERE eor_number = ?");
+            $update_disclosure->bind_param("s", $fileName);
+            $update_disclosure->execute();
+            $update_disclosure->close();
+
+            // Delete from the electronicor table last
             $stmt = $conn->prepare("DELETE FROM electronicor WHERE eORNumber = ?");
             break;
+
         case 'formality':
+            // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
+            $update_ipasset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = NULL, FormalityAddedBy = NULL WHERE FormalityRefCode = ?");
+            $update_ipasset->bind_param("s", $fileName);
+            $update_ipasset->execute();
+            $update_ipasset->close();
+
+            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = NULL WHERE document_number = ?");
+            $update_disclosure->bind_param("s", $fileName);
+            $update_disclosure->execute();
+            $update_disclosure->close();
+
+            // Delete from the formalityreport table last
             $stmt = $conn->prepare("DELETE FROM formalityreport WHERE DocumentNumber = ?");
             break;
+
         default:
             echo "Invalid file type.";
             exit;
@@ -31,44 +74,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && isset($_
 }
 
 // Handle file upload
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_POST['fileType'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_POST['fileType']) && isset($_POST['InventionDisclosureCode']) && isset($_POST['ReferenceCode']) && isset($_POST['DateReceived'])) {
     $fileType = $_POST['fileType'];
+    $inventionDisclosureCode = $_POST['InventionDisclosureCode'];
+    $referenceCode = $_POST['ReferenceCode'];
+    $dateReceived = $_POST['DateReceived'];
     $fileTmpPath = $_FILES['file']['tmp_name'];
     $fileName = $_FILES['file']['name'];
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-    if ($fileExtension === 'pdf') {
-        $fileContent = file_get_contents($fileTmpPath);
+    // Check if the InventionDisclosureCode exists in the invention_disclosure table
+    $check_stmt = $conn->prepare("SELECT id FROM invention_disclosure WHERE id = ?");
+    $check_stmt->bind_param("s", $inventionDisclosureCode);
+    $check_stmt->execute();
+    $check_stmt->store_result();
 
-        switch ($fileType) {
-            case 'soa':
-                $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
-                $inventionDisclosureCode = 'ID123';
-                $ipophlReceivedDate = '2023-01-01';
-                $stmt->bind_param("sssb", $fileName, $inventionDisclosureCode, $ipophlReceivedDate, $null);
-                $stmt->send_long_data(3, $fileContent);
-                $stmt->execute();
-                $stmt->close();
-                break;
-            case 'or':
-                $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
-                $inventionDisclosureCode = 'ID456';
-                $eorDate = '2023-02-15';
-                $stmt->bind_param("sssb", $fileName, $inventionDisclosureCode, $eorDate, $null);
-                $stmt->send_long_data(3, $fileContent);
-                $stmt->execute();
-                $stmt->close();
-                break;
-            case 'formality':
-                $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
-                $inventionDisclosureCode = 'ID789';
-                $receivedDate = '2023-03-10';
-                $stmt->bind_param("sssb", $fileName, $inventionDisclosureCode, $receivedDate, $null);
-                $stmt->send_long_data(3, $fileContent);
-                $stmt->execute();
-                $stmt->close();
-                break;
+    if ($check_stmt->num_rows > 0) {
+        // InventionDisclosureCode exists, proceed with upload
+        if ($fileExtension === 'pdf') {
+            $fileContent = file_get_contents($fileTmpPath);
+
+            switch ($fileType) {
+                case 'soa':
+                    $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
+                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->send_long_data(3, $fileContent);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Update or insert into ipasset table
+                    $update_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, SOARefCode, SOAAddedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE SOARefCode = VALUES(SOARefCode), SOAAddedBy = VALUES(SOAAddedBy)");
+                    $update_ipasset->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $referenceCode, $current_user);
+                    $update_ipasset->execute();
+                    $update_ipasset->close();
+
+                    // Update invention_disclosure table
+                    $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = ? WHERE id = ?");
+                    $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                    $update_disclosure->execute();
+                    $update_disclosure->close();
+                    break;
+
+                case 'or':
+                    $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
+                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->send_long_data(3, $fileContent);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Update or insert into ipasset table
+                    $update_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, eORRefCode, eORAddedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE eORRefCode = VALUES(eORRefCode), eORAddedBy = VALUES(eORAddedBy)");
+                    $update_ipasset->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $referenceCode, $current_user);
+                    $update_ipasset->execute();
+                    $update_ipasset->close();
+
+                    // Update invention_disclosure table
+                    $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
+                    $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                    $update_disclosure->execute();
+                    $update_disclosure->close();
+                    break;
+
+                case 'formality':
+                    $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
+                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->send_long_data(3, $fileContent);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Update or insert into ipasset table
+                    $update_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, FormalityRefCode, FormalityAddedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE FormalityRefCode = VALUES(FormalityRefCode), FormalityAddedBy = VALUES(FormalityAddedBy)");
+                    $update_ipasset->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $referenceCode, $current_user);
+                    $update_ipasset->execute();
+                    $update_ipasset->close();
+
+                    // Update invention_disclosure table
+                    $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
+                    $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                    $update_disclosure->execute();
+                    $update_disclosure->close();
+                    break;
+            }
         }
+    } else {
+        echo "Invention Disclosure Code does not exist.";
     }
 }
 
@@ -77,6 +166,7 @@ $soa_files = $conn->query("SELECT SOAReference, SOA FROM statementofaccount ORDE
 $or_files = $conn->query("SELECT eORNumber, eOR FROM electronicor ORDER BY eORNumber DESC");
 $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityreport ORDER BY DocumentNumber DESC");
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -155,6 +245,12 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
             </div>
             <form method="POST" enctype="multipart/form-data" class="mt-4">
                 <input type="hidden" name="fileType" value="soa">
+                <label class="block text-gray-700">Invention Disclosure Code</label>
+                <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <label class="block text-gray-700">Reference Code</label>
+                <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <label class="block text-gray-700">Date Received</label>
+                <input type="date" name="DateReceived" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Upload New SOA</label>
                 <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                     <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
@@ -192,6 +288,12 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
             </div>
             <form method="POST" enctype="multipart/form-data" class="mt-4">
                 <input type="hidden" name="fileType" value="or">
+                <label class="block text-gray-700">Invention Disclosure Code</label>
+                <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <label class="block text-gray-700">Reference Code</label>
+                <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <label class="block text-gray-700">Date Received</label>
+                <input type="date" name="DateReceived" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Upload New OR</label>
                 <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                     <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
@@ -229,6 +331,12 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
             </div>
             <form method="POST" enctype="multipart/form-data" class="mt-4">
                 <input type="hidden" name="fileType" value="formality">
+                <label class="block text-gray-700">Invention Disclosure Code</label>
+                <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <label class="block text-gray-700">Reference Code</label>
+                <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <label class="block text-gray-700">Date Received</label>
+                <input type="date" name="DateReceived" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Upload New Formality Report</label>
                 <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                     <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
