@@ -6,7 +6,12 @@ error_reporting(E_ALL);
 include '../includes/db_connect.php';
 session_start();
 
-// Check if the user is logged in and get the logged-in user's name
+// Function to generate a random IPAssetCode (e.g., 12-character alphanumeric)
+function generateRandomCode($length = 12) {
+    return substr(str_shuffle(str_repeat('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', ceil($length/62))), 1, $length);
+}
+
+// Get the logged-in user's name
 $current_user = isset($_SESSION['FirstName']) ? $_SESSION['FirstName'] : 'Unknown User';
 
 // Handle file deletion
@@ -14,63 +19,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete']) && isset($_
     $fileType = $_POST['fileType'];
     $fileName = $_POST['fileName'];
 
-    switch ($fileType) {
-        case 'soa':
-            // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
-            $update_ipasset = $conn->prepare("UPDATE ipasset SET SOARefCode = NULL, SOAAddedBy = NULL WHERE SOARefCode = ?");
-            $update_ipasset->bind_param("s", $fileName);
-            $update_ipasset->execute();
-            $update_ipasset->close();
+    // Begin transaction to ensure atomicity
+    $conn->begin_transaction();
 
-            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = NULL WHERE soa_reference_number = ?");
-            $update_disclosure->bind_param("s", $fileName);
-            $update_disclosure->execute();
-            $update_disclosure->close();
+    try {
+        switch ($fileType) {
+            case 'soa':
+                // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
+                $update_ipasset = $conn->prepare("UPDATE ipasset SET SOARefCode = NULL, SOAAddedBy = NULL WHERE SOARefCode = ?");
+                $update_ipasset->bind_param("s", $fileName);
+                $update_ipasset->execute();
+                $update_ipasset->close();
 
-            // Delete from the statementofaccount table last
-            $stmt = $conn->prepare("DELETE FROM statementofaccount WHERE SOAReference = ?");
-            break;
+                $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = NULL WHERE soa_reference_number = ?");
+                $update_disclosure->bind_param("s", $fileName);
+                $update_disclosure->execute();
+                $update_disclosure->close();
 
-        case 'or':
-            // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
-            $update_ipasset = $conn->prepare("UPDATE ipasset SET eORRefCode = NULL, eORAddedBy = NULL WHERE eORRefCode = ?");
-            $update_ipasset->bind_param("s", $fileName);
-            $update_ipasset->execute();
-            $update_ipasset->close();
+                // Delete from the statementofaccount table last
+                $stmt = $conn->prepare("DELETE FROM statementofaccount WHERE SOAReference = ?");
+                break;
 
-            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = NULL WHERE eor_number = ?");
-            $update_disclosure->bind_param("s", $fileName);
-            $update_disclosure->execute();
-            $update_disclosure->close();
+            case 'or':
+                // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
+                $update_ipasset = $conn->prepare("UPDATE ipasset SET eORRefCode = NULL, eORAddedBy = NULL WHERE eORRefCode = ?");
+                $update_ipasset->bind_param("s", $fileName);
+                $update_ipasset->execute();
+                $update_ipasset->close();
 
-            // Delete from the electronicor table last
-            $stmt = $conn->prepare("DELETE FROM electronicor WHERE eORNumber = ?");
-            break;
+                $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = NULL WHERE eor_number = ?");
+                $update_disclosure->bind_param("s", $fileName);
+                $update_disclosure->execute();
+                $update_disclosure->close();
 
-        case 'formality':
-            // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
-            $update_ipasset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = NULL, FormalityAddedBy = NULL WHERE FormalityRefCode = ?");
-            $update_ipasset->bind_param("s", $fileName);
-            $update_ipasset->execute();
-            $update_ipasset->close();
+                // Delete from the electronicor table last
+                $stmt = $conn->prepare("DELETE FROM electronicor WHERE eORNumber = ?");
+                break;
 
-            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = NULL WHERE document_number = ?");
-            $update_disclosure->bind_param("s", $fileName);
-            $update_disclosure->execute();
-            $update_disclosure->close();
+            case 'formality':
+                // Set reference to NULL in ipasset and invention_disclosure tables without deleting the row
+                $update_ipasset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = NULL, FormalityAddedBy = NULL WHERE FormalityRefCode = ?");
+                $update_ipasset->bind_param("s", $fileName);
+                $update_ipasset->execute();
+                $update_ipasset->close();
 
-            // Delete from the formalityreport table last
-            $stmt = $conn->prepare("DELETE FROM formalityreport WHERE DocumentNumber = ?");
-            break;
+                $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = NULL WHERE document_number = ?");
+                $update_disclosure->bind_param("s", $fileName);
+                $update_disclosure->execute();
+                $update_disclosure->close();
 
-        default:
-            echo "Invalid file type.";
-            exit;
+                // Delete from the formalityreport table last
+                $stmt = $conn->prepare("DELETE FROM formalityreport WHERE DocumentNumber = ?");
+                break;
+
+            default:
+                throw new Exception("Invalid file type.");
+        }
+
+        $stmt->bind_param("s", $fileName);
+        $stmt->execute();
+        $stmt->close();
+
+        // Commit the transaction
+        $conn->commit();
+        echo "";
+    } catch (Exception $e) {
+        // Rollback the transaction on error
+        $conn->rollback();
+        echo "Error deleting file: " . $e->getMessage();
     }
-
-    $stmt->bind_param("s", $fileName);
-    $stmt->execute();
-    $stmt->close();
 }
 
 // Handle file upload
@@ -83,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
     $fileName = $_FILES['file']['name'];
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
+    // Function to validate date format (mm/dd/yyyy)
     function validateDate($dateReceived) {
-        // Validate date format (mm/dd/yyyy)
         $dateObj = DateTime::createFromFormat('m/d/Y', $dateReceived);
         $errors = DateTime::getLastErrors();
         
@@ -102,7 +119,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             'date' => $dateObj->format('m/d/Y')
         ];
     }
-    
+
+    // Validate the received date
+    $dateValidation = validateDate($dateReceived);
+    if (!$dateValidation['isValid']) {
+        echo $dateValidation['message'];
+        exit;
+    }
+
+    // Use the formatted date
+    $dateReceived = $dateValidation['date'];
 
     // Check if the InventionDisclosureCode exists in the invention_disclosure table
     $check_stmt = $conn->prepare("SELECT id FROM invention_disclosure WHERE id = ?");
@@ -115,70 +141,188 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         if ($fileExtension === 'pdf') {
             $fileContent = file_get_contents($fileTmpPath);
 
-            switch ($fileType) {
-                case 'soa':
-                    $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
-                    $stmt->send_long_data(3, $fileContent);
-                    $stmt->execute();
-                    $stmt->close();
+            // Begin transaction to ensure atomicity
+            $conn->begin_transaction();
 
-                    // Update or insert into ipasset table
-                    $update_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, SOARefCode, SOAAddedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE SOARefCode = VALUES(SOARefCode), SOAAddedBy = VALUES(SOAAddedBy)");
-                    $update_ipasset->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $referenceCode, $current_user);
-                    $update_ipasset->execute();
-                    $update_ipasset->close();
+            try {
+                // Check if an ipasset entry exists for this InventionDisclosureCode
+                $ipasset_check = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
+                $ipasset_check->bind_param("s", $inventionDisclosureCode);
+                $ipasset_check->execute();
+                $ipasset_check->bind_result($existingIPAssetCode);
+                $ipasset_check->fetch();
+                $ipasset_check->close();
 
-                    // Update invention_disclosure table
-                    $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = ? WHERE id = ?");
-                    $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
-                    $update_disclosure->execute();
-                    $update_disclosure->close();
-                    break;
+                if ($existingIPAssetCode) {
+                    // Entry exists, perform UPDATEs
+                    switch ($fileType) {
+                        case 'soa':
+                            // Insert into statementofaccount
+                            $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
+                            $null = NULL;
+                            $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                            $stmt->send_long_data(3, $fileContent);
+                            $stmt->execute();
+                            $stmt->close();
 
-                case 'or':
-                    $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
-                    $stmt->send_long_data(3, $fileContent);
-                    $stmt->execute();
-                    $stmt->close();
+                            // Update ipasset
+                            $update_ipasset = $conn->prepare("UPDATE ipasset SET SOARefCode = ?, SOAAddedBy = ? WHERE InventionDisclosureCode = ?");
+                            $update_ipasset->bind_param("sss", $referenceCode, $current_user, $inventionDisclosureCode);
+                            $update_ipasset->execute();
+                            $update_ipasset->close();
 
-                    // Update or insert into ipasset table
-                    $update_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, eORRefCode, eORAddedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE eORRefCode = VALUES(eORRefCode), eORAddedBy = VALUES(eORAddedBy)");
-                    $update_ipasset->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $referenceCode, $current_user);
-                    $update_ipasset->execute();
-                    $update_ipasset->close();
+                            // Update invention_disclosure
+                            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = ? WHERE id = ?");
+                            $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                            $update_disclosure->execute();
+                            $update_disclosure->close();
+                            break;
 
-                    // Update invention_disclosure table
-                    $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
-                    $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
-                    $update_disclosure->execute();
-                    $update_disclosure->close();
-                    break;
+                        case 'or':
+                            // Insert into electronicor
+                            $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
+                            $null = NULL;
+                            $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                            $stmt->send_long_data(3, $fileContent);
+                            $stmt->execute();
+                            $stmt->close();
 
-                case 'formality':
-                    $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
-                    $stmt->send_long_data(3, $fileContent);
-                    $stmt->execute();
-                    $stmt->close();
+                            // Update ipasset
+                            $update_ipasset = $conn->prepare("UPDATE ipasset SET eORRefCode = ?, eORAddedBy = ? WHERE InventionDisclosureCode = ?");
+                            $update_ipasset->bind_param("sss", $referenceCode, $current_user, $inventionDisclosureCode);
+                            $update_ipasset->execute();
+                            $update_ipasset->close();
 
-                    // Update or insert into ipasset table
-                    $update_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, FormalityRefCode, FormalityAddedBy) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE FormalityRefCode = VALUES(FormalityRefCode), FormalityAddedBy = VALUES(FormalityAddedBy)");
-                    $update_ipasset->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $referenceCode, $current_user);
-                    $update_ipasset->execute();
-                    $update_ipasset->close();
+                            // Update invention_disclosure
+                            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
+                            $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                            $update_disclosure->execute();
+                            $update_disclosure->close();
+                            break;
 
-                    // Update invention_disclosure table
-                    $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
-                    $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
-                    $update_disclosure->execute();
-                    $update_disclosure->close();
-                    break;
+                        case 'formality':
+                            // Insert into formalityreport
+                            $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
+                            $null = NULL;
+                            $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                            $stmt->send_long_data(3, $fileContent);
+                            $stmt->execute();
+                            $stmt->close();
 
-                default:
-                    echo "Invalid file type.";
-                    exit;
+                            // Update ipasset
+                            $update_ipasset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = ?, FormalityAddedBy = ? WHERE InventionDisclosureCode = ?");
+                            $update_ipasset->bind_param("sss", $referenceCode, $current_user, $inventionDisclosureCode);
+                            $update_ipasset->execute();
+                            $update_ipasset->close();
+
+                            // Update invention_disclosure
+                            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
+                            $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                            $update_disclosure->execute();
+                            $update_disclosure->close();
+                            break;
+
+                        default:
+                            throw new Exception("Invalid file type.");
+                    }
+                } else {
+                    // Entry does not exist, perform INSERT
+                    $newIPAssetCode = generateRandomCode(); // Generate unique IPAssetCode
+
+                    // Ensure the generated IPAssetCode is unique
+                    $unique = false;
+                    while (!$unique) {
+                        $check_code = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE IPAssetCode = ?");
+                        $check_code->bind_param("s", $newIPAssetCode);
+                        $check_code->execute();
+                        $check_code->store_result();
+                        if ($check_code->num_rows == 0) {
+                            $unique = true;
+                        } else {
+                            $newIPAssetCode = generateRandomCode(); // Regenerate if not unique
+                        }
+                        $check_code->close();
+                    }
+
+                    switch ($fileType) {
+                        case 'soa':
+                            // Insert into statementofaccount
+                            $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
+                            $null = NULL;
+                            $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                            $stmt->send_long_data(3, $fileContent);
+                            $stmt->execute();
+                            $stmt->close();
+
+                            // Insert into ipasset
+                            $insert_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, SOARefCode, SOAAddedBy) VALUES (?, ?, ?, ?)");
+                            $insert_ipasset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $current_user);
+                            $insert_ipasset->execute();
+                            $insert_ipasset->close();
+
+                            // Update invention_disclosure
+                            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = ? WHERE id = ?");
+                            $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                            $update_disclosure->execute();
+                            $update_disclosure->close();
+                            break;
+
+                        case 'or':
+                            // Insert into electronicor
+                            $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
+                            $null = NULL;
+                            $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                            $stmt->send_long_data(3, $fileContent);
+                            $stmt->execute();
+                            $stmt->close();
+
+                            // Insert into ipasset
+                            $insert_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, eORRefCode, eORAddedBy) VALUES (?, ?, ?, ?)");
+                            $insert_ipasset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $current_user);
+                            $insert_ipasset->execute();
+                            $insert_ipasset->close();
+
+                            // Update invention_disclosure
+                            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
+                            $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                            $update_disclosure->execute();
+                            $update_disclosure->close();
+                            break;
+
+                        case 'formality':
+                            // Insert into formalityreport
+                            $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
+                            $null = NULL;
+                            $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                            $stmt->send_long_data(3, $fileContent);
+                            $stmt->execute();
+                            $stmt->close();
+
+                            // Insert into ipasset
+                            $insert_ipasset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, FormalityRefCode, FormalityAddedBy) VALUES (?, ?, ?, ?)");
+                            $insert_ipasset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $current_user);
+                            $insert_ipasset->execute();
+                            $insert_ipasset->close();
+
+                            // Update invention_disclosure
+                            $update_disclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
+                            $update_disclosure->bind_param("ss", $referenceCode, $inventionDisclosureCode);
+                            $update_disclosure->execute();
+                            $update_disclosure->close();
+                            break;
+
+                        default:
+                            throw new Exception("Invalid file type.");
+                    }
+                }
+
+                // Commit the transaction
+                $conn->commit();
+                echo "";
+            } catch (Exception $e) {
+                // Rollback the transaction on error
+                $conn->rollback();
+                echo "Error uploading file: " . $e->getMessage();
             }
         } else {
             echo "Only PDF files are allowed.";
