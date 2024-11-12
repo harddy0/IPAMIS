@@ -242,152 +242,159 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
         });
     </script>
 </head>
-<body class="bg-gray-100">
+<body class="overflow-hidden">
 
-<?php include '../includes/dashboard.php'; ?>
-<?php include '../includes/header.php'; ?>
-
-<div class="dashboard p-10">
-    <h2 class="text-2xl font-semibold text-gray-700 mb-8">Manage IP Assets</h2>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <!-- Statement of Account Column -->
-        <div class="bg-white rounded-lg shadow-md p-5">
-            <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Statement Of Account</div>
-            <div class="file-list mt-4 space-y-2">
-                <?php while ($soa_file = $soa_files->fetch_assoc()): ?>
-                    <div class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
-                        <span><?php echo htmlspecialchars($soa_file['SOAReference']); ?></span>
-                        <div class="file-actions">
-                            <a href="data:application/pdf;base64,<?php echo base64_encode($soa_file['SOA']); ?>" download="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
-                                <!-- Download Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
-                                </svg>
-                            </a>
-                            <form method="POST" onsubmit="return confirmDelete();">
-                                <input type="hidden" name="fileType" value="soa">
-                                <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
-                                <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
-                                    <!-- Delete Icon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-            <form method="POST" enctype="multipart/form-data" class="mt-4">
-                <input type="hidden" name="fileType" value="soa">
-                <label class="block text-gray-700">Invention Disclosure Code</label>
-                <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Reference Code</label>
-                <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Date Received</label>
-                <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Upload New SOA</label>
-                <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
-                    <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
-                    <span>No file chosen</span>
-                </label>
-                <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600">Upload SOA</button>
-            </form>
-        </div>
-
-        <!-- OR Column -->
-        <div class="bg-white rounded-lg shadow-md p-5">
-            <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">OR</div>
-            <div class="file-list mt-4 space-y-2">
-                <?php while ($or_file = $or_files->fetch_assoc()): ?>
-                    <div class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
-                        <span><?php echo htmlspecialchars($or_file['eORNumber']); ?></span>
-                        <div class="file-actions">
-                            <a href="data:application/pdf;base64,<?php echo base64_encode($or_file['eOR']); ?>" download="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
-                                <!-- Download Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
-                                </svg>
-                            </a>
-                            <form method="POST" onsubmit="return confirmDelete();">
-                                <input type="hidden" name="fileType" value="or">
-                                <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
-                                <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
-                                    <!-- Delete Icon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-            <form method="POST" enctype="multipart/form-data" class="mt-4">
-                <input type="hidden" name="fileType" value="or">
-                <label class="block text-gray-700">Invention Disclosure Code</label>
-                <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Reference Code</label>
-                <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Date Received</label>
-                <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Upload New OR</label>
-                <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
-                    <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
-                    <span>No file chosen</span>
-                </label>
-                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600">Upload OR</button>
-            </form>
-        </div>
-
-        <!-- Formality Report Column -->
-        <div class="bg-white rounded-lg shadow-md p-5">
-            <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Formality Report</div>
-            <div class="file-list mt-4 space-y-2">
-                <?php while ($formality_file = $formality_files->fetch_assoc()): ?>
-                    <div class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
-                        <span><?php echo htmlspecialchars($formality_file['DocumentNumber']); ?></span>
-                        <div class="file-actions">
-                            <a href="data:application/pdf;base64,<?php echo base64_encode($formality_file['Document']); ?>" download="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
-                                <!-- Download Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
-                                </svg>
-                            </a>
-                            <form method="POST" onsubmit="return confirmDelete();">
-                                <input type="hidden" name="fileType" value="formality">
-                                <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
-                                <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
-                                    <!-- Delete Icon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-            <form method="POST" enctype="multipart/form-data" class="mt-4">
-                <input type="hidden" name="fileType" value="formality">
-                <label class="block text-gray-700">Invention Disclosure Code</label>
-                <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Reference Code</label>
-                <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Date Received</label>
-                <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
-                <label class="block text-gray-700">Upload New Formality Report</label>
-                <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
-                    <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
-                    <span>No file chosen</span>
-                </label>
-                <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600">Upload Formality Report</button>
-            </form>
-        </div>
+    <div class="fixed top-0 left-0 h-screen w-64">
+        <?php include '../includes/dashboard.php'; ?>
     </div>
-</div>
 
-<?php include '../includes/footer.php'; ?>
+    <div class="ml-64 flex-grow overflow-y-auto">
+        <!-- Header -->
+        
+        <?php include '../includes/header.php'; ?>
+
+            <div class="dashboard">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-8 mt-8 ml-4">Manage IP Assets</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- Statement of Account Column -->
+                    <div class="bg-white rounded-lg shadow-md p-5">
+                        <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Statement Of Account</div>
+                        <div class="file-list mt-4 space-y-2">
+                            <?php while ($soa_file = $soa_files->fetch_assoc()): ?>
+                                <div class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
+                                    <span><?php echo htmlspecialchars($soa_file['SOAReference']); ?></span>
+                                    <div class="file-actions">
+                                        <a href="data:application/pdf;base64,<?php echo base64_encode($soa_file['SOA']); ?>" download="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
+                                            <!-- Download Icon -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
+                                            </svg>
+                                        </a>
+                                        <form method="POST" onsubmit="return confirmDelete();">
+                                            <input type="hidden" name="fileType" value="soa">
+                                            <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
+                                            <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
+                                                <!-- Delete Icon -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                            <input type="hidden" name="fileType" value="soa">
+                            <label class="block text-gray-700">Invention Disclosure Code</label>
+                            <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Reference Code</label>
+                            <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Date Received</label>
+                            <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Upload New SOA</label>
+                            <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
+                                <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
+                                <span>No file chosen</span>
+                            </label>
+                            <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600">Upload SOA</button>
+                        </form>
+                    </div>
+
+                    <!-- OR Column -->
+                    <div class="bg-white rounded-lg shadow-md p-5">
+                        <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">OR</div>
+                        <div class="file-list mt-4 space-y-2">
+                            <?php while ($or_file = $or_files->fetch_assoc()): ?>
+                                <div class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
+                                    <span><?php echo htmlspecialchars($or_file['eORNumber']); ?></span>
+                                    <div class="file-actions">
+                                        <a href="data:application/pdf;base64,<?php echo base64_encode($or_file['eOR']); ?>" download="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
+                                            <!-- Download Icon -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
+                                            </svg>
+                                        </a>
+                                        <form method="POST" onsubmit="return confirmDelete();">
+                                            <input type="hidden" name="fileType" value="or">
+                                            <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
+                                            <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
+                                                <!-- Delete Icon -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                            <input type="hidden" name="fileType" value="or">
+                            <label class="block text-gray-700">Invention Disclosure Code</label>
+                            <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Reference Code</label>
+                            <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Date Received</label>
+                            <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Upload New OR</label>
+                            <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
+                                <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
+                                <span>No file chosen</span>
+                            </label>
+                            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600">Upload OR</button>
+                        </form>
+                    </div>
+
+                    <!-- Formality Report Column -->
+                    <div class="bg-white rounded-lg shadow-md p-5">
+                        <div class="text-center bg-blue-900 text-white font-bold py-2 rounded">Formality Report</div>
+                        <div class="file-list mt-4 space-y-2">
+                            <?php while ($formality_file = $formality_files->fetch_assoc()): ?>
+                                <div class="bg-blue-100 text-blue-600 p-2 rounded flex justify-between items-center">
+                                    <span><?php echo htmlspecialchars($formality_file['DocumentNumber']); ?></span>
+                                    <div class="file-actions">
+                                        <a href="data:application/pdf;base64,<?php echo base64_encode($formality_file['Document']); ?>" download="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
+                                            <!-- Download Icon -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
+                                            </svg>
+                                        </a>
+                                        <form method="POST" onsubmit="return confirmDelete();">
+                                            <input type="hidden" name="fileType" value="formality">
+                                            <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
+                                            <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
+                                                <!-- Delete Icon -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                        <form method="POST" enctype="multipart/form-data" class="mt-4">
+                            <input type="hidden" name="fileType" value="formality">
+                            <label class="block text-gray-700">Invention Disclosure Code</label>
+                            <input type="text" name="InventionDisclosureCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Reference Code</label>
+                            <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Date Received</label>
+                            <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                            <label class="block text-gray-700">Upload New Formality Report</label>
+                            <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
+                                <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
+                                <span>No file chosen</span>
+                            </label>
+                            <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600">Upload Formality Report</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <?php include '../includes/footer.php'; ?>
+    </div>
 </body>
 </html>

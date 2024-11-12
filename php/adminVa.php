@@ -56,73 +56,83 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
 </head>
-<body>
+<body class="overflow-hidden">
 
-<div class="main-wrapper">
-    <!-- Sidebar -->
-    <?php include '../includes/dashboard.php'; ?>
-    <?php include '../includes/header.php'; ?>
-    <!-- Content Area -->
-    <div class="content-wrapper">
-        <!-- Main content -->
-        <div class="main-content">
-            <div class="container mx-auto p-6">
-                <!-- Analytics Header -->
-                <h1 class="text-2xl font-bold mb-4 flex items-center">
-                    <span class="mr-2"><i class="fas fa-chart-pie"></i></span> View Analytics
-                </h1>
+    <div class="main-wrapper">
+        <!-- Sidebar -->
+        <div class="fixed top-0 left-0 h-screen w-64">
+            <?php include '../includes/dashboard.php'; ?>
+        </div>
 
-                <!-- Date Selection Form -->
-                <form method="POST" class="mb-6 flex space-x-4">
-                    <div>
-                        <label for="month" class="block text-gray-700">Select Month:</label>
-                        <select id="month" name="month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-                            <?php for ($m = 1; $m <= 12; $m++): ?>
-                                <option value="<?php echo $m; ?>" <?php echo (isset($month) && $month == $m) ? 'selected' : ''; ?>>
-                                    <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                                </option>
-                            <?php endfor; ?>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="year" class="block text-gray-700">Select Year:</label>
-                        <select id="year" name="year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-                            <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
-                                <option value="<?php echo $y; ?>" <?php echo (isset($year) && $year == $y) ? 'selected' : ''; ?>>
-                                    <?php echo $y; ?>
-                                </option>
-                            <?php endfor; ?>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
-                    </div>
-                </form>
+        <!-- Content Wrapper -->
+        <div class="content-wrapper ml-64 flex-grow overflow-y-auto">
+            <!-- Header -->
+            <?php include '../includes/header.php'; ?>
 
-                <!-- Flex container for the graph and data boxes -->
-                <div class="content-box">
-                    <!-- Graph Container -->
-                    <div class="graph-container">
-                        <h2 class="text-lg font-semibold mb-4">Analytics for <?php echo isset($month) ? date('F', mktime(0, 0, 0, $month, 10)) : 'Month'; ?> <?php echo isset($year) ? $year : ''; ?></h2>
-                        <canvas id="pieChart"></canvas>
-                    </div>
+            <!-- Main Content -->
+            <div class="main-content p-6">
+                <div class="container mx-auto">
+                    <!-- Analytics Header -->
+                    <h1 class="text-2xl font-bold mb-4 flex items-center">
+                        <span class="mr-2"><i class="fas fa-chart-pie"></i></span> View Analytics
+                    </h1>
 
-                    <!-- Data Boxes Container -->
-                    <div class="data-boxes-container">
-                        <?php foreach ($applicationCounts as $type => $count): ?>
-                            <div class="data-box">
-                                <span><?php echo $type; ?></span>
-                                <span class="data-value"><?php echo $count; ?></span>
-                            </div>
-                        <?php endforeach; ?>
+                    <!-- Date Selection Form -->
+                    <form method="POST" class="mb-6 flex space-x-4">
+                        <div>
+                            <label for="month" class="block text-gray-700">Select Month:</label>
+                            <select id="month" name="month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?php echo $m; ?>" <?php echo (isset($month) && $month == $m) ? 'selected' : ''; ?>>
+                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="year" class="block text-gray-700">Select Year:</label>
+                            <select id="year" name="year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                                <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
+                                    <option value="<?php echo $y; ?>" <?php echo (isset($year) && $year == $y) ? 'selected' : ''; ?>>
+                                        <?php echo $y; ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
+                        </div>
+                    </form>
+
+                    <!-- Content Box for Graph and Data Boxes -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 content-box">
+                        <!-- Graph Container -->
+                        <div class="graph-container bg-white rounded-lg shadow-md p-5">
+                            <h2 class="text-lg font-semibold mb-4">
+                                Analytics for <?php echo isset($month) ? date('F', mktime(0, 0, 0, $month, 10)) : 'Month'; ?> <?php echo isset($year) ? $year : ''; ?>
+                            </h2>
+                            <canvas id="pieChart"></canvas>
+                        </div>
+
+                        <!-- Data Boxes Container -->
+                        <div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <?php foreach ($applicationCounts as $type => $count): ?>
+                                <div class="data-box bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
+                                    <span class="text-gray-700 font-semibold"><?php echo $type; ?></span>
+                                    <span class="data-value text-2xl font-bold text-blue-500"><?php echo $count; ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            
+            <?php include '../includes/footer.php'; ?>
+            
         </div>
     </div>
-    <!-- Footer -->
-    <?php include '../includes/footer.php'; ?>
-</div>
+
 
 <!-- Chart.js Script -->
 <script>
