@@ -51,7 +51,7 @@ if ($result->num_rows > 0) {
                 <div class="profile-info text-center">
                     <p class="profile-name text-lg font-semibold text-gray-800"><?php echo htmlspecialchars($fullName); ?></p>
                     <p class="profile-role text-sm text-gray-500">ADMIN</p>
-                    <a href="adminEdit.php">
+                    <a href="staffEdit.php">
                         <button class="edit-profile bg-gold-500 text-white rounded mt-4 py-2 px-4 hover:bg-gold-600">
                             Edit Profile
                         </button>
