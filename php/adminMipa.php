@@ -83,6 +83,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
     $fileName = $_FILES['file']['name'];
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
+    function validateDate($dateReceived) {
+        // Validate date format (mm/dd/yyyy)
+        $dateObj = DateTime::createFromFormat('m/d/Y', $dateReceived);
+        $errors = DateTime::getLastErrors();
+        
+        if ($dateObj === false || ($errors && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+            // Invalid date format
+            return [
+                'isValid' => false,
+                'message' => "Invalid date format. Please use mm/dd/yyyy."
+            ];
+        }
+        
+        // Return valid date in mm/dd/yyyy format
+        return [
+            'isValid' => true,
+            'date' => $dateObj->format('m/d/Y')
+        ];
+    }
+    
+
     // Check if the InventionDisclosureCode exists in the invention_disclosure table
     $check_stmt = $conn->prepare("SELECT id FROM invention_disclosure WHERE id = ?");
     $check_stmt->bind_param("s", $inventionDisclosureCode);
@@ -97,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             switch ($fileType) {
                 case 'soa':
                     $stmt = $conn->prepare("INSERT INTO statementofaccount (SOAReference, InventionDisclosureCode, IPOPHLReceivedDate, SOA) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
                     $stmt->send_long_data(3, $fileContent);
                     $stmt->execute();
                     $stmt->close();
@@ -117,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
                 case 'or':
                     $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
                     $stmt->send_long_data(3, $fileContent);
                     $stmt->execute();
                     $stmt->close();
@@ -137,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
                 case 'formality':
                     $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
-                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->bind_param("ssss", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
                     $stmt->send_long_data(3, $fileContent);
                     $stmt->execute();
                     $stmt->close();
@@ -154,7 +175,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
                     $update_disclosure->execute();
                     $update_disclosure->close();
                     break;
+
+                default:
+                    echo "Invalid file type.";
+                    exit;
             }
+        } else {
+            echo "Only PDF files are allowed.";
         }
     } else {
         echo "Invention Disclosure Code does not exist.";
@@ -167,7 +194,6 @@ $or_files = $conn->query("SELECT eORNumber, eOR FROM electronicor ORDER BY eORNu
 $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityreport ORDER BY DocumentNumber DESC");
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -179,6 +205,9 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
     <link rel="stylesheet" href="../css/dashboard_staff.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <!-- Include flatpickr CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         .file-list {
             max-height: 150px;
@@ -206,6 +235,11 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
         function confirmDelete() {
             return confirm("Are you sure you want to delete this file?");
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr('.date-picker', {
+                dateFormat: 'm/d/Y'
+            });
+        });
     </script>
 </head>
 <body class="bg-gray-100">
@@ -226,6 +260,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                         <span><?php echo htmlspecialchars($soa_file['SOAReference']); ?></span>
                         <div class="file-actions">
                             <a href="data:application/pdf;base64,<?php echo base64_encode($soa_file['SOA']); ?>" download="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
+                                <!-- Download Icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
                                 </svg>
@@ -234,6 +269,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                                 <input type="hidden" name="fileType" value="soa">
                                 <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($soa_file['SOAReference']); ?>">
                                 <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
+                                    <!-- Delete Icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -250,7 +286,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                 <label class="block text-gray-700">Reference Code</label>
                 <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Date Received</label>
-                <input type="date" name="DateReceived" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Upload New SOA</label>
                 <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                     <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
@@ -269,6 +305,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                         <span><?php echo htmlspecialchars($or_file['eORNumber']); ?></span>
                         <div class="file-actions">
                             <a href="data:application/pdf;base64,<?php echo base64_encode($or_file['eOR']); ?>" download="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
+                                <!-- Download Icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
                                 </svg>
@@ -277,6 +314,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                                 <input type="hidden" name="fileType" value="or">
                                 <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($or_file['eORNumber']); ?>">
                                 <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
+                                    <!-- Delete Icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -293,7 +331,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                 <label class="block text-gray-700">Reference Code</label>
                 <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Date Received</label>
-                <input type="date" name="DateReceived" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Upload New OR</label>
                 <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                     <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
@@ -312,6 +350,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                         <span><?php echo htmlspecialchars($formality_file['DocumentNumber']); ?></span>
                         <div class="file-actions">
                             <a href="data:application/pdf;base64,<?php echo base64_encode($formality_file['Document']); ?>" download="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
+                                <!-- Download Icon -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 hover:text-blue-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0 0l-4-4m4 4l4-4" />
                                 </svg>
@@ -320,6 +359,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                                 <input type="hidden" name="fileType" value="formality">
                                 <input type="hidden" name="fileName" value="<?php echo htmlspecialchars($formality_file['DocumentNumber']); ?>">
                                 <button type="submit" name="delete" class="text-red-600 hover:text-red-800">
+                                    <!-- Delete Icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -336,7 +376,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                 <label class="block text-gray-700">Reference Code</label>
                 <input type="text" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Date Received</label>
-                <input type="date" name="DateReceived" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
+                <input type="text" name="DateReceived" required placeholder="mm/dd/yyyy" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2 mb-4">
                 <label class="block text-gray-700">Upload New Formality Report</label>
                 <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                     <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name">
