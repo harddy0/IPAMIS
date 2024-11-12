@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Personal Account</title>
+    <title>Staff Manage Personal Account</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/adminMpa.css">
     <link rel="stylesheet" href="../css/dashboard_staff.css">
@@ -50,8 +50,8 @@ if ($result->num_rows > 0) {
                 </div>
                 <div class="profile-info text-center">
                     <p class="profile-name text-lg font-semibold text-gray-800"><?php echo htmlspecialchars($fullName); ?></p>
-                    <p class="profile-role text-sm text-gray-500">STAFF</p>
-                    <a href="staffEdit.php">
+                    <p class="profile-role text-sm text-gray-500">ADMIN</p>
+                    <a href="adminEdit.php">
                         <button class="edit-profile bg-gold-500 text-white rounded mt-4 py-2 px-4 hover:bg-gold-600">
                             Edit Profile
                         </button>
