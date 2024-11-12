@@ -19,8 +19,8 @@
         <!-- Sidebar -->
         <?php include '../includes/dashboard_staff.php'; ?>
         <?php include '../includes/header.php'; ?>
-        <!-- Content Area -->
-        <div class="content-wrapper">
+       <!-- Content Area -->
+       <div class="content-wrapper">
             <!-- Main content -->
             <div class="main-content">
                 <div class="container mx-auto p-6">
@@ -111,6 +111,7 @@
             }
         });
     </script>
+
 
 </body>
 </html>
