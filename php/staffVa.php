@@ -7,7 +7,7 @@ include '../includes/db_connect.php';
 
 // Initialize variables for application counts
 $applicationCounts = [
-    'Patent (Invention)' => 0,
+    'Patent' => 0,
     'Industrial Design' => 0,
     'Utility Model' => 0,
     'Trademark' => 0,
@@ -144,7 +144,7 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
         type: 'pie',
         data: {
             labels: [
-                'Patent (Invention)', 
+                'Patent', 
                 'Industrial Design', 
                 'Utility Model', 
                 'Trademark', 
