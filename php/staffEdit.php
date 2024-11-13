@@ -13,9 +13,8 @@
     <link rel="stylesheet" href="../css/footer.css">
     <!-- Additional Custom CSS -->
     <style>
-        /* Ensure the main content occupies the full width minus the sidebar */
         .main-content {
-            margin-left: 16rem; /* Adjust for the sidebar width */
+            margin-left: 16rem;
             width: calc(100% - 16rem);
         }
     </style>
@@ -42,6 +41,7 @@
 
     // Handle form submission
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $employee_id = htmlspecialchars(trim($_POST['employee_id']));
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $middle_name = htmlspecialchars(trim($_POST['middle_name']));
         $last_name = htmlspecialchars(trim($_POST['last_name']));
@@ -53,18 +53,22 @@
 
         // Update query
         if (!empty($new_password)) {
-            $sql = "UPDATE user SET FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ?, Password = ? WHERE UserID = ?";
+            $sql = "UPDATE user SET UserID = ?, FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ?, Password = ? WHERE UserID = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssssssi", $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $new_password, $user_id);
+            $stmt->bind_param("issssssssi", $employee_id, $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $new_password, $user_id);
         } else {
-            $sql = "UPDATE user SET FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ? WHERE UserID = ?";
+            $sql = "UPDATE user SET UserID = ?, FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ? WHERE UserID = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssssi", $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $user_id);
+            $stmt->bind_param("isssssssi", $employee_id, $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $user_id);
         }
+        
         $stmt->execute();
         $stmt->close();
+
+        // Update the session UserID if it was changed
+        $_SESSION['UserID'] = $employee_id;
         
-        // Redirect to adminMpa.php after updating
+        // Redirect to staffmpa.php after updating
         header("Location: staffmpa.php");
         exit();
     }
@@ -77,20 +81,14 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <!-- Header -->
-        
         <?php include '../includes/header.php'; ?>
-        
 
-        <!-- Form Content Wrapper -->
         <div class="p-10 pt-2 mt-4">
-            <!-- Back Button and Title -->
             <div class="flex items-center mb-5">
                 <a href="staffmpa.php" class="text-blue-500 text-lg mr-3">←</a>
                 <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
             </div>
 
-            <!-- Profile Picture Section -->
             <div class="flex items-center gap-4 mb-8">
                 <div class="w-20 h-20 rounded-full border-2 border-gray-300 flex items-center justify-center">
                     <img src="../images/profile-placeholder.png" alt="Profile Image" class="w-16 h-16 rounded-full">
@@ -100,15 +98,13 @@
                 </div>
             </div>
 
-
-            <!-- Profile Information Section -->
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-white">Employee ID Number</label>
-                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" disabled>
+                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>">
                         </div>
                         <div>
                             <label class="text-white">User Type</label>
@@ -141,7 +137,6 @@
                     </div>
                 </div>
 
-                <!-- Account Settings Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
                     <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Email Address</label>
@@ -157,14 +152,12 @@
                     </div>
                 </div>
 
-                <!-- Centered Update Button -->
                 <div class="flex justify-center mb-10">
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
                 </div>
             </form>
         </div>
 
-        <!-- Footer -->
         <div>
             <?php include '../includes/footer.php'; ?>
         </div>
