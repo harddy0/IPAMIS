@@ -500,9 +500,11 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Manage IP Assets</title>
+    <title>Staff Manage IP Assets</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminMpa.css">
+    <link rel="stylesheet" href="../css/adminMipa.css">
     <link rel="stylesheet" href="../css/dashboard_staff.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
@@ -597,7 +599,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                         <label class="block text-gray-700">Upload New SOA</label>
                         <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                             <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name" required>
-                            <span>No file chosen</span>
+                            <span class="file">No file chosen</span>
                         </label>
                         <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600">Upload SOA</button>
                     </form>
@@ -643,7 +645,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                         <label class="block text-gray-700">Upload New OR</label>
                         <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                             <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name" required>
-                            <span>No file chosen</span>
+                            <span class="file">No file chosen</span>
                         </label>
                         <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600">Upload OR</button>
                     </form>
@@ -689,7 +691,7 @@ $formality_files = $conn->query("SELECT DocumentNumber, Document FROM formalityr
                         <label class="block text-gray-700">Upload New Formality Report</label>
                         <label class="custom-file-input block mt-2 mb-4 relative bg-gray-200 rounded-lg text-gray-700 flex items-center px-4 py-2">
                             <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name" required>
-                            <span>No file chosen</span>
+                            <span class="file">No file chosen</span>
                         </label>
                         <button type="submit" class="w-full bg-yellow-500 text-white py-2 rounded-lg font-bold hover:bg-yellow-600">Upload Formality Report</button>
                     </form>
