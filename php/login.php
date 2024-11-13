@@ -45,9 +45,9 @@
 
                     // Redirect based on UserType
                     if ($user['UserType'] == 'Admin') {
-                        header("Location: adminMpa.php"); // Redirect to admin dashboard
+                        header("Location: adminVa.php"); // Redirect to admin dashboard
                     } elseif ($user['UserType'] == 'Staff') {
-                        header("Location: staffmpa.php"); // Redirect to staff page
+                        header("Location: staffVa.php"); // Redirect to staff page
                     }
                     exit();
                 } else {
