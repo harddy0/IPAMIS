@@ -12,29 +12,33 @@
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
     <style>
-        /* Ensure the main content occupies the full width minus the sidebar */
         .main-content {
             margin-left: 16rem;
             width: calc(100% - 16rem);
         }
     </style>
+    <script>
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            if (password && password !== confirmPassword) {
+                alert("Passwords do not match. Please re-enter.");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
     <?php
     include '../includes/db_connect.php';
 
-    // Initialize variables and error messages
+    // Initialize error message variable
     $error_message = "";
-    $next_employee_id = 1;
-
-    // Fetch the next Employee ID
-    $result = $conn->query("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'user' AND TABLE_SCHEMA = DATABASE()");
-        if ($result && $row = $result->fetch_assoc()) {
-            $next_employee_id = $row['AUTO_INCREMENT'];
-        }
 
     // Process form submission
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $employee_id = htmlspecialchars(trim($_POST['employee_id']));
         $user_type = htmlspecialchars(trim($_POST['user_type']));
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $middle_name = htmlspecialchars(trim($_POST['middle_name']));
@@ -51,16 +55,16 @@
             $error_message = "Passwords do not match.";
         } else {
             // Insert new user into the database
-            $sql = "INSERT INTO user (FirstName, MiddleName, LastName, Password, EmailAddress, ContactNumber, Campus, Department, UserType, Status) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')";
+            $sql = "INSERT INTO user (UserID, FirstName, MiddleName, LastName, Password, EmailAddress, ContactNumber, Campus, Department, UserType, Status) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssssss", $first_name, $middle_name, $last_name, $password, $email, $contact_number, $campus, $department, $user_type);
+            $stmt->bind_param("isssssssss", $employee_id, $first_name, $middle_name, $last_name, $password, $email, $contact_number, $campus, $department, $user_type);
 
             if ($stmt->execute()) {
                 header("Location: adminMpa.php");
                 exit;
             } else {
-                $error_message = "Error: " . $stmt->error;
+                $error_message = "Error: " . htmlspecialchars($stmt->error);
             }
             $stmt->close();
         }
@@ -74,12 +78,8 @@
 
     <!-- Main Content Area -->
     <div class="main-content">
-        <!-- Header -->
-        
         <?php include '../includes/header.php'; ?>
-        
 
-        <!-- Main Add User Content Wrapper -->
         <div class="p-10 pt-2 mt-4">
             <div class="flex items-center mb-5">
                 <a href="adminMpa.php" class="text-blue-500 text-lg mr-3">←</a>
@@ -100,13 +100,13 @@
             </div>
 
             <!-- Profile Information Section -->
-            <form action="" method="POST">
+            <form action="" method="POST" onsubmit="return checkPasswordMatch()">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-white">Employee ID Number</label>
-                            <input type="text" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo $next_employee_id; ?>" disabled>
+                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" placeholder="Enter Employee ID" required>
                         </div>
                         <div>
                             <label class="text-white">User Type</label>
@@ -151,11 +151,11 @@
                     </div>
                     <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">New Password</label>
-                        <input type="password" name="password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="NEW PASSWORD" required>
+                        <input type="password" name="password" id="password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="NEW PASSWORD" required>
                     </div>
                     <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Confirm Password</label>
-                        <input type="password" name="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="CONFIRM PASSWORD" required>
+                        <input type="password" name="confirm_password" id="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="CONFIRM PASSWORD" required>
                     </div>
                 </div>
 
