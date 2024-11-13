@@ -483,7 +483,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             echo "Only PDF files are allowed.";
         }
     } else {
-        echo "Invention Disclosure Code does not exist.";
+        echo "<script type='text/javascript'>
+        alert('Invention Disclosure Code does not exist.');
+      </script>";;
     }
 
     $check_stmt->close();
