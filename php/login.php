@@ -21,7 +21,7 @@
                 session_start();
                 include '../includes/db_connect.php';
 
-                // Initialize error message
+                // Initialize error messagel
                 $error_message = "";
 
                 // Check if form is submitted
