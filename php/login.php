@@ -18,44 +18,52 @@
                 <span class="border-line absolute left-0"></span>
             </div>
             <?php
-            session_start();
-            include '../includes/db_connect.php';
+                session_start();
+                include '../includes/db_connect.php';
 
-            // Initialize error message
-            $error_message = "";
+                // Initialize error message
+                $error_message = "";
 
-            // Check if form is submitted
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $email = htmlspecialchars(trim($_POST['Email-Address']));
-                $password = htmlspecialchars(trim($_POST['password']));
+                // Check if form is submitted
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $email = htmlspecialchars(trim($_POST['Email-Address']));
+                    $password = htmlspecialchars(trim($_POST['password']));
 
-                // Query to check if the email and password match in the database
-                $sql = "SELECT * FROM user WHERE EmailAddress = ? AND Password = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ss", $email, $password);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                    // Query to check if the email and password match in the database
+                    $sql = "SELECT * FROM user WHERE EmailAddress = ? AND Password = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("ss", $email, $password);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                if ($result->num_rows > 0) {
-                    // Successful login
-                    $user = $result->fetch_assoc();
-                    $_SESSION['UserID'] = $user['UserID']; // Store user ID in session
-                    $_SESSION['FirstName'] = $user['FirstName'];
-                    $_SESSION['UserType'] = $user['UserType'];
+                    if ($result->num_rows > 0) {
+                        // Fetch user data
+                        $user = $result->fetch_assoc();
 
-                    // Redirect based on UserType
-                    if ($user['UserType'] == 'Admin') {
-                        header("Location: adminVa.php"); // Redirect to admin dashboard
-                    } elseif ($user['UserType'] == 'Staff') {
-                        header("Location: staffVa.php"); // Redirect to staff page
+                        // Check if the user's account status is active
+                        if ($user['Status'] == 'Active') {
+                            // Store user information in session
+                            $_SESSION['UserID'] = $user['UserID'];
+                            $_SESSION['FirstName'] = $user['FirstName'];
+                            $_SESSION['UserType'] = $user['UserType'];
+
+                            // Redirect based on UserType
+                            if ($user['UserType'] == 'Admin') {
+                                header("Location: adminVa.php"); // Redirect to admin dashboard
+                            } elseif ($user['UserType'] == 'Staff') {
+                                header("Location: staffVa.php"); // Redirect to staff page
+                            }
+                            exit();
+                        } else {
+                            // Account is not active
+                            $error_message = "Your account is inactive. Please contact support.";
+                        }
+                    } else {
+                        // Invalid credentials
+                        $error_message = "Invalid email or password.";
                     }
-                    exit();
-                } else {
-                    // Invalid credentials
-                    $error_message = "Invalid email or password.";
                 }
-            }
-            ?>
+                ?>
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" class="space-y-4">
                 <?php if (!empty($error_message)) : ?>
                     <div class="bg-red-500 p-2 rounded text-center"><?php echo $error_message; ?></div>
