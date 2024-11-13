@@ -19,12 +19,18 @@
         }
     </style>
     <script>
-        function openDeactivateModal() {
-            document.getElementById('deactivateModal').classList.remove('hidden');
+        function toggleModal(show) {
+            document.getElementById('deactivateModal').classList.toggle('hidden', !show);
         }
 
-        function closeDeactivateModal() {
-            document.getElementById('deactivateModal').classList.add('hidden');
+        function checkPasswordMatch() {
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            if (newPassword && newPassword !== confirmPassword) {
+                alert("Passwords do not match. Please re-enter.");
+                return false;
+            }
+            return true;
         }
     </script>
 </head>
@@ -32,7 +38,6 @@
     <?php
     include '../includes/db_connect.php';
 
-    // Get user_id from the URL to fetch and edit the targeted user
     $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : null;
     $user_data = [];
 
@@ -60,8 +65,9 @@
         exit();
     }
 
-    // Handle form submission to update the user's data
+    // Handle form submission to update user data
     if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['deactivate'])) {
+        $employee_id = htmlspecialchars(trim($_POST['employee_id']));
         $first_name = htmlspecialchars(trim($_POST['first_name']));
         $middle_name = htmlspecialchars(trim($_POST['middle_name']));
         $last_name = htmlspecialchars(trim($_POST['last_name']));
@@ -72,14 +78,15 @@
         $new_password = htmlspecialchars(trim($_POST['new_password']));
 
         if (!empty($new_password)) {
-            $sql = "UPDATE user SET FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ?, Password = ? WHERE UserID = ?";
+            $sql = "UPDATE user SET UserID = ?, FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ?, Password = ? WHERE UserID = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssssssi", $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $new_password, $user_id);
+            $stmt->bind_param("issssssssi", $employee_id, $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $new_password, $user_id);
         } else {
-            $sql = "UPDATE user SET FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ? WHERE UserID = ?";
+            $sql = "UPDATE user SET UserID = ?, FirstName = ?, MiddleName = ?, LastName = ?, Campus = ?, Department = ?, ContactNumber = ?, EmailAddress = ? WHERE UserID = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssssssi", $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $user_id);
+            $stmt->bind_param("isssssssi", $employee_id, $first_name, $middle_name, $last_name, $campus, $department, $contact_number, $email, $user_id);
         }
+        
         $stmt->execute();
         $stmt->close();
         header("Location: adminMu.php");
@@ -110,7 +117,7 @@
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Deactivation</h2>
                     <p class="text-gray-700 mb-6">Are you sure you want to deactivate this user?</p>
                     <div class="flex justify-between">
-                        <button onclick="closeDeactivateModal()" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
+                        <button onclick="toggleModal(false)" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Cancel</button>
                         <form method="POST" action="">
                             <input type="hidden" name="deactivate" value="true">
                             <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Deactivate</button>
@@ -119,13 +126,13 @@
                 </div>
             </div>
 
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST">
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF'] . "?user_id=" . $user_id); ?>" method="POST" onsubmit="return checkPasswordMatch()">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-white">Employee ID Number</label>
-                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" disabled>
+                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>">
                         </div>
                         <div>
                             <label class="text-white">User Type</label>
@@ -165,17 +172,17 @@
                     </div>
                     <div class="bg-blue-500 p-5 rounded-lg">
                         <label class="text-white">New Password</label>
-                        <input type="password" name="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
+                        <input type="password" name="new_password" id="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
                     <div class="bg-blue-500 p-5 rounded-lg">
                         <label class="text-white">Confirm Password</label>
-                        <input type="password" name="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
+                        <input type="password" name="confirm_password" id="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
                 </div>
 
                 <div class="flex justify-center mb-10">
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
-                    <button type="button" onclick="openDeactivateModal()" class="ml-4 px-10 py-3 bg-red-600 text-white font-bold rounded hover:bg-red-700">DEACTIVATE</button>
+                    <button type="button" onclick="toggleModal(true)" class="ml-4 px-10 py-3 bg-red-600 text-white font-bold rounded hover:bg-red-700">DEACTIVATE</button>
                 </div>
             </form>
         </div>
