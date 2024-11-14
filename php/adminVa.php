@@ -135,14 +135,29 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                         </div>
 
                         <!-- Data Boxes Container -->
-                        <div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <?php foreach ($applicationCounts as $type => $count): ?>
-                                <div class="data-box bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
-                                    <span class="text-gray-700 font-semibold"><?php echo $type; ?></span>
-                                    <span class="data-value text-2xl font-bold text-blue-500"><?php echo $count; ?></span>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                        <!-- Data Boxes Container -->
+<div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
+    <?php 
+    // Define color mappings to match chart colors
+    $colors = [
+        'Patent (Invention)' => '#FF6384', 
+        'Industrial Design' => '#36A2EB', 
+        'Utility Model' => '#FFCE56', 
+        'Trademark' => '#4BC0C0', 
+        'Copyright' => '#9966FF', 
+        'Trade Secret' => '#FF9F40', 
+        'Geographical Indication' => '#FF6384'
+    ];
+
+    foreach ($applicationCounts as $type => $count): 
+        $color = $colors[$type]; // Get the color for each type
+    ?>
+        <div class="data-box rounded-lg shadow-md p-4 flex flex-col items-center" style="background-color: <?php echo $color; ?>;">
+            <span class="text-white font-semibold"><?php echo $type; ?></span>
+            <span class="data-value text-2xl font-bold"><?php echo $count; ?></span>
+        </div>
+    <?php endforeach; ?>
+</div>
                     </div>
                 </div>
             </div>
