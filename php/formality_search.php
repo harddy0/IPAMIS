@@ -1,7 +1,7 @@
 <?php
 // formality_search.php
 
-// Display all errors for debugging purposes
+// Display all errors for debugging purposes (Disable in production)
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -9,6 +9,7 @@ error_reporting(E_ALL);
 include '../includes/db_connect.php';
 header('Content-Type: application/json');
 
+// Check if a search term is provided
 if (isset($_GET['title'])) {
     $title = trim($_GET['title']);
 
@@ -20,7 +21,7 @@ if (isset($_GET['title'])) {
         exit;
     }
 
-    // Corrected column name for OR reference code is `eor_number`
+    // Query to fetch data from `invention_disclosure` where `eor_number` matches the search term
     $stmt = $conn->prepare("SELECT id, title_of_invention AS title, employee_name AS inventor, eor_number AS reference_code FROM invention_disclosure WHERE LOWER(eor_number) LIKE LOWER(CONCAT('%', ?, '%')) ORDER BY eor_number ASC LIMIT 5");
 
     if ($stmt) {

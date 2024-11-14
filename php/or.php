@@ -8,7 +8,84 @@ error_reporting(E_ALL);
 // Include the database connection file
 include '../includes/db_connect.php';
 session_start();
+
+// Function to generate a random IPAssetCode (e.g., 12-character alphanumeric)
+function generateRandomCode($length = 12) {
+    return substr(str_shuffle(str_repeat('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', ceil($length/62))), 0, $length);
+}
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_POST['InventionDisclosureCode']) && isset($_POST['ReferenceCode']) && isset($_POST['DateReceived'])) {
+    $inventionDisclosureCode = $_POST['InventionDisclosureCode'];
+    $referenceCode = $_POST['ReferenceCode'];
+    $dateReceived = $_POST['DateReceived'];
+    $currentUser = $_SESSION['FirstName'];
+    $fileTmpPath = $_FILES['file']['tmp_name'];
+    $fileName = $_FILES['file']['name'];
+    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    // Validate form inputs
+    if (empty($inventionDisclosureCode) || empty($referenceCode) || empty($dateReceived) || $fileExtension !== 'pdf') {
+        echo "<script>alert('All fields are required, and the file must be a PDF.');</script>";
+    } else {
+        // Read file content
+        $fileContent = file_get_contents($fileTmpPath);
+
+        if ($fileContent === false) {
+            echo "<script>alert('Failed to read the uploaded file.');</script>";
+        } else {
+            // Begin transaction
+            $conn->begin_transaction();
+
+            try {
+                // Insert into electronicor table
+                $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
+                $null = NULL;
+                $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                $stmt->send_long_data(3, $fileContent);
+                $stmt->execute();
+                $stmt->close();
+
+                // Update invention_disclosure table with the new OR reference code
+                $updateDisclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
+                $updateDisclosure->bind_param("si", $referenceCode, $inventionDisclosureCode);
+                $updateDisclosure->execute();
+                $updateDisclosure->close();
+
+                // Check if an entry exists in ipasset table
+                $ipassetCheck = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
+                $ipassetCheck->bind_param("s", $inventionDisclosureCode);
+                $ipassetCheck->execute();
+                $ipassetCheck->store_result();
+
+                if ($ipassetCheck->num_rows > 0) {
+                    // If entry exists, update it with OR details
+                    $updateIpAsset = $conn->prepare("UPDATE ipasset SET eORRefCode = ?, eORAddedBy = ? WHERE InventionDisclosureCode = ?");
+                    $updateIpAsset->bind_param("sss", $referenceCode, $currentUser, $inventionDisclosureCode);
+                    $updateIpAsset->execute();
+                    $updateIpAsset->close();
+                } else {
+                    // Otherwise, insert a new entry in ipasset
+                    $newIPAssetCode = generateRandomCode();
+                    $insertIpAsset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, eORRefCode, eORAddedBy) VALUES (?, ?, ?, ?)");
+                    $insertIpAsset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $currentUser);
+                    $insertIpAsset->execute();
+                    $insertIpAsset->close();
+                }
+
+                // Commit transaction
+                $conn->commit();
+                echo "<script>alert('File uploaded successfully!');</script>";
+            } catch (Exception $e) {
+                // Rollback on error
+                $conn->rollback();
+                echo "<script>alert('Error uploading file: " . $e->getMessage() . "');</script>";
+            }
+        }
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +115,7 @@ session_start();
         <?php include '../includes/header.php'; ?>
 
         <div class="dashboard p-6">
-            <h2 class="text-2xl font-semibold text-blue-900 mb-6">OR</h2>
+            <h2 class="text-2xl font-semibold text-blue-900 mb-6">Official Receipt</h2>
 
             <!-- Search Field with Suggestions -->
             <div class="mb-4 relative">
@@ -48,7 +125,7 @@ session_start();
             </div>
 
             <!-- Form Fields -->
-            <form method="POST" enctype="multipart/form-data" action="upload_or.php" class="space-y-4">
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Invention Disclosure Code</label>
                     <input type="text" id="invention-id" name="InventionDisclosureCode" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
@@ -61,24 +138,24 @@ session_start();
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">OR Reference Code</label>
-                    <input type="text" id="reference-code" name="ReferenceCode" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
+                    <input type="text" id="reference-code" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Date Received</label>
-                    <input type="text" id="date-received" name="DateReceived" placeholder="MM/DD/YYYY" class="date-picker w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300" readonly>
+                    <input type="text" id="date-received" name="DateReceived" placeholder="MM/DD/YYYY" required class="date-picker w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Upload New OR</label>
                     <label class="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg cursor-pointer hover:bg-green-600">
                         <span>Select File</span>
-                        <input type="file" name="file" accept=".pdf" class="hidden" id="file-input" disabled>
+                        <input type="file" name="file" accept=".pdf" class="hidden" id="file-input">
                     </label>
                 </div>
 
                 <div class="flex space-x-4">
-                    <button type="submit" id="upload-btn" class="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600" disabled>Upload</button>
+                    <button type="submit" id="upload-btn" class="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">Upload</button>
                     <button type="button" id="clear-btn" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400">Clear</button>
                 </div>
             </form>
@@ -90,6 +167,10 @@ session_start();
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            flatpickr('#date-received', {
+                dateFormat: 'm/d/Y'
+            });
+
             const searchInput = document.getElementById('search-input');
             const suggestionsContainer = document.getElementById('suggestions');
             const inventionIdField = document.getElementById('invention-id');
@@ -102,11 +183,8 @@ session_start();
 
             let debounceTimeout = null;
 
-            // Event listener for input in search bar with debounce
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 const referenceCode = this.value.trim();
-
-                // Clear any existing debounce timeout
                 clearTimeout(debounceTimeout);
 
                 if (referenceCode.length > 0) {
@@ -119,7 +197,6 @@ session_start();
                 }
             });
 
-            // Fetch suggestions from the server
             function fetchSuggestions(referenceCode) {
                 suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
                 suggestionsContainer.classList.remove('hidden');
@@ -128,13 +205,8 @@ session_start();
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            if (data.suggestions.length > 0) {
-                                showSuggestions(data.suggestions);
-                            } else {
-                                showNoResults();
-                            }
+                            showSuggestions(data.suggestions);
                         } else {
-                            console.error('Server error:', data.message);
                             showNoResults();
                         }
                     })
@@ -145,7 +217,7 @@ session_start();
             }
 
             function showSuggestions(suggestionsData) {
-                suggestionsContainer.innerHTML = ''; 
+                suggestionsContainer.innerHTML = '';
 
                 suggestionsData.forEach(item => {
                     const div = document.createElement('div');
@@ -195,22 +267,12 @@ session_start();
                 uploadBtn.disabled = true;
             }
 
-            // Event listener for the Clear button
-            clearBtn.addEventListener('click', function() {
-                inventorField.value = '';
-                referenceCodeField.value = '';
-                dateReceivedField.value = '';
-            });
+            clearBtn.addEventListener('click', resetForm);
 
-            document.addEventListener('click', function(event) {
+            document.addEventListener('click', function (event) {
                 if (!event.target.closest('.relative')) {
                     hideSuggestions();
                 }
-            });
-
-            flatpickr('.date-picker', {
-                dateFormat: 'm/d/Y',
-                allowInput: true
             });
         });
     </script>

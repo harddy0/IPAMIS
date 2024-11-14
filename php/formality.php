@@ -8,7 +8,84 @@ error_reporting(E_ALL);
 // Include the database connection file
 include '../includes/db_connect.php';
 session_start();
+
+// Function to generate a random IPAssetCode (e.g., 12-character alphanumeric)
+function generateRandomCode($length = 12) {
+    return substr(str_shuffle(str_repeat('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', ceil($length/62))), 0, $length);
+}
+
+// Check if form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_POST['InventionDisclosureCode']) && isset($_POST['ReferenceCode']) && isset($_POST['DateReceived'])) {
+    $inventionDisclosureCode = $_POST['InventionDisclosureCode'];
+    $referenceCode = $_POST['ReferenceCode'];
+    $dateReceived = $_POST['DateReceived'];
+    $currentUser = $_SESSION['FirstName'];
+    $fileTmpPath = $_FILES['file']['tmp_name'];
+    $fileName = $_FILES['file']['name'];
+    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    // Validate form inputs
+    if (empty($inventionDisclosureCode) || empty($referenceCode) || empty($dateReceived) || $fileExtension !== 'pdf') {
+        echo "<script>alert('All fields are required, and the file must be a PDF.');</script>";
+    } else {
+        // Read file content
+        $fileContent = file_get_contents($fileTmpPath);
+
+        if ($fileContent === false) {
+            echo "<script>alert('Failed to read the uploaded file.');</script>";
+        } else {
+            // Begin transaction
+            $conn->begin_transaction();
+
+            try {
+                // Insert into formalityreport table
+                $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
+                $null = NULL;
+                $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                $stmt->send_long_data(3, $fileContent);
+                $stmt->execute();
+                $stmt->close();
+
+                // Update invention_disclosure table with the new Formality Report reference code
+                $updateDisclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
+                $updateDisclosure->bind_param("si", $referenceCode, $inventionDisclosureCode);
+                $updateDisclosure->execute();
+                $updateDisclosure->close();
+
+                // Check if an entry exists in ipasset table
+                $ipassetCheck = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
+                $ipassetCheck->bind_param("s", $inventionDisclosureCode);
+                $ipassetCheck->execute();
+                $ipassetCheck->store_result();
+
+                if ($ipassetCheck->num_rows > 0) {
+                    // If entry exists, update it with Formality Report details
+                    $updateIpAsset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = ?, FormalityAddedBy = ? WHERE InventionDisclosureCode = ?");
+                    $updateIpAsset->bind_param("sss", $referenceCode, $currentUser, $inventionDisclosureCode);
+                    $updateIpAsset->execute();
+                    $updateIpAsset->close();
+                } else {
+                    // Otherwise, insert a new entry in ipasset
+                    $newIPAssetCode = generateRandomCode();
+                    $insertIpAsset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, FormalityRefCode, FormalityAddedBy) VALUES (?, ?, ?, ?)");
+                    $insertIpAsset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $currentUser);
+                    $insertIpAsset->execute();
+                    $insertIpAsset->close();
+                }
+
+                // Commit transaction
+                $conn->commit();
+                echo "<script>alert('Formality Report uploaded successfully!');</script>";
+            } catch (Exception $e) {
+                // Rollback on error
+                $conn->rollback();
+                echo "<script>alert('Error uploading file: " . $e->getMessage() . "');</script>";
+            }
+        }
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +125,7 @@ session_start();
             </div>
 
             <!-- Form Fields -->
-            <form method="POST" enctype="multipart/form-data" action="upload_formality.php" class="space-y-4">
+            <form method="POST" enctype="multipart/form-data" class="space-y-4">
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Invention Disclosure Code</label>
                     <input type="text" id="invention-id" name="InventionDisclosureCode" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
@@ -61,24 +138,26 @@ session_start();
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Formality Report Reference Code</label>
-                    <input type="text" id="reference-code" name="ReferenceCode" readonly class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
+                    <input type="text" id="reference-code" name="ReferenceCode" required class="w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Date Received</label>
-                    <input type="text" id="date-received" name="DateReceived" placeholder="MM/DD/YYYY" readonly class="date-picker w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
+                    <input type="text" id="date-received" name="DateReceived" placeholder="MM/DD/YYYY" required class="date-picker w-full px-4 py-2 rounded-lg bg-gray-100 border border-gray-300">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-semibold mb-2">Upload New Formality Report</label>
-                    <label class="custom-file-input block mt-2 mb-4 relative bg-green-500 text-white text-center rounded-lg px-4 py-2 cursor-pointer">
-                        <input type="file" name="file" class="hidden" accept=".pdf" onchange="this.nextElementSibling.innerText = this.files[0].name" required>
+                    <label class="flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg cursor-pointer hover:bg-green-600">
                         <span>Select File</span>
+                        <input type="file" name="file" accept=".pdf" class="hidden" id="file-input">
                     </label>
                 </div>
 
-                <button type="submit" id="upload-btn" class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700">Upload</button>
-                <button type="button" id="clear-btn" class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 mt-2">Clear</button>
+                <div class="flex space-x-4">
+                    <button type="submit" id="upload-btn" class="flex-1 bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600">Upload</button>
+                    <button type="button" id="clear-btn" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400">Clear</button>
+                </div>
             </form>
         </div>
 
@@ -88,27 +167,24 @@ session_start();
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            flatpickr('#date-received', {
+                dateFormat: 'm/d/Y'
+            });
+
             const searchInput = document.getElementById('search-input');
             const suggestionsContainer = document.getElementById('suggestions');
             const inventionIdField = document.getElementById('invention-id');
             const inventorField = document.getElementById('inventor');
             const referenceCodeField = document.getElementById('reference-code');
             const dateReceivedField = document.getElementById('date-received');
-            const fileInput = document.querySelector('input[name="file"]');
-            const uploadBtn = document.getElementById('upload-btn');
+            const fileInput = document.getElementById('file-input');
             const clearBtn = document.getElementById('clear-btn');
 
-            let debounceTimeout = null;
-
-            searchInput.addEventListener('input', function() {
+            // Add JavaScript code for handling search and suggestions
+            searchInput.addEventListener('input', function () {
                 const title = this.value.trim();
-
-                clearTimeout(debounceTimeout);
-
                 if (title.length > 0) {
-                    debounceTimeout = setTimeout(() => {
-                        fetchSuggestions(title);
-                    }, 300);
+                    fetchSuggestions(title);
                 } else {
                     hideSuggestions();
                     resetForm();
@@ -118,89 +194,45 @@ session_start();
             function fetchSuggestions(title) {
                 suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
                 suggestionsContainer.classList.remove('hidden');
-
                 fetch(`formality_search.php?title=${encodeURIComponent(title)}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            if (data.suggestions.length > 0) {
-                                showSuggestions(data.suggestions);
-                            } else {
-                                showNoResults();
-                            }
-                        } else {
-                            console.error('Server error:', data.message);
-                            showNoResults();
-                        }
+                        if (data.success) showSuggestions(data.suggestions);
+                        else showNoResults();
                     })
-                    .catch(error => {
-                        console.error('Error fetching suggestions:', error);
-                        showNoResults();
-                    });
+                    .catch(() => showNoResults());
             }
 
-            function showSuggestions(suggestionsData) {
+            function showSuggestions(suggestions) {
                 suggestionsContainer.innerHTML = '';
-
-                suggestionsData.forEach(item => {
+                suggestions.forEach(item => {
                     const div = document.createElement('div');
-                    div.textContent = `${item.title} by ${item.inventor}`;
                     div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
-                    div.dataset.id = item.id;
-                    div.dataset.title = item.title;
-                    div.dataset.inventor = item.inventor;
-                    div.dataset.referenceCode = item.reference_code;
+                    div.textContent = `${item.reference_code} - ${item.inventor}`;
                     div.onclick = () => selectSuggestion(item);
                     suggestionsContainer.appendChild(div);
                 });
-
                 suggestionsContainer.classList.remove('hidden');
             }
 
-            function showNoResults() {
-                suggestionsContainer.innerHTML = '<div class="px-4 py-2 text-gray-500">No results found.</div>';
-                suggestionsContainer.classList.remove('hidden');
+            function selectSuggestion(item) {
+                inventionIdField.value = item.id;
+                inventorField.value = item.inventor;
+                referenceCodeField.value = item.reference_code;
+                hideSuggestions();
             }
 
             function hideSuggestions() {
                 suggestionsContainer.classList.add('hidden');
             }
 
-            function selectSuggestion(item) {
-                searchInput.value = item.title;
-                inventionIdField.value = item.id;
-                inventorField.value = item.inventor;
-                referenceCodeField.value = item.reference_code;
-
-                referenceCodeField.readOnly = false;
-                dateReceivedField.readOnly = false;
-                fileInput.disabled = false;
-                uploadBtn.disabled = false;
-
-                hideSuggestions();
-            }
-
             function resetForm() {
                 inventorField.value = '';
                 referenceCodeField.value = '';
-                referenceCodeField.readOnly = true;
                 dateReceivedField.value = '';
-                dateReceivedField.readOnly = true;
-                fileInput.disabled = true;
-                uploadBtn.disabled = true;
             }
 
             clearBtn.addEventListener('click', resetForm);
-
-            document.addEventListener('click', function(event) {
-                if (!event.target.closest('.relative')) {
-                    hideSuggestions();
-                }
-            });
-
-            flatpickr('.date-picker', {
-                dateFormat: 'm/d/Y'
-            });
         });
     </script>
 </body>
