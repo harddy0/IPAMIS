@@ -17,14 +17,13 @@ $applicationCounts = [
 ];
 
 // Check if a start and end date have been selected
-if (isset($_POST['start_month'], $_POST['start_year'], $_POST['end_month'], $_POST['end_year'])) {
+if (isset($_POST['start_month'], $_POST['end_month'], $_POST['end_year'])) {
     $start_month = $_POST['start_month'];
-    $start_year = $_POST['start_year'];
     $end_month = $_POST['end_month'];
     $end_year = $_POST['end_year'];
 
     // Define start and end dates
-    $start_date = "$start_year-$start_month-01";
+    $start_date = "$end_year-$start_month-01";
     $end_date = date("Y-m-t", strtotime("$end_year-$end_month-01")); // Last day of the end month
 
     // Query the database for the selected date range
@@ -90,52 +89,40 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
 
                     <!-- Date Range Selection Form -->
                     <form method="POST" class="mb-6 flex space-x-4">
-    <div>
-        <label for="start_month" class="block text-gray-700">Select Start Month:</label>
-        <select id="start_month" name="start_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-            <?php for ($m = 1; $m <= 12; $m++): ?>
-                <option value="<?php echo $m; ?>" <?php echo (isset($start_month) && $start_month == $m) ? 'selected' : ''; ?>>
-                    <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                </option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <div>
-        <label for="start_year" class="block text-gray-700">Select Start Year:</label>
-        <select id="start_year" name="start_year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-            <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
-                <option value="<?php echo $y; ?>" <?php echo (isset($start_year) && $start_year == $y) ? 'selected' : ''; ?>>
-                    <?php echo $y; ?>
-                </option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <div>
-        <label for="end_month" class="block text-gray-700">Select End Month:</label>
-        <select id="end_month" name="end_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-            <?php for ($m = 1; $m <= 12; $m++): ?>
-                <option value="<?php echo $m; ?>" <?php echo (isset($end_month) && $end_month == $m) ? 'selected' : ''; ?>>
-                    <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                </option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <div>
-        <label for="end_year" class="block text-gray-700">Select End Year:</label>
-        <select id="end_year" name="end_year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-            <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
-                <option value="<?php echo $y; ?>" <?php echo (isset($end_year) && $end_year == $y) ? 'selected' : ''; ?>>
-                    <?php echo $y; ?>
-                </option>
-            <?php endfor; ?>
-        </select>
-    </div>
-    <div class="flex items-end">
-        <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
-    </div>
-</form>
-            <!--comment ra-->
-
+                        <div>
+                            <label for="start_month" class="block text-gray-700">Start Month:</label>
+                            <select id="start_month" name="start_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?php echo $m; ?>" <?php echo (isset($start_month) && $start_month == $m) ? 'selected' : ''; ?>>
+                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="end_month" class="block text-gray-700">End Month:</label>
+                            <select id="end_month" name="end_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?php echo $m; ?>" <?php echo (isset($end_month) && $end_month == $m) ? 'selected' : ''; ?>>
+                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="end_year" class="block text-gray-700">Year:</label>
+                            <select id="end_year" name="end_year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                                <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
+                                    <option value="<?php echo $y; ?>" <?php echo (isset($end_year) && $end_year == $y) ? 'selected' : ''; ?>>
+                                        <?php echo $y; ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
+                        </div>
+                    </form>
 
                     <!-- Content Box for Graph and Data Boxes -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 content-box">
