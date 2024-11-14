@@ -18,6 +18,17 @@
             width: calc(100% - 16rem);
         }
     </style>
+    <script>
+        function validatePassword() {
+            const newPassword = document.getElementById("new_password").value;
+            const confirmPassword = document.getElementById("confirm_password").value;
+            if (newPassword !== confirmPassword) {
+                alert("Error: Passwords do not match. Please check and try again.");
+                return false; // Prevents form submission
+            }
+            return true; // Allows form submission
+        }
+    </script>
 </head>
 <body>
     <?php
@@ -90,7 +101,7 @@
                 </div>
             </div>
 
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" onsubmit="return validatePassword()">
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -136,11 +147,11 @@
                     </div>
                     <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">New Password</label>
-                        <input type="password" name="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
+                        <input type="password" name="new_password" id="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
                     <div class="bg-blue-500 p-2 rounded-md">
                         <label class="text-white">Confirm Password</label>
-                        <input type="password" name="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
+                        <input type="password" name="confirm_password" id="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
                 </div>
 
