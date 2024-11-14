@@ -91,3 +91,5 @@ header, footer {
     grid-column: auto; /* Ensure it doesn't span multiple columns */
     justify-self: stretch; /* Ensures it stretches to fill its cell */
 }
+
+

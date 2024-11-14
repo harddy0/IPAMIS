@@ -132,32 +132,31 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                                 Analytics for Selected Date Range
                             </h2>
                             <canvas id="pieChart"></canvas>
-                        </div>
+                        </div>                        
 
                         <!-- Data Boxes Container -->
-                        <!-- Data Boxes Container -->
-<div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
-    <?php 
-    // Define color mappings to match chart colors
-    $colors = [
-        'Patent (Invention)' => '#FF6384', 
-        'Industrial Design' => '#36A2EB', 
-        'Utility Model' => '#FFCE56', 
-        'Trademark' => '#4BC0C0', 
-        'Copyright' => '#9966FF', 
-        'Trade Secret' => '#FF9F40', 
-        'Geographical Indication' => '#FF6384'
-    ];
+                        <div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <?php 
+                            // Define color mappings to match chart colors
+                            $colors = [
+                                'Patent (Invention)' => '#FF6384', 
+                                'Industrial Design' => '#36A2EB', 
+                                'Utility Model' => '#FFCE56', 
+                                'Trademark' => '#4BC0C0', 
+                                'Copyright' => '#9966FF', 
+                                'Trade Secret' => '#FF9F40', 
+                                'Geographical Indication' => '#FF6384'
+                            ];
 
-    foreach ($applicationCounts as $type => $count): 
-        $color = $colors[$type]; // Get the color for each type
-    ?>
-        <div class="data-box rounded-lg shadow-md p-4 flex flex-col items-center" style="background-color: <?php echo $color; ?>;">
-            <span class="text-white font-semibold"><?php echo $type; ?></span>
-            <span class="data-value text-2xl font-bold"><?php echo $count; ?></span>
-        </div>
-    <?php endforeach; ?>
-</div>
+                            foreach ($applicationCounts as $type => $count): 
+                                     $color = $colors[$type]; // Get the color for each type
+                            ?>
+                            <div class="data-box rounded-lg shadow-md p-4 flex flex-col items-center" style="background-color: <?php echo $color; ?>;">
+                                <span class="text-white font-semibold"><?php echo $type; ?></span>
+                                <span class="data-value text-2xl font-bold"><?php echo $count; ?></span>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>  
                     </div>
                 </div>
             </div>
@@ -195,12 +194,26 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'bottom'
+    position: 'right', // Align the legend vertically to the right
+    labels: {
+        padding: 20,
+        boxWidth: 20,
+    },
+    align: 'center', // Center-align the items vertically
+    display: true,
+}
+
+
+            },
+            layout: {
+                padding: {
+                    bottom: 30 // Additional padding if needed
                 }
             }
         }
     });
 </script>
+
 
 </body>
 </html>
