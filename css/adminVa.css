@@ -31,8 +31,9 @@ header, footer {
 /* Content box layout under "View Analytics" */
 .content-box {
     display: flex;
+    flex-direction: row; /* Arrange items horizontally */
     gap: 1.5rem; /* Reduced gap for a more compact layout */
-    align-items: flex-start;
+    align-items: center; /* Center align for a better look */
     margin-top: 0rem;
 }
 
@@ -41,9 +42,9 @@ header, footer {
     background-color: #E5E7EB;
     border-radius: 1rem;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
-    padding: 1.5rem; /* Reduced padding for a smaller appearance */
-    width: 65%; /* Reduced width for a more compact layout */
-    height: 380px; /* Reduced height to align with smaller data boxes */
+    padding: 0.5rem;
+    flex: 1; /* Allow flexibility to adjust width based on content */
+    height: 450px;
     display: flex;
     flex-direction: column;
     align-items: center;
