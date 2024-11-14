@@ -105,10 +105,10 @@
                 <div class="bg-blue-500 p-6 rounded-lg mb-8">
                     <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-white">Employee ID Number</label>
-                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>">
-                        </div>
+                    <div>
+                        <label class="text-white">Employee ID Number</label>
+                        <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" readonly>
+                    </div>
                         <div>
                             <label class="text-white">User Type</label>
                             <input type="text" name="user_type" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserType'] ?? ''); ?>" disabled>
