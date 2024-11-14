@@ -157,112 +157,216 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             </form>
         </div>
 
+       <!-- Download/Delete SOA Section -->
+<div class="mt-10">
+    <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete SOA</h2>
+
+    <!-- Search by SOA Reference Code -->
+    <div class="mb-4 relative">
+        <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
+        <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
+        <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+    </div>
+
+    <!-- Action buttons for download and delete -->
+    <div id="soa-actions" class="hidden space-x-4 mt-4">
+        <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
+        <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+    </div>
+</div>
+
+
         <!-- Footer -->
         <?php include '../includes/footer.php'; ?>
     </div>
 
     <script>
-       document.addEventListener('DOMContentLoaded', function () {
-    flatpickr('#date-received', {
-        dateFormat: 'm/d/Y'
-    });
+        document.addEventListener('DOMContentLoaded', function () {
+            flatpickr('#date-received', {
+                dateFormat: 'm/d/Y'
+            });
 
-    const searchInput = document.getElementById('search-input');
-    const suggestionsContainer = document.getElementById('suggestions');
-    const inventionIdField = document.getElementById('invention-id');
-    const inventorField = document.getElementById('inventor');
-    const referenceCodeField = document.getElementById('reference-code');
-    const fileInput = document.getElementById('file-input');
-    const clearBtn = document.getElementById('clear-btn');
+            const searchInput = document.getElementById('search-input');
+            const suggestionsContainer = document.getElementById('suggestions');
+            const inventionIdField = document.getElementById('invention-id');
+            const inventorField = document.getElementById('inventor');
+            const referenceCodeField = document.getElementById('reference-code');
+            const fileInput = document.getElementById('file-input');
+            const clearBtn = document.getElementById('clear-btn');
 
-    let debounceTimeout = null;
+            let debounceTimeout = null;
 
-    // Event listener for input changes in the search field
-    searchInput.addEventListener('input', function () {
-        const title = this.value.trim();
-        clearTimeout(debounceTimeout);
+            searchInput.addEventListener('input', function () {
+                const title = this.value.trim();
+                clearTimeout(debounceTimeout);
 
-        if (title.length > 0) {
-            debounceTimeout = setTimeout(() => {
-                fetchSuggestions(title);
-            }, 300);
+                if (title.length > 0) {
+                    debounceTimeout = setTimeout(() => {
+                        fetchSuggestions(title);
+                    }, 300);
+                } else {
+                    hideSuggestions();
+                    resetForm();
+                }
+            });
+
+            function fetchSuggestions(title) {
+                suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
+                suggestionsContainer.classList.remove('hidden');
+
+                fetch(`soa_search.php?title=${encodeURIComponent(title)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showSuggestions(data.suggestions);
+                        } else {
+                            showNoResults();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching suggestions:', error);
+                        showNoResults();
+                    });
+            }
+
+            function showSuggestions(suggestions) {
+                suggestionsContainer.innerHTML = '';
+
+                suggestions.forEach(item => {
+                    const div = document.createElement('div');
+                    div.textContent = `${item.title} by ${item.inventor}`;
+                    div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
+                    div.dataset.id = item.id;
+                    div.dataset.inventor = item.inventor;
+                    div.dataset.referenceCode = item.soa_reference_number;
+                    div.onclick = () => selectSuggestion(item);
+                    suggestionsContainer.appendChild(div);
+                });
+
+                suggestionsContainer.classList.remove('hidden');
+            }
+
+            function showNoResults() {
+                suggestionsContainer.innerHTML = '<div class="px-4 py-2 text-gray-500">No results found.</div>';
+                suggestionsContainer.classList.remove('hidden');
+            }
+
+            function hideSuggestions() {
+                suggestionsContainer.classList.add('hidden');
+            }
+
+            function selectSuggestion(item) {
+                searchInput.value = item.title;
+                inventionIdField.value = item.id;
+                inventorField.value = item.inventor;
+                referenceCodeField.value = item.soa_reference_number;
+                hideSuggestions();
+            }
+
+            function resetForm() {
+                inventionIdField.value = '';
+                inventorField.value = '';
+                referenceCodeField.value = '';
+                fileInput.value = '';
+                document.querySelector('label[for="file-input"]').innerText = 'Select File';
+            }
+
+            clearBtn.addEventListener('click', resetForm);
+        });
+
+        
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const downloadSoaBtn = document.getElementById('download-soa-btn');
+    const deleteSoaBtn = document.getElementById('delete-soa-btn');
+    const soaActions = document.getElementById('soa-actions');
+    const searchSoaInput = document.getElementById('search-soa-input');
+    const soaSuggestions = document.getElementById('soa-suggestions');
+    let selectedSoaReference = '';
+
+    // Event listener for search input to fetch SOA suggestions
+    searchSoaInput.addEventListener('input', function () {
+        const reference = this.value.trim();
+        if (reference.length > 0) {
+            fetch(`soa_search_download.php?query=${encodeURIComponent(reference)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displaySuggestions(data.suggestions);
+                    } else {
+                        hideSuggestions();
+                    }
+                })
+                .catch(error => console.error('Error fetching SOA suggestions:', error));
         } else {
             hideSuggestions();
-            resetForm();
         }
     });
 
-    // Function to fetch suggestions based on title input
-    function fetchSuggestions(title) {
-        suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
-        suggestionsContainer.classList.remove('hidden');
-
-        fetch(`soa_search.php?title=${encodeURIComponent(title)}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showSuggestions(data.suggestions);
-                } else {
-                    showNoResults(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching suggestions:', error);
-                showNoResults('An error occurred while fetching suggestions.');
-            });
-    }
-
-    // Function to display suggestions
-    function showSuggestions(suggestions) {
-        suggestionsContainer.innerHTML = '';
-
+    // Function to display SOA suggestions
+    function displaySuggestions(suggestions) {
+        soaSuggestions.innerHTML = '';
         suggestions.forEach(item => {
             const div = document.createElement('div');
-            div.textContent = `${item.title} by ${item.inventor}`;
+            div.textContent = item.reference_code;
             div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
-            div.dataset.id = item.id;
-            div.dataset.inventor = item.inventor;
-            div.dataset.referenceCode = item.soa_reference_number;
-            div.onclick = () => selectSuggestion(item);
-            suggestionsContainer.appendChild(div);
+            div.onclick = () => selectSoaReference(item.reference_code);
+            soaSuggestions.appendChild(div);
         });
-
-        suggestionsContainer.classList.remove('hidden');
+        soaSuggestions.classList.remove('hidden');
     }
 
-    // Function to display a message if no results are found
-    function showNoResults(message) {
-        suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-500">${message}</div>`;
-        suggestionsContainer.classList.remove('hidden');
+    // Download SOA file based on the selected SOA reference code
+    downloadSoaBtn.addEventListener('click', function () {
+        if (selectedSoaReference) {
+            window.location.href = `soa_search_download.php?reference=${encodeURIComponent(selectedSoaReference)}&action=download`;
+        } else {
+            alert("Please select an SOA to download.");
+        }
+    });
+
+    // Delete SOA record and update related tables
+    deleteSoaBtn.addEventListener('click', function () {
+        if (selectedSoaReference && confirm("Are you sure you want to delete this SOA? This action cannot be undone.")) {
+            fetch(`soa_search_download.php?reference=${encodeURIComponent(selectedSoaReference)}&action=delete`)
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        resetForm();
+                    }
+                })
+                .catch(error => console.error('Error deleting SOA:', error));
+        } else {
+            alert("Please select an SOA to delete.");
+        }
+    });
+
+    // Function to select an SOA reference
+    function selectSoaReference(reference) {
+        selectedSoaReference = reference;
+        searchSoaInput.value = reference;
+        soaActions.classList.remove('hidden');
+        hideSuggestions();
     }
 
     // Function to hide suggestions
     function hideSuggestions() {
-        suggestionsContainer.classList.add('hidden');
+        soaSuggestions.classList.add('hidden');
     }
 
-    // Function to handle the selection of a suggestion
-    function selectSuggestion(item) {
-        searchInput.value = item.title;
-        inventionIdField.value = item.id;
-        inventorField.value = item.inventor;
-        referenceCodeField.value = item.soa_reference_number;
+    // Function to reset form fields
+    function resetForm() {
+        selectedSoaReference = '';
+        soaActions.classList.add('hidden');
+        searchSoaInput.value = '';
         hideSuggestions();
     }
-
-    // Function to reset the form fields
-    function resetForm() {
-        inventionIdField.value = '';
-        inventorField.value = '';
-        referenceCodeField.value = '';
-        fileInput.value = '';
-        document.querySelector('label[for="file-input"]').innerText = 'Select File';
-    }
-
-    // Event listener for the clear button to reset the form
-    clearBtn.addEventListener('click', resetForm);
 });
 
+
+        
     </script>
 </body>
 </html>
