@@ -16,14 +16,24 @@ $applicationCounts = [
     'Geographical Indication' => 0
 ];
 
-// Check if a month and year have been selected
-if (isset($_POST['month']) && isset($_POST['year'])) {
-    $month = $_POST['month'];
-    $year = $_POST['year'];
+// Check if a start and end date have been selected
+if (isset($_POST['start_month'], $_POST['end_month'], $_POST['end_year'])) {
+    $start_month = $_POST['start_month'];
+    $end_month = $_POST['end_month'];
+    $end_year = $_POST['end_year'];
 
-    // Query the database for the selected month and year
-    $stmt = $conn->prepare("SELECT application_type, COUNT(*) AS count FROM invention_disclosure WHERE MONTH(date_submitted) = ? AND YEAR(date_submitted) = ? GROUP BY application_type");
-    $stmt->bind_param("ii", $month, $year);
+    // Define start and end dates
+    $start_date = "$end_year-$start_month-01";
+    $end_date = date("Y-m-t", strtotime("$end_year-$end_month-01")); // Last day of the end month
+
+    // Query the database for the selected date range
+    $stmt = $conn->prepare("
+        SELECT application_type, COUNT(*) AS count 
+        FROM invention_disclosure 
+        WHERE date_submitted BETWEEN ? AND ? 
+        GROUP BY application_type
+    ");
+    $stmt->bind_param("ss", $start_date, $end_date);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -51,7 +61,6 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
@@ -78,23 +87,33 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                         <span class="mr-2"><i class="fas fa-chart-pie"></i></span> View Analytics
                     </h1>
 
-                    <!-- Date Selection Form -->
+                    <!-- Date Range Selection Form -->
                     <form method="POST" class="mb-6 flex space-x-4">
                         <div>
-                            <label for="month" class="block text-gray-700">Select Month:</label>
-                            <select id="month" name="month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                            <label for="start_month" class="block text-gray-700">Start Month:</label>
+                            <select id="start_month" name="start_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
                                 <?php for ($m = 1; $m <= 12; $m++): ?>
-                                    <option value="<?php echo $m; ?>" <?php echo (isset($month) && $month == $m) ? 'selected' : ''; ?>>
+                                    <option value="<?php echo $m; ?>" <?php echo (isset($start_month) && $start_month == $m) ? 'selected' : ''; ?>>
                                         <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
                                     </option>
                                 <?php endfor; ?>
                             </select>
                         </div>
                         <div>
-                            <label for="year" class="block text-gray-700">Select Year:</label>
-                            <select id="year" name="year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                            <label for="end_month" class="block text-gray-700">End Month:</label>
+                            <select id="end_month" name="end_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                                <?php for ($m = 1; $m <= 12; $m++): ?>
+                                    <option value="<?php echo $m; ?>" <?php echo (isset($end_month) && $end_month == $m) ? 'selected' : ''; ?>>
+                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
+                                    </option>
+                                <?php endfor; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="end_year" class="block text-gray-700">Year:</label>
+                            <select id="end_year" name="end_year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
                                 <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
-                                    <option value="<?php echo $y; ?>" <?php echo (isset($year) && $year == $y) ? 'selected' : ''; ?>>
+                                    <option value="<?php echo $y; ?>" <?php echo (isset($end_year) && $end_year == $y) ? 'selected' : ''; ?>>
                                         <?php echo $y; ?>
                                     </option>
                                 <?php endfor; ?>
@@ -110,30 +129,42 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                         <!-- Graph Container -->
                         <div class="graph-container bg-white rounded-lg shadow-md p-5">
                             <h2 class="text-lg font-semibold mb-4">
-                                Analytics for <?php echo isset($month) ? date('F', mktime(0, 0, 0, $month, 10)) : 'Month'; ?> <?php echo isset($year) ? $year : ''; ?>
+                                Analytics for Selected Date Range
                             </h2>
                             <canvas id="pieChart"></canvas>
-                        </div>
+                        </div>                        
 
                         <!-- Data Boxes Container -->
                         <div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <?php foreach ($applicationCounts as $type => $count): ?>
-                                <div class="data-box bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
-                                    <span class="text-gray-700 font-semibold"><?php echo $type; ?></span>
-                                    <span class="data-value text-2xl font-bold text-blue-500"><?php echo $count; ?></span>
-                                </div>
+                            <?php 
+                            // Define color mappings to match chart colors
+                            $colors = [
+                                'Patent (Invention)' => '#FF6384', 
+                                'Industrial Design' => '#36A2EB', 
+                                'Utility Model' => '#FFCE56', 
+                                'Trademark' => '#4BC0C0', 
+                                'Copyright' => '#9966FF', 
+                                'Trade Secret' => '#FF9F40', 
+                                'Geographical Indication' => '#FF6384'
+                            ];
+
+                            foreach ($applicationCounts as $type => $count): 
+                                     $color = $colors[$type]; // Get the color for each type
+                            ?>
+                            <div class="data-box rounded-lg shadow-md p-4 flex flex-col items-center" style="background-color: <?php echo $color; ?>;">
+                                <span class="text-white font-semibold"><?php echo $type; ?></span>
+                                <span class="data-value text-2xl font-bold"><?php echo $count; ?></span>
+                            </div>
                             <?php endforeach; ?>
-                        </div>
+                        </div>  
                     </div>
                 </div>
             </div>
 
-            
             <?php include '../includes/footer.php'; ?>
             
         </div>
     </div>
-
 
 <!-- Chart.js Script -->
 <script>
@@ -163,12 +194,26 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'bottom'
+    position: 'right', // Align the legend vertically to the right
+    labels: {
+        padding: 20,
+        boxWidth: 20,
+    },
+    align: 'center', // Center-align the items vertically
+    display: true,
+}
+
+
+            },
+            layout: {
+                padding: {
+                    bottom: 30 // Additional padding if needed
                 }
             }
         }
     });
 </script>
+
 
 </body>
 </html>
