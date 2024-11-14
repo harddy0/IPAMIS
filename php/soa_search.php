@@ -16,13 +16,33 @@ if (isset($_GET['title'])) {
         exit;
     }
 
+    // Prepare statement to search for the title in the database
     $stmt = $conn->prepare("SELECT id, title_of_invention AS title, employee_name AS inventor, soa_reference_number FROM invention_disclosure WHERE LOWER(title_of_invention) LIKE LOWER(CONCAT('%', ?, '%')) ORDER BY title_of_invention ASC LIMIT 5");
 
-    if ($stmt) {
-        $stmt->bind_param("s", $title);
-        $stmt->execute();
-        $result = $stmt->get_result();
+    if (!$stmt) {
+        // Log the error for debugging
+        error_log("Prepare statement failed: " . $conn->error);
+        echo json_encode(['success' => false, 'message' => 'Database query preparation failed.']);
+        exit;
+    }
 
+    $stmt->bind_param("s", $title);
+    if (!$stmt->execute()) {
+        // Log execution error
+        error_log("Execute failed: " . $stmt->error);
+        echo json_encode(['success' => false, 'message' => 'Query execution failed.']);
+        exit;
+    }
+
+    $result = $stmt->get_result();
+    if (!$result) {
+        // Log result error
+        error_log("Get result failed: " . $stmt->error);
+        echo json_encode(['success' => false, 'message' => 'Failed to retrieve results.']);
+        exit;
+    }
+
+    if ($result->num_rows > 0) {
         $suggestions = [];
         while ($row = $result->fetch_assoc()) {
             $suggestions[] = [
@@ -32,10 +52,9 @@ if (isset($_GET['title'])) {
                 'soa_reference_number' => htmlspecialchars($row['soa_reference_number'], ENT_QUOTES, 'UTF-8')
             ];
         }
-
         echo json_encode(['success' => true, 'suggestions' => $suggestions]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Database query failed.']);
+        echo json_encode(['success' => false, 'message' => 'No results found.']);
     }
 
     $stmt->close();

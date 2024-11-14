@@ -162,98 +162,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            flatpickr('#date-received', {
-                dateFormat: 'm/d/Y'
-            });
+       document.addEventListener('DOMContentLoaded', function () {
+    flatpickr('#date-received', {
+        dateFormat: 'm/d/Y'
+    });
 
-            const searchInput = document.getElementById('search-input');
-            const suggestionsContainer = document.getElementById('suggestions');
-            const inventionIdField = document.getElementById('invention-id');
-            const inventorField = document.getElementById('inventor');
-            const referenceCodeField = document.getElementById('reference-code');
-            const fileInput = document.getElementById('file-input');
-            const clearBtn = document.getElementById('clear-btn');
+    const searchInput = document.getElementById('search-input');
+    const suggestionsContainer = document.getElementById('suggestions');
+    const inventionIdField = document.getElementById('invention-id');
+    const inventorField = document.getElementById('inventor');
+    const referenceCodeField = document.getElementById('reference-code');
+    const fileInput = document.getElementById('file-input');
+    const clearBtn = document.getElementById('clear-btn');
 
-            let debounceTimeout = null;
+    let debounceTimeout = null;
 
-            searchInput.addEventListener('input', function () {
-                const title = this.value.trim();
-                clearTimeout(debounceTimeout);
+    // Event listener for input changes in the search field
+    searchInput.addEventListener('input', function () {
+        const title = this.value.trim();
+        clearTimeout(debounceTimeout);
 
-                if (title.length > 0) {
-                    debounceTimeout = setTimeout(() => {
-                        fetchSuggestions(title);
-                    }, 300);
+        if (title.length > 0) {
+            debounceTimeout = setTimeout(() => {
+                fetchSuggestions(title);
+            }, 300);
+        } else {
+            hideSuggestions();
+            resetForm();
+        }
+    });
+
+    // Function to fetch suggestions based on title input
+    function fetchSuggestions(title) {
+        suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
+        suggestionsContainer.classList.remove('hidden');
+
+        fetch(`soa_search.php?title=${encodeURIComponent(title)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuggestions(data.suggestions);
                 } else {
-                    hideSuggestions();
-                    resetForm();
+                    showNoResults(data.message);
                 }
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                showNoResults('An error occurred while fetching suggestions.');
             });
+    }
 
-            function fetchSuggestions(title) {
-                suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
-                suggestionsContainer.classList.remove('hidden');
+    // Function to display suggestions
+    function showSuggestions(suggestions) {
+        suggestionsContainer.innerHTML = '';
 
-                fetch(`soa_search.php?title=${encodeURIComponent(title)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showSuggestions(data.suggestions);
-                        } else {
-                            showNoResults();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching suggestions:', error);
-                        showNoResults();
-                    });
-            }
-
-            function showSuggestions(suggestions) {
-                suggestionsContainer.innerHTML = '';
-
-                suggestions.forEach(item => {
-                    const div = document.createElement('div');
-                    div.textContent = `${item.title} by ${item.inventor}`;
-                    div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
-                    div.dataset.id = item.id;
-                    div.dataset.inventor = item.inventor;
-                    div.dataset.referenceCode = item.soa_reference_number;
-                    div.onclick = () => selectSuggestion(item);
-                    suggestionsContainer.appendChild(div);
-                });
-
-                suggestionsContainer.classList.remove('hidden');
-            }
-
-            function showNoResults() {
-                suggestionsContainer.innerHTML = '<div class="px-4 py-2 text-gray-500">No results found.</div>';
-                suggestionsContainer.classList.remove('hidden');
-            }
-
-            function hideSuggestions() {
-                suggestionsContainer.classList.add('hidden');
-            }
-
-            function selectSuggestion(item) {
-                searchInput.value = item.title;
-                inventionIdField.value = item.id;
-                inventorField.value = item.inventor;
-                referenceCodeField.value = item.soa_reference_number;
-                hideSuggestions();
-            }
-
-            function resetForm() {
-                inventionIdField.value = '';
-                inventorField.value = '';
-                referenceCodeField.value = '';
-                fileInput.value = '';
-                document.querySelector('label[for="file-input"]').innerText = 'Select File';
-            }
-
-            clearBtn.addEventListener('click', resetForm);
+        suggestions.forEach(item => {
+            const div = document.createElement('div');
+            div.textContent = `${item.title} by ${item.inventor}`;
+            div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
+            div.dataset.id = item.id;
+            div.dataset.inventor = item.inventor;
+            div.dataset.referenceCode = item.soa_reference_number;
+            div.onclick = () => selectSuggestion(item);
+            suggestionsContainer.appendChild(div);
         });
+
+        suggestionsContainer.classList.remove('hidden');
+    }
+
+    // Function to display a message if no results are found
+    function showNoResults(message) {
+        suggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-500">${message}</div>`;
+        suggestionsContainer.classList.remove('hidden');
+    }
+
+    // Function to hide suggestions
+    function hideSuggestions() {
+        suggestionsContainer.classList.add('hidden');
+    }
+
+    // Function to handle the selection of a suggestion
+    function selectSuggestion(item) {
+        searchInput.value = item.title;
+        inventionIdField.value = item.id;
+        inventorField.value = item.inventor;
+        referenceCodeField.value = item.soa_reference_number;
+        hideSuggestions();
+    }
+
+    // Function to reset the form fields
+    function resetForm() {
+        inventionIdField.value = '';
+        inventorField.value = '';
+        referenceCodeField.value = '';
+        fileInput.value = '';
+        document.querySelector('label[for="file-input"]').innerText = 'Select File';
+    }
+
+    // Event listener for the clear button to reset the form
+    clearBtn.addEventListener('click', resetForm);
+});
+
     </script>
 </body>
 </html>
