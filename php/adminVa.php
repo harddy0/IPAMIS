@@ -134,6 +134,7 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
         <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
     </div>
 </form>
+            <!--comment ra-->
 
 
                     <!-- Content Box for Graph and Data Boxes -->
