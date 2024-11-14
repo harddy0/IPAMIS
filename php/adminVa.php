@@ -133,7 +133,7 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                                 Analytics for Selected Date Range
                             </h2>
                             <canvas id="pieChart"></canvas>
-                        </div>
+                        </div>                        
 
                         
                         <!-- Data Boxes Container -->
