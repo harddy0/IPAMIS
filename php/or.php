@@ -159,7 +159,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
                     <button type="button" id="clear-btn" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400">Clear</button>
                 </div>
             </form>
+
         </div>
+
+        <!-- Download/Delete OR Section -->
+<div class="mt-10">
+    <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete OR</h2>
+
+    <!-- Search by OR Reference Code -->
+    <div class="mb-4 relative">
+        <label class="block text-gray-700 font-semibold mb-2">Search by OR Reference Code</label>
+        <input type="text" id="search-or-input" placeholder="Type OR reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
+        <div id="or-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+    </div>
+
+    <!-- Action buttons for download and delete -->
+    <div id="or-actions" class="hidden space-x-4 mt-4">
+        <button id="download-or-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
+        <button id="delete-or-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+    </div>
+</div>
+
 
         <!-- Footer -->
         <?php include '../includes/footer.php'; ?>
@@ -275,6 +295,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
                 }
             });
         });
+
+        // JavaScript for Download/Delete OR Section
+document.addEventListener('DOMContentLoaded', function () {
+    const searchORInput = document.getElementById('search-or-input');
+    const orSuggestionsContainer = document.getElementById('or-suggestions');
+    const orActions = document.getElementById('or-actions');
+    const downloadORBtn = document.getElementById('download-or-btn');
+    const deleteORBtn = document.getElementById('delete-or-btn');
+    let selectedORReference = null;
+
+    // Search OR by Reference Code
+    searchORInput.addEventListener('input', function () {
+        const referenceCode = this.value.trim();
+        if (referenceCode.length > 0) {
+            fetchORSuggestions(referenceCode);
+        } else {
+            hideORSuggestions();
+            orActions.classList.add('hidden');
+        }
+    });
+
+    function fetchORSuggestions(referenceCode) {
+        orSuggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
+        orSuggestionsContainer.classList.remove('hidden');
+
+        fetch(`or_search_download.php?referenceCode=${encodeURIComponent(referenceCode)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showORSuggestions(data.suggestions);
+                } else {
+                    showNoORResults();
+                }
+            })
+            .catch(() => showNoORResults());
+    }
+
+    function showORSuggestions(suggestions) {
+        orSuggestionsContainer.innerHTML = '';
+        suggestions.forEach(item => {
+            const div = document.createElement('div');
+            div.textContent = item.referenceCode;
+            div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
+            div.onclick = () => selectORReference(item);
+            orSuggestionsContainer.appendChild(div);
+        });
+        orSuggestionsContainer.classList.remove('hidden');
+    }
+
+    function showNoORResults() {
+        orSuggestionsContainer.innerHTML = '<div class="px-4 py-2 text-gray-500">No results found.</div>';
+        orSuggestionsContainer.classList.remove('hidden');
+    }
+
+    function hideORSuggestions() {
+        orSuggestionsContainer.classList.add('hidden');
+    }
+
+    function selectORReference(item) {
+        selectedORReference = item.referenceCode;
+        searchORInput.value = item.referenceCode;
+        orActions.classList.remove('hidden');
+        hideORSuggestions();
+    }
+
+    // Download OR
+    downloadORBtn.addEventListener('click', function () {
+        if (selectedORReference) {
+            window.location.href = `or_search_download.php?download=${selectedORReference}`;
+        }
+    });
+
+    // Delete OR
+    deleteORBtn.addEventListener('click', function () {
+        if (selectedORReference && confirm('Are you sure you want to delete this OR?')) {
+            fetch(`or_search_download.php?delete=${selectedORReference}`, { method: 'GET' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('OR deleted successfully.');
+                        searchORInput.value = '';
+                        orActions.classList.add('hidden');
+                    } else {
+                        alert('Failed to delete OR.');
+                    }
+                })
+                .catch(() => alert('Failed to delete OR.'));
+        }
+    });
+});
+
     </script>
 </body>
 </html>

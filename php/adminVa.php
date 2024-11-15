@@ -1,3 +1,4 @@
+
 <?php
 // Display all errors for debugging purposes
 ini_set('display_errors', 1);

@@ -161,6 +161,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             </form>
         </div>
 
+        <!-- Download or Delete Formality Report Div -->
+<div class="mt-6">
+    <h3 class="text-lg font-semibold text-blue-900">Download or Delete Formality Report</h3>
+    <div class="relative mt-2">
+        <label class="block text-gray-700 font-semibold mb-2">Search by Formality Report Reference Code</label>
+        <input type="text" id="download-search-input" placeholder="Enter Formality Report Reference Code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300">
+        <div id="download-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+    </div>
+    <div id="download-delete-buttons" class="hidden mt-4 space-x-4">
+        <button id="download-btn" class="bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600">Download</button>
+        <button id="delete-btn" class="bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+    </div>
+</div>
+
+
         <!-- Footer -->
         <?php include '../includes/footer.php'; ?>
     </div>
@@ -234,6 +249,101 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
             clearBtn.addEventListener('click', resetForm);
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const downloadSearchInput = document.getElementById('download-search-input');
+    const downloadSuggestionsContainer = document.getElementById('download-suggestions');
+    const downloadDeleteButtons = document.getElementById('download-delete-buttons');
+    let selectedDocumentNumber = null;
+
+    // Fetch suggestions for download and delete
+    downloadSearchInput.addEventListener('input', function () {
+        const referenceCode = this.value.trim();
+        if (referenceCode.length > 0) {
+            fetchDownloadSuggestions(referenceCode);
+        } else {
+            hideDownloadSuggestions();
+        }
+    });
+
+    function fetchDownloadSuggestions(referenceCode) {
+        downloadSuggestionsContainer.innerHTML = `<div class="px-4 py-2 text-gray-600">Loading...</div>`;
+        downloadSuggestionsContainer.classList.remove('hidden');
+
+        fetch(`formality_search_download.php?referenceCode=${encodeURIComponent(referenceCode)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showDownloadSuggestions(data.suggestions);
+                } else {
+                    showNoDownloadResults();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching suggestions:', error);
+                showNoDownloadResults();
+            });
+    }
+
+    function showDownloadSuggestions(suggestions) {
+        downloadSuggestionsContainer.innerHTML = '';
+        suggestions.forEach(item => {
+            const div = document.createElement('div');
+            div.textContent = `${item.reference_code} by ${item.inventor}`;
+            div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
+            div.onclick = () => selectDownloadSuggestion(item);
+            downloadSuggestionsContainer.appendChild(div);
+        });
+        downloadSuggestionsContainer.classList.remove('hidden');
+    }
+
+    function showNoDownloadResults() {
+        downloadSuggestionsContainer.innerHTML = '<div class="px-4 py-2 text-gray-500">No results found.</div>';
+        downloadSuggestionsContainer.classList.remove('hidden');
+    }
+
+    function hideDownloadSuggestions() {
+        downloadSuggestionsContainer.classList.add('hidden');
+    }
+
+    function selectDownloadSuggestion(item) {
+        downloadSearchInput.value = item.reference_code;
+        selectedDocumentNumber = item.reference_code;
+        hideDownloadSuggestions();
+        downloadDeleteButtons.classList.remove('hidden');
+    }
+
+    // Handle Download Button
+    document.getElementById('download-btn').addEventListener('click', function () {
+        if (selectedDocumentNumber) {
+            window.location.href = `formality_search_download.php?download=${encodeURIComponent(selectedDocumentNumber)}`;
+        }
+    });
+
+    // Handle Delete Button
+    document.getElementById('delete-btn').addEventListener('click', function () {
+        if (selectedDocumentNumber) {
+            fetch(`formality_search_download.php?delete=${encodeURIComponent(selectedDocumentNumber)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Formality Report deleted successfully!');
+                        downloadSearchInput.value = '';
+                        downloadDeleteButtons.classList.add('hidden');
+                        selectedDocumentNumber = null;
+                    } else {
+                        alert('Error deleting Formality Report.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting file:', error);
+                    alert('An error occurred while deleting the Formality Report.');
+                });
+        }
+    });
+});
+
+
     </script>
 </body>
 </html>

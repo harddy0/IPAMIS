@@ -157,6 +157,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             </form>
         </div>
 
+       <!-- Download/Delete SOA Section -->
+<div class="mt-10">
+    <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete SOA</h2>
+
+    <!-- Search by SOA Reference Code -->
+    <div class="mb-4 relative">
+        <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
+        <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
+        <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+    </div>
+
+    <!-- Action buttons for download and delete -->
+    <div id="soa-actions" class="hidden space-x-4 mt-4">
+        <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
+        <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+    </div>
+</div>
+
+
         <!-- Footer -->
         <?php include '../includes/footer.php'; ?>
     </div>
@@ -254,6 +273,100 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
             clearBtn.addEventListener('click', resetForm);
         });
+
+        
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+    const downloadSoaBtn = document.getElementById('download-soa-btn');
+    const deleteSoaBtn = document.getElementById('delete-soa-btn');
+    const soaActions = document.getElementById('soa-actions');
+    const searchSoaInput = document.getElementById('search-soa-input');
+    const soaSuggestions = document.getElementById('soa-suggestions');
+    let selectedSoaReference = '';
+
+    // Event listener for search input to fetch SOA suggestions
+    searchSoaInput.addEventListener('input', function () {
+        const reference = this.value.trim();
+        if (reference.length > 0) {
+            fetch(`soa_search_download.php?query=${encodeURIComponent(reference)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displaySuggestions(data.suggestions);
+                    } else {
+                        hideSuggestions();
+                    }
+                })
+                .catch(error => console.error('Error fetching SOA suggestions:', error));
+        } else {
+            hideSuggestions();
+        }
+    });
+
+    // Function to display SOA suggestions
+    function displaySuggestions(suggestions) {
+        soaSuggestions.innerHTML = '';
+        suggestions.forEach(item => {
+            const div = document.createElement('div');
+            div.textContent = item.reference_code;
+            div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
+            div.onclick = () => selectSoaReference(item.reference_code);
+            soaSuggestions.appendChild(div);
+        });
+        soaSuggestions.classList.remove('hidden');
+    }
+
+    // Download SOA file based on the selected SOA reference code
+    downloadSoaBtn.addEventListener('click', function () {
+        if (selectedSoaReference) {
+            window.location.href = `soa_search_download.php?reference=${encodeURIComponent(selectedSoaReference)}&action=download`;
+        } else {
+            alert("Please select an SOA to download.");
+        }
+    });
+
+    // Delete SOA record and update related tables
+    deleteSoaBtn.addEventListener('click', function () {
+        if (selectedSoaReference && confirm("Are you sure you want to delete this SOA? This action cannot be undone.")) {
+            fetch(`soa_search_download.php?reference=${encodeURIComponent(selectedSoaReference)}&action=delete`)
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        resetForm();
+                    }
+                })
+                .catch(error => console.error('Error deleting SOA:', error));
+        } else {
+            alert("Please select an SOA to delete.");
+        }
+    });
+
+    // Function to select an SOA reference
+    function selectSoaReference(reference) {
+        selectedSoaReference = reference;
+        searchSoaInput.value = reference;
+        soaActions.classList.remove('hidden');
+        hideSuggestions();
+    }
+
+    // Function to hide suggestions
+    function hideSuggestions() {
+        soaSuggestions.classList.add('hidden');
+    }
+
+    // Function to reset form fields
+    function resetForm() {
+        selectedSoaReference = '';
+        soaActions.classList.add('hidden');
+        searchSoaInput.value = '';
+        hideSuggestions();
+    }
+});
+
+
+        
     </script>
 </body>
 </html>
