@@ -115,6 +115,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         <?php include '../includes/header.php'; ?>
 
         <div class="dashboard p-6">
+            <div class="mb-4">
+                <button onclick="goBack()" class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                     </svg>
+                        Back to Previous Page
+                </button>
+            </div>
+
             <h2 class="text-2xl font-semibold text-blue-900 mb-6">Statement of Account</h2>
 
             <!-- Search Field with Suggestions -->
@@ -369,5 +378,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
         
     </script>
+    <script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
 </body>
 </html>
