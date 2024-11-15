@@ -1,4 +1,3 @@
-
 <?php
 // Display all errors for debugging purposes
 ini_set('display_errors', 1);
@@ -18,14 +17,9 @@ $applicationCounts = [
 ];
 
 // Check if a start and end date have been selected
-if (isset($_POST['start_month'], $_POST['end_month'], $_POST['end_year'])) {
-    $start_month = $_POST['start_month'];
-    $end_month = $_POST['end_month'];
-    $end_year = $_POST['end_year'];
-
-    // Define start and end dates
-    $start_date = "$end_year-$start_month-01";
-    $end_date = date("Y-m-t", strtotime("$end_year-$end_month-01")); // Last day of the end month
+if (isset($_POST['start_date'], $_POST['end_date'])) {
+    $start_date = $_POST['start_date'];
+    $end_date = $_POST['end_date'];
 
     // Query the database for the selected date range
     $stmt = $conn->prepare("
@@ -71,12 +65,14 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
     <title>Admin View Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body class="overflow-hidden">
 
@@ -100,38 +96,16 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
                     </h1>
 
                     <!-- Date Range Selection Form -->
-                    <form method="POST" class="mb-6 flex space-x-4">
+                    <form method="POST" class="mb-6 flex space-x-4 items-end">
                         <div>
-                            <label for="start_month" class="block text-gray-700">Start Month:</label>
-                            <select id="start_month" name="start_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-                                <?php for ($m = 1; $m <= 12; $m++): ?>
-                                    <option value="<?php echo $m; ?>" <?php echo (isset($start_month) && $start_month == $m) ? 'selected' : ''; ?>>
-                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
+                            <label for="start_date" class="block text-gray-700">Start Date:</label>
+                            <input type="text" id="start_date" name="start_date" placeholder="Select start date" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
                         </div>
                         <div>
-                            <label for="end_month" class="block text-gray-700">End Month:</label>
-                            <select id="end_month" name="end_month" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-                                <?php for ($m = 1; $m <= 12; $m++): ?>
-                                    <option value="<?php echo $m; ?>" <?php echo (isset($end_month) && $end_month == $m) ? 'selected' : ''; ?>>
-                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
+                            <label for="end_date" class="block text-gray-700">End Date:</label>
+                            <input type="text" id="end_date" name="end_date" placeholder="Select end date" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
                         </div>
                         <div>
-                            <label for="end_year" class="block text-gray-700">Year:</label>
-                            <select id="end_year" name="end_year" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
-                                <?php for ($y = date("Y"); $y >= 2000; $y--): ?>
-                                    <option value="<?php echo $y; ?>" <?php echo (isset($end_year) && $end_year == $y) ? 'selected' : ''; ?>>
-                                        <?php echo $y; ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                        <div class="flex items-end">
                             <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
                         </div>
                     </form>
@@ -183,8 +157,24 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
         </div>
     </div>
 
-<!-- Chart.js Script -->
+<!-- Flatpickr and Chart.js Script -->
 <script>
+    // Initialize Flatpickr for Start Date and End Date
+    const startDatePicker = flatpickr('#start_date', {
+        dateFormat: 'Y-m-d',
+        onChange: function (selectedDates, dateStr, instance) {
+            endDatePicker.set('minDate', dateStr); // Ensure end date is after start date
+        }
+    });
+
+    const endDatePicker = flatpickr('#end_date', {
+        dateFormat: 'Y-m-d',
+        onChange: function (selectedDates, dateStr, instance) {
+            startDatePicker.set('maxDate', dateStr); // Ensure start date is before end date
+        }
+    });
+
+    // Generate the Pie Chart
     const ctx = document.getElementById('pieChart').getContext('2d');
     const applicationCounts = <?php echo $applicationCountsJSON; ?>;
     const totalApplications = applicationCounts.reduce((a, b) => a + b, 0);
