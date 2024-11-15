@@ -7,7 +7,7 @@ include '../includes/db_connect.php';
 
 // Initialize variables for application counts
 $applicationCounts = [
-    'Patent (Invention)' => 0,
+    'Patent' => 0,
     'Industrial Design' => 0,
     'Utility Model' => 0,
     'Trademark' => 0,
@@ -124,7 +124,7 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
                         <div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
                             <?php 
                             $colors = [
-                                'Patent (Invention)' => '#FF6384', 
+                                'Patent' => '#FF6384', 
                                 'Industrial Design' => '#36A2EB', 
                                 'Utility Model' => '#FFCE56', 
                                 'Trademark' => '#4BC0C0', 
