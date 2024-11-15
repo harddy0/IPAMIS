@@ -155,25 +155,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
                 <button type="submit" id="upload-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 mt-4">Upload</button>
                 <button type="button" id="clear-btn" class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 mt-2">Clear</button>
             </form>
+                   <!-- Download/Delete SOA Section -->
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete SOA</h2>
+
+                        <!-- Search by SOA Reference Code -->
+                        <div class="mb-4 relative">
+                            <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
+                            <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
+                            <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+                        </div>
+
+                        <!-- Action buttons for download and delete -->
+                        <div id="soa-actions" class="hidden space-x-4 mt-4">
+                            <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
+                            <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+                        </div>
+                    </div>
         </div>
 
-       <!-- Download/Delete SOA Section -->
-<div class="mt-10">
-    <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete SOA</h2>
 
-    <!-- Search by SOA Reference Code -->
-    <div class="mb-4 relative">
-        <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
-        <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
-        <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
-    </div>
-
-    <!-- Action buttons for download and delete -->
-    <div id="soa-actions" class="hidden space-x-4 mt-4">
-        <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
-        <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
-    </div>
-</div>
 
 
         <!-- Footer -->
