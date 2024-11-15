@@ -1,8 +1,3 @@
-
-
-
-
-You said:
 <?php
 // Display all errors for debugging purposes
 ini_set('display_errors', 1);
@@ -53,8 +48,18 @@ if (isset($_POST['start_month'], $_POST['end_month'], $_POST['end_year'])) {
     $stmt->close();
 }
 
-// Convert PHP array to JSON for use in JavaScript
+// Calculate total applications
+$totalApplications = array_sum($applicationCounts);
+
+// Calculate percentages for each type
+$applicationPercentages = [];
+foreach ($applicationCounts as $type => $count) {
+    $applicationPercentages[$type] = ($totalApplications > 0) ? round(($count / $totalApplications) * 100, 1) : 0;
+}
+
+// Convert PHP arrays to JSON for JavaScript
 $applicationCountsJSON = json_encode(array_values($applicationCounts));
+$applicationPercentagesJSON = json_encode(array_values($applicationPercentages));
 ?>
 
 <!DOCTYPE html>
@@ -140,11 +145,9 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                             <canvas id="pieChart"></canvas>
                         </div>
 
-                        
                         <!-- Data Boxes Container -->
                         <div class="data-boxes-container grid grid-cols-1 gap-4 md:grid-cols-2">
                             <?php 
-                            // Define color mappings to match chart colors
                             $colors = [
                                 'Patent (Invention)' => '#FF6384', 
                                 'Industrial Design' => '#36A2EB', 
@@ -156,14 +159,20 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
                             ];
 
                             foreach ($applicationCounts as $type => $count): 
-                                $color = $colors[$type]; // Get the color for each type
+                                $color = $colors[$type];
+                                $percentage = $applicationPercentages[$type];
                             ?>
-                                <div class="data-box rounded-lg shadow-md p-4 flex flex-col items-center" style="background-color: <?php echo $color; ?>;">
-                                    <span class="text-white font-semibold"><?php echo $type; ?></span>
-                                    <span class="data-value text-2xl font-bold"><?php echo $count; ?></span>
+                                <div class="data-box rounded-lg shadow-md p-4 flex flex-col items-center justify-center text-center" 
+                                    style="background-color: <?php echo $color; ?>; min-height: 100px; padding: 16px;">
+                                    <span class="text-white font-semibold" style="font-size: 1.1rem;"><?php echo $type; ?></span>
+                                    <span class="data-value text-2xl font-bold text-white" style="font-size: 1.6rem;">
+                                        <?php echo $count; ?> 
+                                        <span style="font-size: 0.8rem; font-weight: normal;">(<?php echo $percentage; ?>%)</span>
+                                    </span>
                                 </div>
                             <?php endforeach; ?>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -173,19 +182,12 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
         </div>
     </div>
 
-
 <!-- Chart.js Script -->
 <script>
-    // Access the canvas element
     const ctx = document.getElementById('pieChart').getContext('2d');
-    
-    // Use the application counts from PHP, already calculated and output as JSON
     const applicationCounts = <?php echo $applicationCountsJSON; ?>;
-    
-    // Calculate the total count of applications to determine percentages
     const totalApplications = applicationCounts.reduce((a, b) => a + b, 0);
 
-    // Initialize the pie chart with percentage labels inside each slice
     const pieChart = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -209,35 +211,27 @@ $applicationCountsJSON = json_encode(array_values($applicationCounts));
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'left', // Position legend to the left of the chart
-                    align: 'center',
+                    position: 'left',
                     labels: {
                         boxWidth: 20,
                         padding: 10
                     }
                 },
                 datalabels: {
-                    display: true, // Ensure data labels are displayed
-                    color: '#ffffff', // Set text color to white for contrast
-                    anchor: 'center', // Position labels at the center of each slice
-                    align: 'center', // Align data labels within the center of each slice
+                    display: true,
+                    color: '#ffffff',
                     formatter: (value) => {
-                        // Calculate percentage for each slice
                         const percentage = (value / totalApplications * 100).toFixed(1);
-                        return percentage + '%'; // Return formatted percentage
+                        return percentage + '%';
                     },
                     font: {
                         weight: 'bold',
-                        size: 14 // Font size for readability
+                        size: 14
                     }
                 }
             }
         }
     });
 </script>
-
-
-
-
 </body>
 </html>
