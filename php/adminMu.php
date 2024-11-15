@@ -34,10 +34,10 @@
         
         <!-- Centered Buttons -->
         <div class="flex flex-col items-center space-y-6">
-            <button onclick="showFaculty()" class="w-56 h-16 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300">
+            <button onclick="window.location.href='faculty.php'" class="w-56 h-16 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300">
                 ALL FACULTY
             </button>
-            <button onclick="showAdminStaff()" class="w-56 h-16 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300">
+            <button onclick="window.location.href='adstaff.php'" class="w-56 h-16 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300">
                 ADMIN & STAFF
             </button>
         </div>
