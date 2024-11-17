@@ -5,7 +5,7 @@ body {
 /* Main wrapper for sidebar and content */
 .main-wrapper {
     display: flex;
-    height: 103vh;
+    height: 100vh;
 }
 
 /* Content wrapper to hold header, main content, and footer */
@@ -13,7 +13,7 @@ body {
     display: flex;
     flex-direction: column;
     width: calc(95% - 80px); /* Adjust width to fit next to sidebar */
-      
+    
 }
 
 /* Header and Footer styling to align beside the sidebar */
