@@ -16,32 +16,40 @@ $applicationCounts = [
     'Geographical Indication' => 0
 ];
 
+// Default start and end dates
+$default_start_date = '2024-01-01';
+$default_end_date = '2024-12-31';
+
 // Check if a start and end date have been selected
 if (isset($_POST['start_date'], $_POST['end_date'])) {
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
-
-    // Query the database for the selected date range
-    $stmt = $conn->prepare("
-        SELECT application_type, COUNT(*) AS count 
-        FROM invention_disclosure 
-        WHERE date_submitted BETWEEN ? AND ? 
-        GROUP BY application_type
-    ");
-    $stmt->bind_param("ss", $start_date, $end_date);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Update the application counts based on the query result
-    while ($row = $result->fetch_assoc()) {
-        $type = $row['application_type'];
-        if (isset($applicationCounts[$type])) {
-            $applicationCounts[$type] = $row['count'];
-        }
-    }
-
-    $stmt->close();
+} else {
+    // Use default date range if none selected
+    $start_date = $default_start_date;
+    $end_date = $default_end_date;
 }
+
+// Query the database for the selected date range
+$stmt = $conn->prepare("
+    SELECT application_type, COUNT(*) AS count 
+    FROM invention_disclosure 
+    WHERE date_submitted BETWEEN ? AND ? 
+    GROUP BY application_type
+");
+$stmt->bind_param("ss", $start_date, $end_date);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Update the application counts based on the query result
+while ($row = $result->fetch_assoc()) {
+    $type = $row['application_type'];
+    if (isset($applicationCounts[$type])) {
+        $applicationCounts[$type] = $row['count'];
+    }
+}
+
+$stmt->close();
 
 // Calculate total applications
 $totalApplications = array_sum($applicationCounts);
@@ -99,24 +107,24 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
                     <form method="POST" class="mb-6 flex space-x-4 items-end">
                         <div>
                             <label for="start_date" class="block text-gray-700">Start Date:</label>
-                            <input type="text" id="start_date" name="start_date" placeholder="Select start date" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                            <input type="text" id="start_date" name="start_date" value="2024-01-01" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
                         </div>
                         <div>
                             <label for="end_date" class="block text-gray-700">End Date:</label>
-                            <input type="text" id="end_date" name="end_date" placeholder="Select end date" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
+                            <input type="text" id="end_date" name="end_date" value="2024-12-31" required class="w-full px-4 py-2 rounded-lg bg-gray-200 text-gray-900 mt-2">
                         </div>
                         <div>
                             <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">View</button>
                         </div>
                     </form>
 
+                    <h2 class="text-lg font-semibold mt-12">
+                        Analytics for Selected Date Range
+                    </h2>
                     <!-- Content Box for Graph and Data Boxes -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 content-box">
                         <!-- Graph Container -->
-                        <div class="graph-container bg-white rounded-lg shadow-md p-5">
-                            <h2 class="text-lg font-semibold mt-24">
-                                Analytics for Selected Date Range
-                            </h2>
+                        <div class="graph-container bg-white rounded-lg shadow-md"> 
                             <canvas id="pieChart"></canvas>
                         </div>
 
@@ -147,13 +155,41 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
                                 </div>
                             <?php endforeach; ?>
                         </div>
-
+                    </div>
+                     <!-- Custom Legend Container -->
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FF6384;"></span>
+                            Patent (Invention)
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #36A2EB;"></span>
+                            Industrial Design
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FFCE56;"></span>
+                            Utility Model
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #4BC0C0;"></span>
+                            Trademark
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #9966FF;"></span>
+                            Copyright
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FF9F40;"></span>
+                            Trade Secret
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #FF6384;"></span>
+                            Geographical Indication
+                        </div>
                     </div>
                 </div>
             </div>
-
             <?php include '../includes/footer.php'; ?>
-            
         </div>
     </div>
 
@@ -161,6 +197,7 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
 <script>
     // Initialize Flatpickr for Start Date and End Date
     const startDatePicker = flatpickr('#start_date', {
+        defaultDate: "2024-01-01",
         dateFormat: 'Y-m-d',
         onChange: function (selectedDates, dateStr, instance) {
             endDatePicker.set('minDate', dateStr); // Ensure end date is after start date
@@ -168,6 +205,7 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
     });
 
     const endDatePicker = flatpickr('#end_date', {
+        defaultDate: "2024-12-31",
         dateFormat: 'Y-m-d',
         onChange: function (selectedDates, dateStr, instance) {
             startDatePicker.set('maxDate', dateStr); // Ensure start date is before end date
@@ -202,11 +240,7 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'left',
-                    labels: {
-                        boxWidth: 20,
-                        padding: 10
-                    }
+                    display: false, // Disable the default legend
                 },
                 datalabels: {
                     display: true,

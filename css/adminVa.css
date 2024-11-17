@@ -44,7 +44,7 @@ header, footer {
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
     padding: 0.5rem;
     flex: 1; /* Allow flexibility to adjust width based on content */
-    height: 450px;
+    height: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -57,7 +57,7 @@ header, footer {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 100px); /* Fixed height for uniform box size */
     gap: 1rem;
-    width: 28%; /* Reduced width for a more compact layout */
+    width: 35%; /* Reduced width for a more compact layout */
     height: 0%;
     position: relative;
     margin-left: auto; /* Align the data boxes container to the right */
@@ -93,4 +93,41 @@ header, footer {
     justify-self: stretch; /* Ensures it stretches to fill its cell */
 }
 
+/* Custom Legend Container */
+.legend-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns */
+    row-gap: 0rem; /* Remove vertical gap */
+    column-gap: 0rem; 
+    justify-content: center; /* Center-align the grid */
+    
+    width: 65%; /* Reduce the width of the legend container */
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+/* Individual Legend Items */
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #4A4A4A;
+    font-weight: 600;
+    justify-content: start;
+}
+
+/* Legend Color Box */
+.legend-color {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    border-radius: 3px; /* Optional rounded corners */
+}
+
+/* Center the last legend in the last row */
+.legend-item:last-child {
+    grid-column: span 3; /* Span all 3 columns */
+    justify-self: left; /* Center-align the last legend */
+}
 
