@@ -115,6 +115,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         <?php include '../includes/header.php'; ?>
 
         <div class="dashboard p-6">
+            <div class="mb-4">
+                <button onclick="goBack()" class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                     </svg>
+                        Back to Previous Page
+                </button>
+            </div>
+
             <h2 class="text-2xl font-semibold text-blue-900 mb-6">Statement of Account</h2>
 
             <!-- Search Field with Suggestions -->
@@ -155,25 +164,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
                 <button type="submit" id="upload-btn" class="w-full bg-blue-500 text-white py-2 rounded-lg font-semibold hover:bg-blue-600 mt-4">Upload</button>
                 <button type="button" id="clear-btn" class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-400 mt-2">Clear</button>
             </form>
+                   <!-- Download/Delete SOA Section -->
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete SOA</h2>
+
+                        <!-- Search by SOA Reference Code -->
+                        <div class="mb-4 relative">
+                            <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
+                            <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
+                            <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+                        </div>
+
+                        <!-- Action buttons for download and delete -->
+                        <div id="soa-actions" class="hidden space-x-4 mt-4">
+                            <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
+                            <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+                        </div>
+                    </div>
         </div>
 
-       <!-- Download/Delete SOA Section -->
-<div class="mt-10">
-    <h2 class="text-2xl font-semibold text-blue-900 mb-4">Download or Delete SOA</h2>
 
-    <!-- Search by SOA Reference Code -->
-    <div class="mb-4 relative">
-        <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
-        <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
-        <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
-    </div>
-
-    <!-- Action buttons for download and delete -->
-    <div id="soa-actions" class="hidden space-x-4 mt-4">
-        <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
-        <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
-    </div>
-</div>
 
 
         <!-- Footer -->
@@ -368,5 +378,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
         
     </script>
+    <script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
 </body>
 </html>
