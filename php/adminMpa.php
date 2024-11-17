@@ -47,7 +47,7 @@ if ($result->num_rows > 0) {
             <!-- Left Profile Card -->
             <div class="profile-left rounded-lg p-6 flex flex-col items-center w-1/4 shadow-lg">
                 <div class="profile-picture mb-4">
-                    <img src="<?php echo htmlspecialchars($userImagePath); ?>" alt="Profile Picture" class="w-24 h-24 rounded-full">
+                    <img src="<?php echo htmlspecialchars($userImagePath); ?>" alt="Profile Picture" class="w-24 h-24 rounded-full bg-black">
                 </div>
                 <div class="profile-info text-center">
                     <p class="profile-name text-lg font-semibold text-gray-800"><?php echo htmlspecialchars($fullName); ?></p>

@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/login.css">
 </head>
-<body class="bg-cover bg-center h-screen" style="background-image: url('../images/ctu1.png');">
+<body class="log bg-cover bg-center bg-blue-900 bg-opacity-80 h-screen" style="background-image: url('../images/ctu1.png');">
 <div class="login-container flex items-center justify-center h-full">
     <div class="bg-blue-900 bg-opacity-80 p-10 rounded-lg w-full max-h-[90vh] max-w-sm text-white overflow-y-auto">
         <div class="header flex items-center justify-center mb-6 relative">
@@ -90,7 +90,7 @@
                 </label>
                 <a href="#" class="text-lightblue hover:underline">Forgot Password?</a>
             </div>
-            <button type="submit" class="w-full py-2 bg-gold text-blue-900 font-semibold rounded-lg hover:bg-orange-600 focus:outline-none">LOGIN</button>
+            <button type="submit" class="but w-full py-2 bg-gold text-blue-900 font-semibold rounded-lg hover:bg-orange-600 focus:outline-none">LOGIN</button>
         </form>
         <p class="mt-4 text-center text-xs">Need assistance? Contact us at <a href="mailto:janeth.ugang@ctu.edu.ph" class="text-lightblue hover:underline">janeth.ugang@ctu.edu.ph</a></p>
     </div>

@@ -33,3 +33,24 @@
     bottom: 0;
 }
 
+.log{
+    transform: translateY(15px);
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.but:hover{
+    font-weight: bold;
+    background-color: blue;
+    opacity: 80%;
+    color: gold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
