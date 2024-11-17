@@ -16,7 +16,18 @@ if (isset($_GET['title'])) {
         exit;
     }
 
-    $stmt = $conn->prepare("SELECT id, title_of_invention AS title, employee_name AS inventor, soa_reference_number FROM invention_disclosure WHERE LOWER(title_of_invention) LIKE LOWER(CONCAT('%', ?, '%')) ORDER BY title_of_invention ASC LIMIT 5");
+    // Query to fetch invention details regardless of soa_reference_number
+    $stmt = $conn->prepare("
+        SELECT 
+            id, 
+            title_of_invention AS title, 
+            employee_name AS inventor, 
+            IFNULL(soa_reference_number, '') AS soa_reference_number 
+        FROM invention_disclosure 
+        WHERE LOWER(title_of_invention) LIKE LOWER(CONCAT('%', ?, '%')) 
+        ORDER BY title_of_invention ASC 
+        LIMIT 5
+    ");
 
     if ($stmt) {
         $stmt->bind_param("s", $title);
