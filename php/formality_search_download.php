@@ -5,8 +5,12 @@ header('Content-Type: application/json');
 
 if (isset($_GET['referenceCode'])) {
     $referenceCode = $_GET['referenceCode'];
-    
-    $stmt = $conn->prepare("SELECT DocumentNumber, employee_name AS inventor FROM formalityreport JOIN invention_disclosure ON formalityreport.InventionDisclosureCode = invention_disclosure.id WHERE DocumentNumber LIKE CONCAT('%', ?, '%') LIMIT 5");
+
+    $stmt = $conn->prepare("SELECT DocumentNumber, employee_name AS inventor 
+                            FROM formalityreport 
+                            JOIN invention_disclosure 
+                            ON formalityreport.InventionDisclosureCode = invention_disclosure.id 
+                            WHERE DocumentNumber LIKE CONCAT('%', ?, '%') LIMIT 5");
     $stmt->bind_param("s", $referenceCode);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -25,13 +29,13 @@ if (isset($_GET['referenceCode'])) {
 
 if (isset($_GET['download'])) {
     $referenceCode = $_GET['download'];
-    
+
     $stmt = $conn->prepare("SELECT Document FROM formalityreport WHERE DocumentNumber = ?");
     $stmt->bind_param("s", $referenceCode);
     $stmt->execute();
     $stmt->bind_result($fileContent);
     $stmt->fetch();
-    
+
     if ($fileContent) {
         header('Content-Type: application/pdf');
         header("Content-Disposition: attachment; filename=\"$referenceCode.pdf\"");
