@@ -75,59 +75,56 @@
 
                     <!-- Wrapper for the table to add scroll functionality -->
                     <div class="overflow-y-auto max-h-64">
-                        <table>
+                        <table class="w-full bg-gray-100 border-collapse">
                             <thead class="bg-blue-800 text-white">
                                 <tr>
-                                    <th class="text-left px-6 py-3">ID Number</th>
-                                    <th class="text-center px-6 py-3">Name</th>
-                                    <th class="text-left px-6 py-3">Campus</th>
-                                    <th class="text-left px-6 py-3">User Type</th>
-                                    <th class="text-center px-6 py-3">Action</th>
+                                    <th class="text-left px-6 py-3 border">ID Number</th>
+                                    <th class="text-center px-6 py-3 border">Name</th>
+                                    <th class="text-left px-6 py-3 border">Campus</th>
+                                    <th class="text-left px-6 py-3 border">User Type</th>
+                                    <th class="text-center px-6 py-3 border">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">01</td>
-                                    <td class="px-6 py-3 text-center">John Arado</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-6 py-3 border">01</td>
+                                    <td class="px-6 py-3 border text-center">John Arado</td>
+                                    <td class="px-6 py-3 border">CTU Main</td>
+                                    <td class="px-6 py-3 border">Faculty</td>
+                                    <td class="px-6 py-3 border text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">02</td>
-                                    <td class="px-6 py-3 text-center">Faye Genson</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-6 py-3 border">02</td>
+                                    <td class="px-6 py-3 border text-center">Faye Genson</td>
+                                    <td class="px-6 py-3 border">CTU Main</td>
+                                    <td class="px-6 py-3 border">Faculty</td>
+                                    <td class="px-6 py-3 border text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">03</td>
-                                    <td class="px-6 py-3 text-center">Kingston Canales</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-6 py-3 border">03</td>
+                                    <td class="px-6 py-3 border text-center">Kingston Canales</td>
+                                    <td class="px-6 py-3 border">CTU Main</td>
+                                    <td class="px-6 py-3 border">Faculty</td>
+                                    <td class="px-6 py-3 border text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">04</td>
-                                    <td class="px-6 py-3 text-center">Mae Jubaihib</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-6 py-3 border">04</td>
+                                    <td class="px-6 py-3 border text-center">Mae Jubaihib</td>
+                                    <td class="px-6 py-3 border">CTU Main</td>
+                                    <td class="px-6 py-3 border">Faculty</td>
+                                    <td class="px-6 py-3 border text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
