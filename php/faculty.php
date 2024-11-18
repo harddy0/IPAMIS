@@ -10,6 +10,30 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <style>
+        table {
+            table-layout: fixed; /* Ensures consistent column widths */
+            width: 100%; /* Make the table span full width */
+            border-collapse: collapse; /* Ensure borders collapse properly */
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #2a4365; /* Matches the blue header color */
+            text-align: left;
+            padding: 8px;
+        }
+
+        tbody td {
+            padding: 8px;
+        }
+
+        th, td {
+            border: 1px solid #ccc; /* Optional: Better visual separation */
+        }
+    </style>
 </head>
 <body class="overflow-hidden">
 
@@ -51,23 +75,23 @@
 
                     <!-- Wrapper for the table to add scroll functionality -->
                     <div class="overflow-y-auto max-h-64">
-                        <table class="w-full bg-gray-100 border-collapse">
+                        <table>
                             <thead class="bg-blue-800 text-white">
                                 <tr>
-                                    <th class="text-left px-6 py-3 border">ID Number</th>
-                                    <th class="text-center px-6 py-3 border">Name</th>
-                                    <th class="text-left px-6 py-3 border">Campus</th>
-                                    <th class="text-left px-6 py-3 border">User Type</th>
-                                    <th class="text-center px-6 py-3 border">Action</th>
+                                    <th class="text-left px-6 py-3">ID Number</th>
+                                    <th class="text-center px-6 py-3">Name</th>
+                                    <th class="text-left px-6 py-3">Campus</th>
+                                    <th class="text-left px-6 py-3">User Type</th>
+                                    <th class="text-center px-6 py-3">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3 border">01</td>
-                                    <td class="px-6 py-3 border text-center">John Arado</td>
-                                    <td class="px-6 py-3 border">CTU Main</td>
-                                    <td class="px-6 py-3 border">Faculty</td>
-                                    <td class="px-6 py-3 border text-center">
+                                    <td class="px-6 py-3">01</td>
+                                    <td class="px-6 py-3 text-center">John Arado</td>
+                                    <td class="px-6 py-3">CTU Main</td>
+                                    <td class="px-6 py-3">Faculty</td>
+                                    <td class="px-6 py-3 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
@@ -75,11 +99,11 @@
                                 </tr>
 
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3 border">02</td>
-                                    <td class="px-6 py-3 border text-center">Faye Genson</td>
-                                    <td class="px-6 py-3 border">CTU Main</td>
-                                    <td class="px-6 py-3 border">Faculty</td>
-                                    <td class="px-6 py-3 border text-center">
+                                    <td class="px-6 py-3">02</td>
+                                    <td class="px-6 py-3 text-center">Faye Genson</td>
+                                    <td class="px-6 py-3">CTU Main</td>
+                                    <td class="px-6 py-3">Faculty</td>
+                                    <td class="px-6 py-3 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
@@ -87,11 +111,11 @@
                                 </tr>
 
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3 border">03</td>
-                                    <td class="px-6 py-3 border text-center">Kingston Canales</td>
-                                    <td class="px-6 py-3 border">CTU Main</td>
-                                    <td class="px-6 py-3 border">Faculty</td>
-                                    <td class="px-6 py-3 border text-center">
+                                    <td class="px-6 py-3">03</td>
+                                    <td class="px-6 py-3 text-center">Kingston Canales</td>
+                                    <td class="px-6 py-3">CTU Main</td>
+                                    <td class="px-6 py-3">Faculty</td>
+                                    <td class="px-6 py-3 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
@@ -99,11 +123,11 @@
                                 </tr>
 
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3 border">04</td>
-                                    <td class="px-6 py-3 border text-center">Mae Jubaihib</td>
-                                    <td class="px-6 py-3 border">CTU Main</td>
-                                    <td class="px-6 py-3 border">Faculty</td>
-                                    <td class="px-6 py-3 border text-center">
+                                    <td class="px-6 py-3">04</td>
+                                    <td class="px-6 py-3 text-center">Mae Jubaihib</td>
+                                    <td class="px-6 py-3">CTU Main</td>
+                                    <td class="px-6 py-3">Faculty</td>
+                                    <td class="px-6 py-3 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
@@ -121,3 +145,4 @@
 
 </body>
 </html>
+ 
