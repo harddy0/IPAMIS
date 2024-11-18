@@ -7,6 +7,42 @@ error_reporting(E_ALL);
 include '../includes/db_connect.php';
 header('Content-Type: application/json');
 
+if (isset($_GET['query'])) {
+    $query = $_GET['query'];
+
+    // Join electronicor with invention_disclosure to fetch details
+    $stmt = $conn->prepare("
+        SELECT DISTINCT
+            e.eORNumber AS reference_code,
+            e.InventionDisclosureCode AS invention_code,
+            i.employee_name AS inventor,
+            e.eORDate AS date_added
+        FROM
+            electronicor e
+        LEFT JOIN
+            invention_disclosure i ON e.InventionDisclosureCode = i.id
+        WHERE
+            e.eORNumber LIKE CONCAT('%', ?, '%')
+    ");
+    $stmt->bind_param("s", $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $suggestions = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $suggestions[] = [
+            'reference_code' => $row['reference_code'],
+            'invention_code' => $row['invention_code'],
+            'inventor' => $row['inventor'],
+            'date_added' => $row['date_added']
+        ];
+    }
+
+    echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+    $stmt->close();
+    exit;
+}
+
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     $reference = $_GET['reference'] ?? '';
@@ -30,19 +66,16 @@ if (isset($_GET['action'])) {
     if ($action === 'delete' && !empty($reference)) {
         $conn->begin_transaction();
         try {
-            // Nullify reference in `ipasset` table
             $stmt1 = $conn->prepare("UPDATE ipasset SET eORRefCode = NULL WHERE eORRefCode = ?");
             $stmt1->bind_param("s", $reference);
             $stmt1->execute();
             $stmt1->close();
 
-            // Nullify reference in `invention_disclosure` table
             $stmt2 = $conn->prepare("UPDATE invention_disclosure SET eor_number = NULL WHERE eor_number = ?");
             $stmt2->bind_param("s", $reference);
             $stmt2->execute();
             $stmt2->close();
 
-            // Delete OR from `electronicor` table
             $stmt3 = $conn->prepare("DELETE FROM electronicor WHERE eORNumber = ?");
             $stmt3->bind_param("s", $reference);
             $stmt3->execute();
@@ -56,22 +89,6 @@ if (isset($_GET['action'])) {
         }
         exit;
     }
-}
-
-// Handle suggestions for OR search
-if (isset($_GET['query'])) {
-    $query = $_GET['query'];
-    $stmt = $conn->prepare("SELECT eORNumber as reference_code FROM electronicor WHERE eORNumber LIKE CONCAT('%', ?, '%') LIMIT 5");
-    $stmt->bind_param("s", $query);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $suggestions = [];
-    while ($row = $result->fetch_assoc()) {
-        $suggestions[] = ['reference_code' => $row['reference_code']];
-    }
-    echo json_encode(['success' => true, 'suggestions' => $suggestions]);
-    $stmt->close();
-    exit;
 }
 
 echo json_encode(['success' => false, 'message' => 'Invalid request.']);

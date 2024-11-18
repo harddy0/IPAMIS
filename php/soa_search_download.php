@@ -7,6 +7,44 @@ error_reporting(E_ALL);
 include '../includes/db_connect.php';
 header('Content-Type: application/json');
 
+if (isset($_GET['query'])) {
+    $query = $_GET['query'];
+
+    // Join statementofaccount with invention_disclosure to fetch details
+    $stmt = $conn->prepare("
+        SELECT DISTINCT
+            s.SOAReference AS reference_code,
+            s.InventionDisclosureCode AS invention_code,
+            i.employee_name AS inventor,
+            s.IPOPHLReceivedDate AS date_added
+        FROM
+            statementofaccount s
+        LEFT JOIN
+            invention_disclosure i ON s.InventionDisclosureCode = i.id
+        WHERE
+            s.SOAReference LIKE CONCAT('%', ?, '%')
+    ");
+    $stmt->bind_param("s", $query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $suggestions = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $suggestions[] = [
+            'reference_code' => $row['reference_code'],
+            'invention_code' => $row['invention_code'],
+            'inventor' => $row['inventor'],
+            'date_added' => $row['date_added']
+        ];
+    }
+
+    echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+    $stmt->close();
+    exit;
+}
+
+// Handle download and delete requests as before
+
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     $reference = $_GET['reference'] ?? '';
@@ -30,19 +68,16 @@ if (isset($_GET['action'])) {
     if ($action === 'delete' && !empty($reference)) {
         $conn->begin_transaction();
         try {
-            // Nullify reference in `ipasset` table
             $stmt1 = $conn->prepare("UPDATE ipasset SET SOARefCode = NULL WHERE SOARefCode = ?");
             $stmt1->bind_param("s", $reference);
             $stmt1->execute();
             $stmt1->close();
 
-            // Nullify reference in `invention_disclosure` table
             $stmt2 = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = NULL WHERE soa_reference_number = ?");
             $stmt2->bind_param("s", $reference);
             $stmt2->execute();
             $stmt2->close();
 
-            // Delete SOA from `statementofaccount` table
             $stmt3 = $conn->prepare("DELETE FROM statementofaccount WHERE SOAReference = ?");
             $stmt3->bind_param("s", $reference);
             $stmt3->execute();
@@ -56,22 +91,6 @@ if (isset($_GET['action'])) {
         }
         exit;
     }
-}
-
-// Handle suggestions for SOA search
-if (isset($_GET['query'])) {
-    $query = $_GET['query'];
-    $stmt = $conn->prepare("SELECT SOAReference as reference_code FROM statementofaccount WHERE SOAReference LIKE CONCAT('%', ?, '%') LIMIT 5");
-    $stmt->bind_param("s", $query);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $suggestions = [];
-    while ($row = $result->fetch_assoc()) {
-        $suggestions[] = ['reference_code' => $row['reference_code']];
-    }
-    echo json_encode(['success' => true, 'suggestions' => $suggestions]);
-    $stmt->close();
-    exit;
 }
 
 echo json_encode(['success' => false, 'message' => 'Invalid request.']);

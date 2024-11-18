@@ -12,7 +12,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage OR</title>
+    <title>Manage Official Receipt (OR)</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/dashboard.css">
@@ -43,6 +43,22 @@ session_start();
                 <div id="or-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
             </div>
 
+            <!-- Details -->
+            <div id="or-details" class="hidden space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold">Invention Disclosure Code:</label>
+                    <input type="text" id="or-invention-code" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold">Inventor:</label>
+                    <input type="text" id="or-inventor" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold">Date Added:</label>
+                    <input type="text" id="or-date-added" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
+                </div>
+            </div>
+
             <!-- Action buttons for download and delete -->
             <div id="or-actions" class="hidden space-x-4 mt-4">
                 <button id="download-or-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
@@ -59,6 +75,10 @@ session_start();
 document.addEventListener('DOMContentLoaded', function () {
     const searchORInput = document.getElementById('search-or-input');
     const orSuggestions = document.getElementById('or-suggestions');
+    const orDetails = document.getElementById('or-details');
+    const orInventionCode = document.getElementById('or-invention-code');
+    const orInventor = document.getElementById('or-inventor');
+    const orDateAdded = document.getElementById('or-date-added');
     const downloadORBtn = document.getElementById('download-or-btn');
     const deleteORBtn = document.getElementById('delete-or-btn');
     const orActions = document.getElementById('or-actions');
@@ -86,21 +106,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // Display suggestions
     function displaySuggestions(suggestions) {
         orSuggestions.innerHTML = '';
-        suggestions.forEach(item => {
+        const uniqueSuggestions = Array.from(new Map(suggestions.map(item => [item.reference_code, item])).values());
+        uniqueSuggestions.forEach(item => {
             const div = document.createElement('div');
             div.textContent = item.reference_code;
             div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
-            div.onclick = () => selectORReference(item.reference_code);
+            div.onclick = () => selectORReference(item);
             orSuggestions.appendChild(div);
         });
         orSuggestions.classList.remove('hidden');
     }
 
     // Select an OR reference
-    function selectORReference(reference) {
-        selectedORReference = reference;
-        searchORInput.value = reference;
+    function selectORReference(data) {
+        selectedORReference = data.reference_code;
+        searchORInput.value = selectedORReference;
+        orInventionCode.value = data.invention_code;
+        orInventor.value = data.inventor;
+        orDateAdded.value = data.date_added;
         orActions.classList.remove('hidden');
+        orDetails.classList.remove('hidden');
         hideSuggestions();
     }
 
@@ -139,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetForm() {
         selectedORReference = '';
         orActions.classList.add('hidden');
+        orDetails.classList.add('hidden');
         searchORInput.value = '';
         hideSuggestions();
     }

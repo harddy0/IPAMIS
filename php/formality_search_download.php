@@ -3,23 +3,34 @@
 include '../includes/db_connect.php';
 header('Content-Type: application/json');
 
-if (isset($_GET['referenceCode'])) {
-    $referenceCode = $_GET['referenceCode'];
+if (isset($_GET['query'])) {
+    $query = $_GET['query'];
 
-    $stmt = $conn->prepare("SELECT DocumentNumber, employee_name AS inventor 
-                            FROM formalityreport 
-                            JOIN invention_disclosure 
-                            ON formalityreport.InventionDisclosureCode = invention_disclosure.id 
-                            WHERE DocumentNumber LIKE CONCAT('%', ?, '%') LIMIT 5");
-    $stmt->bind_param("s", $referenceCode);
+    $stmt = $conn->prepare("
+        SELECT DISTINCT 
+            f.DocumentNumber AS reference_code, 
+            f.InventionDisclosureCode AS invention_code,
+            i.employee_name AS inventor,
+            f.ReceivedDate AS date_added
+        FROM 
+            formalityreport f
+        LEFT JOIN 
+            invention_disclosure i ON f.InventionDisclosureCode = i.id
+        WHERE 
+            f.DocumentNumber LIKE CONCAT('%', ?, '%') 
+        LIMIT 5
+    ");
+    $stmt->bind_param("s", $query);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $suggestions = [];
     while ($row = $result->fetch_assoc()) {
         $suggestions[] = [
-            'reference_code' => $row['DocumentNumber'],
-            'inventor' => $row['inventor']
+            'reference_code' => $row['reference_code'],
+            'invention_code' => $row['invention_code'],
+            'inventor' => $row['inventor'],
+            'date_added' => $row['date_added']
         ];
     }
     echo json_encode(['success' => true, 'suggestions' => $suggestions]);
@@ -34,12 +45,12 @@ if (isset($_GET['download'])) {
     $stmt->bind_param("s", $referenceCode);
     $stmt->execute();
     $stmt->bind_result($fileContent);
-    $stmt->fetch();
-
-    if ($fileContent) {
+    if ($stmt->fetch()) {
         header('Content-Type: application/pdf');
         header("Content-Disposition: attachment; filename=\"$referenceCode.pdf\"");
         echo $fileContent;
+    } else {
+        echo json_encode(['success' => false, 'message' => 'File not found.']);
     }
     $stmt->close();
     exit;

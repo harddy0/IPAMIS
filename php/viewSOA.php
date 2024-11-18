@@ -44,6 +44,22 @@ session_start();
                 <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
             </div>
 
+            <!-- Details -->
+            <div id="soa-details" class="hidden space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-semibold">Invention Disclosure Code:</label>
+                    <input type="text" id="soa-invention-code" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold">Inventor:</label>
+                    <input type="text" id="soa-inventor" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-semibold">Date Added:</label>
+                    <input type="text" id="soa-date-added" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
+                </div>
+            </div>
+
             <!-- Action buttons for download and delete -->
             <div id="soa-actions" class="hidden space-x-4 mt-4">
                 <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
@@ -60,6 +76,10 @@ session_start();
 document.addEventListener('DOMContentLoaded', function () {
     const searchSoaInput = document.getElementById('search-soa-input');
     const soaSuggestions = document.getElementById('soa-suggestions');
+    const soaDetails = document.getElementById('soa-details');
+    const soaInventionCode = document.getElementById('soa-invention-code');
+    const soaInventor = document.getElementById('soa-inventor');
+    const soaDateAdded = document.getElementById('soa-date-added');
     const downloadSoaBtn = document.getElementById('download-soa-btn');
     const deleteSoaBtn = document.getElementById('delete-soa-btn');
     const soaActions = document.getElementById('soa-actions');
@@ -87,21 +107,26 @@ document.addEventListener('DOMContentLoaded', function () {
     // Display suggestions
     function displaySuggestions(suggestions) {
         soaSuggestions.innerHTML = '';
-        suggestions.forEach(item => {
+        const uniqueSuggestions = Array.from(new Map(suggestions.map(item => [item.reference_code, item])).values());
+        uniqueSuggestions.forEach(item => {
             const div = document.createElement('div');
             div.textContent = item.reference_code;
             div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
-            div.onclick = () => selectSoaReference(item.reference_code);
+            div.onclick = () => selectSoaReference(item);
             soaSuggestions.appendChild(div);
         });
         soaSuggestions.classList.remove('hidden');
     }
 
     // Select an SOA reference
-    function selectSoaReference(reference) {
-        selectedSoaReference = reference;
-        searchSoaInput.value = reference;
+    function selectSoaReference(data) {
+        selectedSoaReference = data.reference_code;
+        searchSoaInput.value = selectedSoaReference;
+        soaInventionCode.value = data.invention_code;
+        soaInventor.value = data.inventor;
+        soaDateAdded.value = data.date_added;
         soaActions.classList.remove('hidden');
+        soaDetails.classList.remove('hidden');
         hideSuggestions();
     }
 
@@ -140,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetForm() {
         selectedSoaReference = '';
         soaActions.classList.add('hidden');
+        soaDetails.classList.add('hidden');
         searchSoaInput.value = '';
         hideSuggestions();
     }
