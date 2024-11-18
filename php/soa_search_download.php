@@ -23,23 +23,30 @@ if (isset($_GET['action'])) {
         } else {
             echo json_encode(['success' => false, 'message' => 'File not found.']);
         }
+        $stmt->close();
         exit;
     }
 
     if ($action === 'delete' && !empty($reference)) {
         $conn->begin_transaction();
         try {
+            // Nullify reference in `ipasset` table
             $stmt1 = $conn->prepare("UPDATE ipasset SET SOARefCode = NULL WHERE SOARefCode = ?");
             $stmt1->bind_param("s", $reference);
             $stmt1->execute();
+            $stmt1->close();
 
+            // Nullify reference in `invention_disclosure` table
             $stmt2 = $conn->prepare("UPDATE invention_disclosure SET soa_reference_number = NULL WHERE soa_reference_number = ?");
             $stmt2->bind_param("s", $reference);
             $stmt2->execute();
+            $stmt2->close();
 
+            // Delete SOA from `statementofaccount` table
             $stmt3 = $conn->prepare("DELETE FROM statementofaccount WHERE SOAReference = ?");
             $stmt3->bind_param("s", $reference);
             $stmt3->execute();
+            $stmt3->close();
 
             $conn->commit();
             echo json_encode(['success' => true, 'message' => 'SOA deleted successfully.']);
@@ -63,5 +70,9 @@ if (isset($_GET['query'])) {
         $suggestions[] = ['reference_code' => $row['reference_code']];
     }
     echo json_encode(['success' => true, 'suggestions' => $suggestions]);
+    $stmt->close();
+    exit;
 }
+
+echo json_encode(['success' => false, 'message' => 'Invalid request.']);
 ?>
