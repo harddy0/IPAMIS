@@ -17,6 +17,7 @@ include '../includes/db_connect.php';
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Include your head content here -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - Admin & Staff</title>
