@@ -29,119 +29,107 @@
                 <h1 class="text-3xl font-bold text-gray-800 mb-6">
                     Manage Users - Admin & Staff
                 </h1>
-
-                <div class="bg-blue-900 text-white py-3 px-6 rounded-t-lg flex justify-center items-center mb-4">
-                    <h2 class="text-xl font-semibold">Admin & Staff</h2>
+                <div class="bg-white shadow-lg rounded-lg">
+                    <div class="bg-blue-900 text-white py-3 px-6 rounded-t-lg flex justify-center items-center">
+                        <h2 class="text-xl font-semibold">Admin & Staff</h2>
+                    </div>
                 </div>
 
-                <div class="p-6 bg-gray-200">
-                    <div class="relative mb-4 flex items-center">
+                <div class="p-6 bg-gray-100">
+                    <div class="relative mb-4 flex items-center space-x-4">
                         <input
                             id="search"
                             type="text"
                             placeholder="Search"
-                            class="w-full p-3 pl-10 text-black rounded-l-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                            class="w-4/5 p-3 pl-10 text-black rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                         />
-                        <button class="bg-blue-500 text-white p-3 rounded-r-md hover:bg-blue-700 transition duration-200">
+                        <button class="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-700 transition duration-200">
                             Search
                         </button>
+                        <a
+                            href="addUser.php"
+                            class="inline-flex items-center justify-center bg-green-500 text-white px-4 py-3 rounded-md hover:bg-green-700 transition duration-200">
+                            Add User
+                        </a>
                     </div>
 
-                    <table class="w-full bg-gray-100 border-collapse table-fixed">
-                        <thead class="bg-blue-800 text-white">
-                            <tr>
-                                <th class="px-2 py-3 border w-1/12 text-left">ID</th>
-                                <th class="px-4 py-3 border w-2/12 text-left">Name</th>
-                                <th class="px-4 py-3 border w-1/12 text-left">User Type</th>
-                                <th class="px-4 py-3 border w-2/12 text-left">Campus</th>
-                                <th class="px-4 py-3 border w-1.5/12 text-left">Department</th>
-                                <th class="px-4 py-3 border w-1.5/12 text-center">Contact#</th>
-                                <th class="px-4 py-3 border w-2/12 text-center">Email Address</th>
-                                <th class="px-2 py-3 border w-1/12 text-center">Action</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <!-- Scrollable Table Body -->
-                    <div class="overflow-y-auto max-h-64">
-                        <table class="w-full bg-gray-100 border-collapse table-fixed">
-                            <tbody>
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-2 py-3 border w-1/12 text-left">01</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">John Arado</td>
-                                    <td class="px-4 py-3 border w-1/12 text-left">Admin</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">CTU - Main</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-left">CCICT</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-center">09847362832</td>
-                                    <td class="px-4 py-3 border w-2/12 text-center">sample@gmail.com</td>
-                                    <td class="px-2 py-3 border w-1/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
+                    <!-- Header -->
+                    <div class="grid grid-cols-12 gap-4 items-center bg-blue-800 text-white px-4 py-2 rounded-t-lg">
+                        <div class="col-span-1">ID Number</div>
+                        <div class="col-span-2">Name</div>
+                        <div class="col-span-2">User Type</div>
+                        <div class="col-span-2">Campus</div>
+                        <div class="col-span-2">Department</div>
+                        <div class="col-span-2">Email</div>
+                        <div class="col-span-1 text-center">Action</div>
+                    </div>
 
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-2 py-3 border w-1/12 text-left">02</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">Faye Genson</td>
-                                    <td class="px-4 py-3 border w-1/12 text-left">Staff</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">CTU - Main</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-left">COT</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-center">09847362832</td>
-                                    <td class="px-4 py-3 border w-2/12 text-center">sample@gmail.com</td>
-                                    <td class="px-2 py-3 border w-1/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
+                    <!-- Scrollable Form Container -->
+                    <div class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
+                        <!-- Record 1 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="01" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="John Arado" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Admin" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CCICT" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
 
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-2 py-3 border w-1/12 text-left">03</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">Kingston Canales</td>
-                                    <td class="px-4 py-3 border w-1/12 text-left">Admin</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">CTU - Main</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-left">CME</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-center">09847362832</td>
-                                    <td class="px-4 py-3 border w-2/12 text-center">sample@gmail.com</td>
-                                    <td class="px-2 py-3 border w-1/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
+                        <!-- Record 2 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="02" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faye Genson" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Staff" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="COT" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
 
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-2 py-3 border w-1/12 text-left">04</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">Shekinah Juba</td>
-                                    <td class="px-4 py-3 border w-1/12 text-left">Staff</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">CTU - Main</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-left">CME</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-center">09847362832</td>
-                                    <td class="px-4 py-3 border w-2/12 text-center">sample@gmail.com</td>
-                                    <td class="px-2 py-3 border w-1/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
+                        <!-- Record 3 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="03" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Kingston Canales" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Admin" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CME" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
 
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-2 py-3 border w-1/12 text-left">05</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">Mae Jubahib</td>
-                                    <td class="px-4 py-3 border w-1/12 text-left">Admin</td>
-                                    <td class="px-4 py-3 border w-2/12 text-left">CTU - Main</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-left">CME</td>
-                                    <td class="px-4 py-3 border w-1.5/12 text-center">09847362832</td>
-                                    <td class="px-4 py-3 border w-2/12 text-center">sample@gmail.com</td>
-                                    <td class="px-2 py-3 border w-1/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
+                        <!-- Record 4 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="04" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Mae Jubahub" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Staff" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CEC" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
+                        
+                        <!-- Record 5 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="05" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Sheki Nah" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Admin" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CCICT" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -152,3 +140,4 @@
 
 </body>
 </html>
+s
