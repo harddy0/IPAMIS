@@ -6,14 +6,13 @@ error_reporting(E_ALL);
 
 include '../includes/db_connect.php';
 session_start();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage SOA</title>
+    <title>View IP Assets - SOA</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/dashboard.css">
@@ -35,35 +34,31 @@ session_start();
 
         <!-- Main Content -->
         <div class="dashboard p-6">
-            <h2 class="text-2xl font-semibold text-blue-900 mb-6">Manage SOA</h2>
+            <h2 class="text-2xl font-semibold text-blue-900 mb-6">View IP Assets - SOA</h2>
 
-            <!-- Search Field with Suggestions -->
-            <div class="mb-4 relative">
-                <label class="block text-gray-700 font-semibold mb-2">Search by SOA Reference Code</label>
-                <input type="text" id="search-soa-input" placeholder="Type SOA reference code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300" autocomplete="off">
-                <div id="soa-suggestions" class="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-b-lg mt-1 shadow-lg hidden z-10"></div>
+            <!-- Search Field -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-semibold mb-2">Search</label>
+                <input type="text" id="search-soa-input" placeholder="Search by Inventor or SOA Code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
-            <!-- Details -->
-            <div id="soa-details" class="hidden space-y-4">
-                <div>
-                    <label class="block text-gray-700 font-semibold">Invention Disclosure Code:</label>
-                    <input type="text" id="soa-invention-code" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold">Inventor:</label>
-                    <input type="text" id="soa-inventor" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-semibold">Date Added:</label>
-                    <input type="text" id="soa-date-added" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-200" readonly>
-                </div>
-            </div>
-
-            <!-- Action buttons for download and delete -->
-            <div id="soa-actions" class="hidden space-x-4 mt-4">
-                <button id="download-soa-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600">Download</button>
-                <button id="delete-soa-btn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600">Delete</button>
+            <!-- Table -->
+            <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr class="bg-blue-900 text-white text-left">
+                            <th class="px-4 py-2">Invention Code</th>
+                            <th class="px-4 py-2">Inventor</th>
+                            <th class="px-4 py-2">SOA Code</th>
+                            <th class="px-4 py-2">SOA File/Title</th>
+                            <th class="px-4 py-2">Date Upload</th>
+                            <th class="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="soa-table-body" class="text-gray-700">
+                        <!-- Dynamic content will be loaded here -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -74,101 +69,78 @@ session_start();
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const searchSoaInput = document.getElementById('search-soa-input');
-    const soaSuggestions = document.getElementById('soa-suggestions');
-    const soaDetails = document.getElementById('soa-details');
-    const soaInventionCode = document.getElementById('soa-invention-code');
-    const soaInventor = document.getElementById('soa-inventor');
-    const soaDateAdded = document.getElementById('soa-date-added');
-    const downloadSoaBtn = document.getElementById('download-soa-btn');
-    const deleteSoaBtn = document.getElementById('delete-soa-btn');
-    const soaActions = document.getElementById('soa-actions');
-    let selectedSoaReference = '';
+    const searchInput = document.getElementById('search-soa-input');
+    const soaTableBody = document.getElementById('soa-table-body');
+
+    // Function to load SOA data dynamically
+    function loadSOAData(query = '') {
+        fetch(`soa_search_download.php?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    renderTableRows(data.records);
+                } else {
+                    soaTableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4">No records found.</td></tr>';
+                }
+            })
+            .catch(error => console.error('Error fetching SOA data:', error));
+    }
+
+    // Render table rows
+    function renderTableRows(records) {
+        soaTableBody.innerHTML = '';
+        records.forEach(record => {
+            const row = `
+                <tr class="border-t hover:bg-gray-100">
+                    <td class="px-4 py-2">${record.invention_code}</td>
+                    <td class="px-4 py-2">${record.inventor}</td>
+                    <td class="px-4 py-2">${record.soa_code}</td>
+                    <td class="px-4 py-2">
+                        <a href="soa_search_download.php?reference=${encodeURIComponent(record.soa_code)}&action=download" class="text-blue-500 hover:underline flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Download
+                        </a>
+                    </td>
+                    <td class="px-4 py-2">${record.date_added}</td>
+                    <td class="px-4 py-2">
+                        <button onclick="confirmDelete('${record.soa_code}')" class="text-red-500 hover:underline">Delete</button>
+                    </td>
+                </tr>
+            `;
+            soaTableBody.innerHTML += row;
+        });
+    }
+
+    // Confirm and Delete SOA
+    window.confirmDelete = function(soaCode) {
+        if (confirm('Are you sure you want to delete this SOA? This action cannot be undone.')) {
+            deleteSOA(soaCode);
+        }
+    }
+
+    function deleteSOA(soaCode) {
+        fetch(`soa_search_download.php?reference=${encodeURIComponent(soaCode)}&action=delete`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    loadSOAData(searchInput.value.trim());
+                }
+            })
+            .catch(error => console.error('Error deleting SOA:', error));
+    }
 
     // Event listener for search input
-    searchSoaInput.addEventListener('input', function () {
-        const reference = this.value.trim();
-        if (reference.length > 0) {
-            fetch(`soa_search_download.php?query=${encodeURIComponent(reference)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        displaySuggestions(data.suggestions);
-                    } else {
-                        hideSuggestions();
-                    }
-                })
-                .catch(error => console.error('Error fetching SOA suggestions:', error));
-        } else {
-            hideSuggestions();
-        }
+    searchInput.addEventListener('input', function () {
+        loadSOAData(this.value.trim());
     });
 
-    // Display suggestions
-    function displaySuggestions(suggestions) {
-        soaSuggestions.innerHTML = '';
-        const uniqueSuggestions = Array.from(new Map(suggestions.map(item => [item.reference_code, item])).values());
-        uniqueSuggestions.forEach(item => {
-            const div = document.createElement('div');
-            div.textContent = item.reference_code;
-            div.classList.add('suggestion-item', 'px-4', 'py-2', 'hover:bg-gray-100', 'cursor-pointer');
-            div.onclick = () => selectSoaReference(item);
-            soaSuggestions.appendChild(div);
-        });
-        soaSuggestions.classList.remove('hidden');
-    }
-
-    // Select an SOA reference
-    function selectSoaReference(data) {
-        selectedSoaReference = data.reference_code;
-        searchSoaInput.value = selectedSoaReference;
-        soaInventionCode.value = data.invention_code;
-        soaInventor.value = data.inventor;
-        soaDateAdded.value = data.date_added;
-        soaActions.classList.remove('hidden');
-        soaDetails.classList.remove('hidden');
-        hideSuggestions();
-    }
-
-    // Hide suggestions
-    function hideSuggestions() {
-        soaSuggestions.classList.add('hidden');
-    }
-
-    // Download SOA file
-    downloadSoaBtn.addEventListener('click', function () {
-        if (selectedSoaReference) {
-            window.location.href = `soa_search_download.php?reference=${encodeURIComponent(selectedSoaReference)}&action=download`;
-        } else {
-            alert('Please select an SOA to download.');
-        }
-    });
-
-    // Delete SOA record
-    deleteSoaBtn.addEventListener('click', function () {
-        if (selectedSoaReference && confirm('Are you sure you want to delete this SOA? This action cannot be undone.')) {
-            fetch(`soa_search_download.php?reference=${encodeURIComponent(selectedSoaReference)}&action=delete`)
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    if (data.success) {
-                        resetForm();
-                    }
-                })
-                .catch(error => console.error('Error deleting SOA:', error));
-        } else {
-            alert('Please select an SOA to delete.');
-        }
-    });
-
-    // Reset form fields
-    function resetForm() {
-        selectedSoaReference = '';
-        soaActions.classList.add('hidden');
-        soaDetails.classList.add('hidden');
-        searchSoaInput.value = '';
-        hideSuggestions();
-    }
+    // Initial load
+    loadSOAData();
 });
 </script>
 
