@@ -11,14 +11,15 @@ session_start();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Formality Report</title>
+    <title>View IP Assets -  Formality Report</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
 </head>
-<body class="overflow-hidden bg-gray-100">
+<body class="overflow-hidden">
 
 <div class="main-wrapper">
     <!-- Sidebar -->
@@ -33,11 +34,10 @@ session_start();
 
         <!-- Main Content -->
         <div class="dashboard p-6">
-            <h2 class="text-2xl font-semibold text-blue-900 mb-6">Manage Formality Report</h2>
+            <h2 class="text-3xl font-bold text-blue-900 mb-6">View IP Assets -  Formality Report</h2>
 
             <!-- Search Field -->
             <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">Search</label>
                 <input type="text" id="search-formality-input" placeholder="Search by Inventor or Formality Report Reference..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 

@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         </div>
 
         <!-- Content Wrapper -->
-        <div class="content-wrapper ml-72 flex-grow overflow-y-auto">
+        <div class="content-wrapper ml-64 flex-grow overflow-y-auto">
             <!-- Header -->
             <?php include '../includes/header.php'; ?>
 
