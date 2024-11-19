@@ -1,14 +1,14 @@
+/* General Sidebar Styles */
 .sidebar {
-    width: 250px; /* Adjust width as needed */
-    background-color: #0b2a55; /* Dark blue background as fallback */
+    width: 250px;
+    background-color: #0b2a55;
     color: white;
-    height: 100%; /* Full height of body */
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     overflow: hidden;
-    
 }
 
 .sidebar img.background-image {
@@ -19,16 +19,16 @@
     height: 100%;
     object-fit: cover;
     z-index: 1;
-    opacity: 0.3; /* Adjust opacity for better text contrast */
+    opacity: 0.3;
 }
 
 .sidebar-content {
-    z-index: 2; /* Ensures content appears over the background image */
+    z-index: 2;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex-grow: 1; /* Takes remaining space */
+    flex-grow: 1;
 }
 
 .sidebar-content img {
@@ -42,11 +42,11 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin-top: 10px;
-    color: #c79542; /* Gold color */
+    color: #c79542;
 }
 
 .admin {
-    background-color: #647a9e; /* Light blue background */
+    background-color: #647a9e;
     padding: 10px 20px;
     font-weight: bold;
     width: 100%;
@@ -68,24 +68,77 @@
     color: white;
     font-size: 1rem;
     text-decoration: none;
+    position: relative; /* Needed for submenu placement */
     transition: background-color 0.3s ease, color 0.3s ease;
-    line-height: 1.5; 
 }
 
 .menu-item:hover {
-    background-color: #c79542; /* Gold hover effect */
+    background-color: #c79542;
     color: #ffffff;
     cursor: pointer;
-    transform: scale(1.02); /* Slightly increase size */
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
 }
 
 .menu-item span.icon {
     margin-right: 15px;
     font-size: 1.5rem;
-    align-items: center;    
 }
 
+.menu-item .text {
+    display: flex;
+    align-items: center;
+}
+
+.menu-item.active {
+    background-color: #c79542;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Parent styling to ensure proper positioning */
+.submenu-parent {
+    position: relative; /* Ensures the submenu is positioned relative to the parent */
+}
+
+/* Submenu styling */
+.submenu {
+    display: none; /* Initially hide the submenu */
+    position: absolute;
+    top: 100%; /* Position submenu directly below the parent */
+    left: 0; /* Align submenu to the left of the parent */
+    background-color: #073c75; /* Submenu background */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25); /* Add shadow for visibility */
+    z-index: 100; /* Ensure it appears above other elements */
+    min-width: 250px;
+    padding: 10px 0;
+    flex-direction: column;
+}
+
+/* Hover effect for submenu visibility */
+.submenu-parent:hover .submenu {
+    display: flex; /* Make submenu visible on hover */
+}
+
+/* Submenu items styling */
+.submenu-item {
+    padding: 10px 20px;
+    color: white;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.submenu-item:hover {
+    background-color: #c79542; /* Gold hover effect */
+    color: #ffffff;
+}
+
+/* Gold hover effect for submenu parent */
+.submenu-parent:hover > .text,
+.submenu-parent:hover > span.icon {
+    color: #c79542;
+}
+
+/* Logout Button Styles */
 .logout {
     width: 100%;
     display: flex;
@@ -93,32 +146,18 @@
     padding: 15px 20px;
     font-size: 1rem;
     color: white;
-    background-color: transparent; /* No background color */
+    background-color: transparent;
     margin-top: auto;
-    z-index: 2; /* Ensure hover works by putting it above background image */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .logout:hover {
-    background-color: #c79542; /* Gold hover effect */
+    background-color: #c79542;
     color: #ffffff;
     cursor: pointer;
-    
 }
 
 .logout span.icon {
     margin-right: 10px;
     font-size: 1.5rem;
-}
-
-
-.menu-item .text {
-    display: flex;
-    align-items: center; /* Aligns text vertically */
-}
-
-.menu-item.active {
-    background-color: #c79542; /* Gold color */
-    color: #ffffff;
-    font-weight: 600;
 }
