@@ -91,7 +91,7 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
         </div>
 
         <!-- Content Wrapper -->
-        <div class="content-wrapper ml-72 flex-grow overflow-y-auto">
+        <div class="content-wrapper ml-64 flex-grow overflow-y-auto">
             <!-- Header -->
             <?php include '../includes/header.php'; ?>
 

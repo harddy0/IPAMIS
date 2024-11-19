@@ -41,7 +41,7 @@ if ($result->num_rows > 0) {
     <?php include '../includes/dashboard_staff.php'; ?>
     <?php include '../includes/header.php'; ?>
     
-    <div class="profile-section p-20 m-6 mt-10 pb-16 shadow-xl">
+    <div class="profile-section p-10 m-6 mt-10 pb-16 shadow-xl">
         <h3 class="text-xl font-semibold text-gray-700 mb-4">PROFILE</h3>
         <div class="profile-container flex gap-6">
             <!-- Left Profile Card -->

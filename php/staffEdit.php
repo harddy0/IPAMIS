@@ -79,7 +79,7 @@
     }
     ?>
 
-    <div class="fixed top-0 left-0 h-full w-72 bg-white shadow-md">
+    <div class="fixed top-0 left-0 h-full w-64 bg-white shadow-md">
         <?php include '../includes/dashboard_staff.php'; ?>
     </div>
 
