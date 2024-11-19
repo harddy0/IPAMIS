@@ -1,3 +1,19 @@
+<?php
+// adstaff.php
+
+// Start the session
+session_start();
+
+// Include the database connection
+include '../includes/db_connect.php';
+
+// Optional: Implement authentication checks here
+// Example:
+// if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
+//     header('Location: login.php');
+//     exit;
+// }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +26,8 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <!-- Include Axios for AJAX requests -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body class="overflow-hidden">
 
@@ -40,12 +58,9 @@
                         <input
                             id="search"
                             type="text"
-                            placeholder="Search"
-                            class="w-4/5 p-3 pl-10 text-black rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
+                            placeholder="Search by name"
+                            class="w-4/5 p-3 pl-4 text-black rounded-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                         />
-                        <button class="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-700 transition duration-200">
-                            Search
-                        </button>
                         <a
                             href="addUser.php"
                             class="inline-flex items-center justify-center bg-green-500 text-white px-4 py-3 rounded-md hover:bg-green-700 transition duration-200">
@@ -65,71 +80,9 @@
                     </div>
 
                     <!-- Scrollable Form Container -->
-                    <div class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
-                        <!-- Record 1 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="01" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="John Arado" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Admin" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CCICT" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 2 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="02" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faye Genson" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Staff" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="COT" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 3 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="03" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Kingston Canales" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Admin" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CME" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 4 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="04" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Mae Jubahub" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Staff" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CEC" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-                        
-                        <!-- Record 5 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="05" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Sheki Nah" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Admin" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU - Main" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CCICT" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="sample@gmail.com" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
+                    <div id="usersContainer" class="overflow-y-auto max-h-96 space-y-4 bg-white rounded-b-lg">
+                        <!-- User records will be dynamically inserted here -->
+                        <p class="p-4 text-gray-700">Loading users...</p>
                     </div>
                 </div>
             </div>
@@ -138,6 +91,80 @@
         </div>
     </div>
 
+    <!-- JavaScript for Live Search and Delete Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search');
+            const usersContainer = document.getElementById('usersContainer');
+
+            // Function to fetch and display users based on the search query
+            function fetchUsers(query = '') {
+                // Display loading message
+                usersContainer.innerHTML = '<p class="p-4 text-gray-700">Loading users...</p>';
+
+                // Use URLSearchParams to send form data
+                axios.post('adstaff_handler.php', new URLSearchParams({
+                    action: 'search',
+                    query: query
+                }))
+                .then(function(response) {
+                    usersContainer.innerHTML = response.data;
+                })
+                .catch(function(error) {
+                    console.error('Error fetching users:', error);
+                    usersContainer.innerHTML = '<p class="p-4 text-red-500">An error occurred while fetching users.</p>';
+                });
+            }
+
+            // Initial fetch to display all users
+            fetchUsers();
+
+            // Debounce function to limit the rate of function calls
+            function debounce(func, delay) {
+                let debounceTimer;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => func.apply(context, args), delay);
+                }
+            }
+
+            // Event listener for live search (on input with debounce)
+            searchInput.addEventListener('input', debounce(function() {
+                const query = this.value.trim();
+                fetchUsers(query);
+            }, 300)); // 300ms delay
+
+            // Event delegation for delete buttons
+            usersContainer.addEventListener('click', function(e) {
+                if (e.target && e.target.matches('button.delete-button')) {
+                    const userId = e.target.getAttribute('data-userid');
+                    const confirmDelete = confirm('Are you sure you want to delete this user?');
+                    if (confirmDelete) {
+                        // Send delete request via Axios
+                        axios.post('adstaff_handler.php', new URLSearchParams({
+                            action: 'delete',
+                            UserID: userId
+                        }))
+                        .then(function(response) {
+                            if (response.data.success) {
+                                alert('User deleted successfully.');
+                                // Refresh the user list
+                                const currentQuery = searchInput.value.trim();
+                                fetchUsers(currentQuery);
+                            } else {
+                                alert('Error deleting user: ' + response.data.message);
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Error deleting user:', error);
+                            alert('An error occurred while deleting the user.');
+                        });
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
-s
