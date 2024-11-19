@@ -15,11 +15,12 @@ session_start();
     <title>View IP Assets - SOA</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
 </head>
-<body class="overflow-hidden bg-gray-100">
+<body class="overflow-hidden">
 
 <div class="main-wrapper">
     <!-- Sidebar -->
@@ -34,7 +35,7 @@ session_start();
 
         <!-- Main Content -->
         <div class="dashboard p-6">
-            <h2 class="text-2xl font-semibold text-blue-900 mb-6">View IP Assets - SOA</h2>
+            <h2 class="text-3xl font-bold text-blue-900 mb-6">View IP Assets - SOA</h2>
 
             <!-- Search Field -->
             <div class="mb-4">

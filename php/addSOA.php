@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             <?php include '../includes/header.php'; ?>
 
             <!-- Main Content Here-->
-            <div class="dashboard p-6">
+            <div class="p-6">
 
                 <h2 class="text-3xl font-bold text-blue-900 mb-6">Statement of Account</h2>
 
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
                 </div>
 
                 <!-- Form Fields -->
-                <form method="POST" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded-lg shadow-md">
+                <form method="POST" enctype="multipart/form-data" class="space-y-6 bg-white p-6 rounded-lg shadow-xl">
                     <div>
                         <label class="block text-gray-800 font-semibold mb-2">Invention Disclosure Code</label>
                         <input type="text" id="invention-id" name="InventionDisclosureCode" readonly class="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-300">

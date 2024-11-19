@@ -11,9 +11,10 @@ session_start();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manage Official Receipt (OR)</title>
+    <title>View IP Assets - Official Receipt (OR)</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
@@ -32,8 +33,8 @@ session_start();
         <?php include '../includes/header.php'; ?>
 
         <!-- Main Content -->
-        <div class="dashboard p-6">
-            <h2 class="text-2xl font-semibold text-blue-900 mb-6">Manage Official Receipt (OR)</h2>
+        <div class="p-6">
+            <h2 class="text-3xl font-bold text-blue-900 mb-6">View IP Assets - Official Receipt (OR)</h2>
 
             <!-- Search Field -->
             <div class="mb-4">
