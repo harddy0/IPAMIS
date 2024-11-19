@@ -99,7 +99,7 @@ $applicationPercentagesJSON = json_encode(array_values($applicationPercentages))
             <div class="main-content p-6">
                 <div class="container mx-auto">
                     <!-- Analytics Header -->
-                    <h1 class="text-2xl font-bold mb-4 flex items-center">
+                    <h1 class="text-3xl font-bold text-blue-900 mb-6 flex items-center">
                         <span class="mr-1"><i class="fas fa-chart-pie"></i></span> View Analytics
                     </h1>
 
