@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+
     <!-- FontAwesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <!-- Add your custom CSS link here -->
-    <link rel="stylesheet" href="../css/styles.css">
-</head>
-<body>
+   
+
     <?php
     // Define the current page based on the filename
     $currentPage = basename($_SERVER['PHP_SELF']);
@@ -25,14 +18,14 @@
                 <!-- Manage Personal Account -->
                 <a href="#" class="menu-item <?php echo $currentPage == 'adminMpa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminMpa.php';">
                     <span class="icon"><i class="fas fa-user"></i></span>
-                    <div class="text ml-1">Manage Personal Account</div>
+                    <div class="text ml-4">Manage Personal Account</div>
                 </a>
 
                 <!-- Manage Users Menu -->
                 <div class="menu-item submenu-parent group relative">
                     <div class="flex items-center">
                         <span class="icon"><i class="fas fa-users"></i></span>
-                        <div class="text">Manage Users</div>
+                        <div class="text ml-1">Manage Users</div>
                     </div>
                     <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                         <a href="faculty.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">All Faculty</a>
@@ -44,7 +37,7 @@
                 <div class="menu-item submenu-parent group relative">
                     <div class="flex items-center">
                         <span class="icon"><i class="fas fa-briefcase"></i></span>
-                        <div class="text">Manage IP Assets</div>
+                        <div class="text ml-2">Manage IP Assets</div>
                     </div>
                     <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                         <a href="addSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add SOA</a>
@@ -57,7 +50,7 @@
                 <div class="menu-item submenu-parent group relative">
                     <div class="flex items-center">
                         <span class="icon"><i class="fas fa-folder-open"></i></span>
-                        <div class="text">View IP Assets</div>
+                        <div class="text ml-1">View IP Assets</div>
                     </div>
                     <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                         <a href="viewSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View SOA</a>
@@ -69,16 +62,14 @@
                 <!-- View Analytics -->
                 <a href="#" class="menu-item <?php echo $currentPage == 'adminVa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminVa.php';">
                     <span class="icon"><i class="fas fa-chart-bar"></i></span>
-                    <div class="text">View Analytics</div>
+                    <div class="text ml-1">View Analytics</div>
                 </a>
             </div>
 
             <!-- Log out -->
             <a href="login.php?action=logout" class="logout flex items-center px-5 py-3 mt-auto w-full hover:bg-yellow-500 transition">
                 <span class="icon text-xl mr-3"><i class="fas fa-sign-out-alt"></i></span>
-                <div>Log out</div>
+                <div class="text ml-4">Log out</div>
             </a>
         </div>
     </div>
-</body>
-</html>
