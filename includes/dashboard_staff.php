@@ -35,7 +35,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <span class="icon">📁</span>
                     <div class="text">View IP Assets</div>
                 </div>
-                <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
+                <div class="submenu absolute left-full top-0 bg-blue-700 text-white hidden group-hover:flex flex-col shadow-lg">
                     <a href="staffviewSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View SOA</a>
                     <a href="staffviewOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Official Report</a>
                     <a href="staffviewFR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Formality Report</a>
