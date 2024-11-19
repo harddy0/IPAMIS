@@ -10,30 +10,6 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <style>
-        table {
-            table-layout: fixed; /* Ensures consistent column widths */
-            width: 100%; /* Make the table span full width */
-            border-collapse: collapse; /* Ensure borders collapse properly */
-        }
-
-        thead th {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background-color: #2a4365; /* Matches the blue header color */
-            text-align: left;
-            padding: 8px;
-        }
-
-        tbody td {
-            padding: 8px;
-        }
-
-        th, td {
-            border: 1px solid #ccc; /* Optional: Better visual separation */
-        }
-    </style>
 </head>
 <body class="overflow-hidden">
 
@@ -73,61 +49,73 @@
                         </button>
                     </div>
 
-                    <!-- Wrapper for the table to add scroll functionality -->
+                    <!-- Table -->
+                    <table class="w-full bg-gray-100 border-collapse table-fixed">
+                        <thead class="bg-blue-800 text-white">
+                            <tr>
+                                <th class="text-left px-4 py-3 border w-1/12">ID Number</th>
+                                <th class="text-left px-4 py-3 border w-3/12">Name</th>
+                                <th class="text-left px-4 py-3 border w-3/12">Campus</th>
+                                <th class="text-left px-4 py-3 border w-2/12">User Type</th>
+                                <th class="text-center px-4 py-3 border w-3/12">Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <!-- Scrollable Table Body -->
                     <div class="overflow-y-auto max-h-64">
-                        <table>
-                            <thead class="bg-blue-800 text-white">
-                                <tr>
-                                    <th class="text-left px-6 py-3">ID Number</th>
-                                    <th class="text-center px-6 py-3">Name</th>
-                                    <th class="text-left px-6 py-3">Campus</th>
-                                    <th class="text-left px-6 py-3">User Type</th>
-                                    <th class="text-center px-6 py-3">Action</th>
-                                </tr>
-                            </thead>
+                        <table class="w-full bg-gray-100 border-collapse table-fixed">
                             <tbody>
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">01</td>
-                                    <td class="px-6 py-3 text-center">John Arado</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-4 py-3 border w-1/12">01</td>
+                                    <td class="px-4 py-3 border w-3/12">John Arado</td>
+                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
+                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
+                                    <td class="px-4 py-3 border w-3/12 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">02</td>
-                                    <td class="px-6 py-3 text-center">Faye Genson</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-4 py-3 border w-1/12">02</td>
+                                    <td class="px-4 py-3 border w-3/12">Faye Genson</td>
+                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
+                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
+                                    <td class="px-4 py-3 border w-3/12 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">03</td>
-                                    <td class="px-6 py-3 text-center">Kingston Canales</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-4 py-3 border w-1/12">03</td>
+                                    <td class="px-4 py-3 border w-3/12">Kingston Canales</td>
+                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
+                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
+                                    <td class="px-4 py-3 border w-3/12 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
                                     </td>
                                 </tr>
-
                                 <tr class="hover:bg-blue-50">
-                                    <td class="px-6 py-3">04</td>
-                                    <td class="px-6 py-3 text-center">Mae Jubaihib</td>
-                                    <td class="px-6 py-3">CTU Main</td>
-                                    <td class="px-6 py-3">Faculty</td>
-                                    <td class="px-6 py-3 text-center">
+                                    <td class="px-4 py-3 border w-1/12">04</td>
+                                    <td class="px-4 py-3 border w-3/12">Shekinah Juba</td>
+                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
+                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
+                                    <td class="px-4 py-3 border w-3/12 text-center">
+                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
+                                            🗑
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-blue-50">
+                                    <td class="px-4 py-3 border w-1/12">05</td>
+                                    <td class="px-4 py-3 border w-3/12">Mae Jubaihib</td>
+                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
+                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
+                                    <td class="px-4 py-3 border w-3/12 text-center">
                                         <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
                                             🗑
                                         </button>
@@ -145,4 +133,3 @@
 
 </body>
 </html>
- 
