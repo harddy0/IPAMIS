@@ -19,7 +19,7 @@ session_start();
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
 </head>
-<body class="overflow-hidden bg-gray-100">
+<body class="overflow-hidden">
 
 <div class="main-wrapper">
     <!-- Sidebar -->
@@ -38,12 +38,11 @@ session_start();
 
             <!-- Search Field -->
             <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">Search</label>
                 <input type="text" id="search-or-input" placeholder="Search by Inventor or OR Code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+            <div class="overflow-x-auto bg-white rounded-lg shadow-xl">
                 <table class="w-full table-auto">
                     <thead>
                         <tr class="bg-blue-900 text-white text-left">

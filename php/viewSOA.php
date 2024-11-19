@@ -34,17 +34,16 @@ session_start();
         <?php include '../includes/header.php'; ?>
 
         <!-- Main Content -->
-        <div class="dashboard p-6">
+        <div class="p-6">
             <h2 class="text-3xl font-bold text-blue-900 mb-6">View IP Assets - SOA</h2>
 
             <!-- Search Field -->
             <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">Search</label>
                 <input type="text" id="search-soa-input" placeholder="Search by Inventor or SOA Code..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:ring-blue-300">
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+            <div class="overflow-x-auto bg-white rounded-lg shadow-xl">
                 <table class="w-full table-auto">
                     <thead>
                         <tr class="bg-blue-900 text-white text-left">

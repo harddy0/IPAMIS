@@ -45,7 +45,7 @@ include '../includes/db_connect.php';
 
             <!-- Main Content -->
             <div class="p-6">
-                <h1 class="text-3xl font-bold text-gray-800 mb-6">
+                <h1 class="text-3xl font-bold text-blue-900 mb-6">
                     Manage Users - Admin & Staff
                 </h1>
                 <div class="bg-white shadow-lg rounded-lg">
@@ -54,7 +54,7 @@ include '../includes/db_connect.php';
                     </div>
                 </div>
 
-                <div class="p-6 bg-gray-100">
+                <div class="p-6 bg-blue-100">
                     <div class="relative mb-4 flex items-center space-x-4">
                         <input
                             id="search"
@@ -64,7 +64,7 @@ include '../includes/db_connect.php';
                         />
                         <a
                             href="addUser.php"
-                            class="inline-flex items-center justify-center bg-green-500 text-white px-4 py-3 rounded-md hover:bg-green-700 transition duration-200">
+                            class="inline-flex items-center justify-center bg-blue-500 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition duration-200">
                             Add User
                         </a>
                     </div>

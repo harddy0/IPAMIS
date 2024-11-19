@@ -26,7 +26,7 @@
 
             <!-- Main Content -->
             <div class="p-6">
-                <h1 class="text-3xl font-bold text-gray-800 mb-6">
+                <h1 class="text-3xl font-bold text-blue-900 mb-6">
                     Manage Users - All Faculty
                 </h1>
                 <div class="bg-white shadow-lg rounded-lg">
