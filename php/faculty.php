@@ -1,10 +1,29 @@
+<?php
+// manage_faculty.php
+
+// Start the session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Include the database connection
+include '../includes/db_connect.php';
+
+// Optional: Include any session checks or authorization here
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ... (existing head content) ... -->
     <title>Manage Users - All Faculty</title>
+    <!-- Include Tailwind CSS and other styles -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- ... (other CSS links) ... -->
+    <!-- Include jQuery for AJAX (you can also use vanilla JS or Fetch API) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include your custom CSS files -->
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
@@ -36,83 +55,31 @@
                 </div>
 
                 <div class="p-6 bg-blue-100">
+                    <!-- Search Bar -->
                     <div class="relative mb-4 flex items-center">
-                        <label for="search" class="block text-gray-700 font-medium mb-2"></label>
                         <input
                             id="search"
                             type="text"
                             placeholder="Search"
                             class="w-full p-3 pl-10 text-black rounded-l-md border border-gray-300 focus:outline-none focus:ring focus:ring-blue-500"
                         />
-                        <button class="bg-blue-500 text-white p-3 rounded-r-md hover:bg-blue-700 transition duration-200">
+                        <button id="search-btn" class="bg-blue-500 text-white p-3 rounded-r-md hover:bg-blue-700 transition duration-200">
                             Search
                         </button>
                     </div>
 
-                    <!-- Header -->
+                    <!-- Table Header -->
                     <div class="grid grid-cols-12 gap-4 items-center bg-blue-800 text-white px-4 py-2 rounded-t-lg">
                         <div class="col-span-1">ID Number</div>
                         <div class="col-span-3">Name</div>
                         <div class="col-span-3">Campus</div>
                         <div class="col-span-2">User Type</div>
+                        <div class="col-span-3">Action</div>
                     </div>
 
                     <!-- Scrollable Form Container -->
-                    <div class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
-                        <!-- Record 1 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="01" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="John Arado" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 2 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="02" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faye Genson" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 3 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="03" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Mae Jubahib" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 4 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                            <input type="text" value="04" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Sheki Nah" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
-
-                        <!-- Record 5 -->
-                        <form class="grid grid-cols-12 gap-4 items-center p-4">
-                            <input type="text" value="05" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Kingston Canales" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Delete
-                            </button>
-                        </form>
+                    <div id="faculty-table" class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
+                        <!-- Faculty records will be injected here via JavaScript -->
                     </div>
                 </div>
             </div>
@@ -121,5 +88,72 @@
         </div>
     </div>
 
+    <!-- JavaScript Code -->
+    <script>
+        $(document).ready(function() {
+            // Function to fetch and display faculty members
+            function fetchFaculty(query = '') {
+                $.ajax({
+                    url: 'faculty_handler.php',
+                    method: 'GET',
+                    data: { query: query },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Clear the table
+                        $('#faculty-table').html('');
+                        if (data.length > 0) {
+                            $.each(data, function(index, faculty) {
+                                let facultyRow = `
+                                    <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                                        <input type="text" value="${faculty.UserID}" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                                        <input type="text" value="${faculty.Name}" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                                        <input type="text" value="${faculty.Campus}" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                                        <input type="text" value="${faculty.UserType}" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                                        <button type="button" class="delete-btn col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700" data-id="${faculty.UserID}">
+                                            Delete
+                                        </button>
+                                    </form>
+                                `;
+                                $('#faculty-table').append(facultyRow);
+                            });
+                        } else {
+                            $('#faculty-table').html('<div class="p-4">No faculty members found.</div>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching faculty:', error);
+                    }
+                });
+            }
+
+            // Initial fetch of all faculty members
+            fetchFaculty();
+
+            // Search functionality
+            $('#search').on('input', function() {
+                let query = $(this).val();
+                fetchFaculty(query);
+            });
+
+            // Delete functionality (delegated event handler)
+            $('#faculty-table').on('click', '.delete-btn', function() {
+                let userId = $(this).data('id');
+                if (confirm('Are you sure you want to delete this faculty member?')) {
+                    $.ajax({
+                        url: 'faculty_handler.php',
+                        method: 'POST',
+                        data: { user_id: userId },
+                        success: function(response) {
+                            alert(response);
+                            fetchFaculty($('#search').val());
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error deleting faculty:', error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
