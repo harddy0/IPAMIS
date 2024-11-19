@@ -49,80 +49,70 @@
                         </button>
                     </div>
 
-                    <!-- Table -->
-                    <table class="w-full bg-gray-100 border-collapse table-fixed">
-                        <thead class="bg-blue-800 text-white">
-                            <tr>
-                                <th class="text-left px-4 py-3 border w-1/12">ID Number</th>
-                                <th class="text-left px-4 py-3 border w-3/12">Name</th>
-                                <th class="text-left px-4 py-3 border w-3/12">Campus</th>
-                                <th class="text-left px-4 py-3 border w-2/12">User Type</th>
-                                <th class="text-center px-4 py-3 border w-3/12">Action</th>
-                            </tr>
-                        </thead>
-                    </table>
+                    <!-- Header -->
+                    <div class="grid grid-cols-12 gap-4 items-center bg-blue-800 text-white px-4 py-2 rounded-t-lg">
+                        <div class="col-span-1">ID Number</div>
+                        <div class="col-span-3">Name</div>
+                        <div class="col-span-3">Campus</div>
+                        <div class="col-span-2">User Type</div>
+                    </div>
 
-                    <!-- Scrollable Table Body -->
-                    <div class="overflow-y-auto max-h-64">
-                        <table class="w-full bg-gray-100 border-collapse table-fixed">
-                            <tbody>
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-4 py-3 border w-1/12">01</td>
-                                    <td class="px-4 py-3 border w-3/12">John Arado</td>
-                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
-                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
-                                    <td class="px-4 py-3 border w-3/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-4 py-3 border w-1/12">02</td>
-                                    <td class="px-4 py-3 border w-3/12">Faye Genson</td>
-                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
-                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
-                                    <td class="px-4 py-3 border w-3/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-4 py-3 border w-1/12">03</td>
-                                    <td class="px-4 py-3 border w-3/12">Kingston Canales</td>
-                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
-                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
-                                    <td class="px-4 py-3 border w-3/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-4 py-3 border w-1/12">04</td>
-                                    <td class="px-4 py-3 border w-3/12">Shekinah Juba</td>
-                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
-                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
-                                    <td class="px-4 py-3 border w-3/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-blue-50">
-                                    <td class="px-4 py-3 border w-1/12">05</td>
-                                    <td class="px-4 py-3 border w-3/12">Mae Jubaihib</td>
-                                    <td class="px-4 py-3 border w-3/12">CTU Main</td>
-                                    <td class="px-4 py-3 border w-2/12">Faculty</td>
-                                    <td class="px-4 py-3 border w-3/12 text-center">
-                                        <button class="text-red-500 hover:text-red-700 text-3xl hover:text-xl transition-all duration-200">
-                                            🗑
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <!-- Scrollable Form Container -->
+                    <div class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
+                        <!-- Record 1 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="01" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="John Arado" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
+
+                        <!-- Record 2 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="02" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faye Genson" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
+
+                        <!-- Record 3 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="03" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Mae Jubahib" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
+
+                        <!-- Record 4 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                            <input type="text" value="04" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Sheki Nah" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
+
+                        <!-- Record 5 -->
+                        <form class="grid grid-cols-12 gap-4 items-center p-4">
+                            <input type="text" value="05" class="col-span-1 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Kingston Canales" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="CTU Main" class="col-span-3 px-4 py-2 border rounded-md" readonly />
+                            <input type="text" value="Faculty" class="col-span-2 px-4 py-2 border rounded-md" readonly />
+                            <button type="button" class="col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Delete
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

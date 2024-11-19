@@ -82,7 +82,7 @@
 
         <div class="p-10 pt-2 mt-4">
             <div class="flex items-center mb-5">
-                <a href="adminMpa.php" class="text-blue-500 text-lg mr-3">←</a>
+                <a href="adstaff.php" class="text-blue-500 text-lg mr-3">←</a>
                 <h2 class="text-2xl font-semibold text-gray-800">Add User</h2>
             </div>
 
