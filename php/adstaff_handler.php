@@ -1,129 +1,87 @@
 <?php
-// adstaff_handler.php
-
-// Start the session
 session_start();
 
-// Include the database connection
 include '../includes/db_connect.php';
 
-// Determine the action based on the 'action' parameter
-$action = isset($_POST['action']) ? $_POST['action'] : '';
+// Optional: Implement authentication checks here
+// ...
 
-if ($action === 'search') {
-    // Handle search operation
-    $query = isset($_POST['query']) ? trim($_POST['query']) : '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'];
 
-    if (empty($query)) {
-        // Fetch all users
-        $sql = "SELECT UserID, FirstName, MiddleName, LastName, UserType, Campus, Department, EmailAddress 
-                FROM `user` 
-                ORDER BY UserID ASC";
-        $stmt = $conn->prepare($sql);
-    } else {
-        // Fetch users matching the query
-        $sql = "SELECT UserID, FirstName, MiddleName, LastName, UserType, Campus, Department, EmailAddress 
-                FROM `user` 
-                WHERE CONCAT(FirstName, ' ', IFNULL(MiddleName, ''), ' ', LastName) LIKE ?
-                ORDER BY UserID ASC";
-        $stmt = $conn->prepare($sql);
-        $searchParam = '%' . $query . '%';
-        $stmt->bind_param("s", $searchParam);
-    }
+    if ($action === 'search') {
+        // Handle search action
+        $query = isset($_POST['query']) ? $_POST['query'] : '';
 
-    if ($stmt) {
+        // Prepare the SQL statement to prevent SQL injection
+        $sql = "SELECT * FROM user WHERE Status = 'Active' AND UserType IN ('Admin', 'Staff')";
+
+        if (!empty($query)) {
+            // If there's a search query, add a WHERE clause
+            $sql .= " AND (FirstName LIKE ? OR MiddleName LIKE ? OR LastName LIKE ?)";
+            $stmt = $conn->prepare($sql);
+            $likeQuery = '%' . $query . '%';
+            $stmt->bind_param('sss', $likeQuery, $likeQuery, $likeQuery);
+        } else {
+            $stmt = $conn->prepare($sql);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
 
-        // Check if any users are found
+        // Check if any users found
         if ($result->num_rows > 0) {
-            // Iterate through the users and generate HTML forms
-            while ($user = $result->fetch_assoc()) {
-                // Construct the full name
-                $fullName = htmlspecialchars($user['FirstName'] . ' ' . ($user['MiddleName'] ? $user['MiddleName'] . ' ' : '') . $user['LastName']);
+            // Start building the output HTML
+            $output = '';
 
-                echo '<form class="grid grid-cols-12 gap-4 items-center p-4 border-b">';
-                echo '<input type="text" value="' . htmlspecialchars($user['UserID']) . '" class="col-span-1 px-4 py-2 border rounded-md" readonly />';
-                echo '<input type="text" value="' . $fullName . '" class="col-span-2 px-4 py-2 border rounded-md" readonly />';
-                echo '<input type="text" value="' . htmlspecialchars($user['UserType']) . '" class="col-span-2 px-4 py-2 border rounded-md" readonly />';
-                echo '<input type="text" value="' . htmlspecialchars($user['Campus']) . '" class="col-span-2 px-4 py-2 border rounded-md" readonly />';
-                echo '<input type="text" value="' . htmlspecialchars($user['Department']) . '" class="col-span-2 px-4 py-2 border rounded-md" readonly />';
-                echo '<input type="text" value="' . htmlspecialchars($user['EmailAddress']) . '" class="col-span-2 px-4 py-2 border rounded-md" readonly />';
-                echo '<button type="button" class="col-span-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 delete-button" data-userid="' . htmlspecialchars($user['UserID']) . '">Delete</button>';
-                echo '</form>';
+            while ($row = $result->fetch_assoc()) {
+                // Build HTML for each user
+                $output .= '<div class="grid grid-cols-12 gap-4 items-center px-4 py-2 border-b">';
+                $output .= '<div class="col-span-1">' . htmlspecialchars($row['UserID']) . '</div>';
+                $output .= '<div class="col-span-2">' . htmlspecialchars($row['FirstName'] . ' ' . $row['MiddleName'] . ' ' . $row['LastName']) . '</div>';
+                $output .= '<div class="col-span-2">' . htmlspecialchars($row['UserType']) . '</div>';
+                $output .= '<div class="col-span-2">' . htmlspecialchars($row['Campus']) . '</div>';
+                $output .= '<div class="col-span-2">' . htmlspecialchars($row['Department']) . '</div>';
+                $output .= '<div class="col-span-2">' . htmlspecialchars($row['EmailAddress']) . '</div>';
+                $output .= '<div class="col-span-1 text-center">';
+                $output .= '<button class="delete-button bg-red-500 text-white px-2 py-1 rounded" data-userid="' . htmlspecialchars($row['UserID']) . '">Delete</button>';
+                $output .= '</div>';
+                $output .= '</div>';
             }
         } else {
-            // If no users found, display a message
-            echo '<p class="p-4 text-gray-700">No users found.</p>';
+            $output = '<p class="p-4 text-gray-700">No users found.</p>';
         }
 
-        // Close the statement
+        echo $output;
+
         $stmt->close();
-    } else {
-        // Handle SQL preparation errors
-        error_log('SQL Prepare Error: ' . $conn->error);
-        echo '<p class="p-4 text-red-500">An error occurred while preparing the search.</p>';
-    }
 
-} elseif ($action === 'delete') {
-    // Handle delete operation
+    } elseif ($action === 'delete') {
+        // Handle delete action (set status to 'Inactive')
+        $userId = isset($_POST['UserID']) ? $_POST['UserID'] : '';
 
-    // Retrieve the UserID from the POST data
-    $userID = isset($_POST['UserID']) ? intval($_POST['UserID']) : 0;
+        if (!empty($userId)) {
+            // Update user's Status to 'Inactive'
+            $sql = "UPDATE user SET Status = 'Inactive' WHERE UserID = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('s', $userId);
 
-    // Validate the UserID
-    if ($userID <= 0) {
-        echo json_encode(['success' => false, 'message' => 'Invalid User ID.']);
-        exit;
-    }
+            if ($stmt->execute()) {
+                // Return success response
+                echo json_encode(['success' => true]);
+            } else {
+                // Return error response
+                echo json_encode(['success' => false, 'message' => 'Failed to update user status.']);
+            }
 
-    // Optional: Check if the user exists before attempting deletion
-    $checkSql = "SELECT * FROM `user` WHERE UserID = ?";
-    if ($checkStmt = $conn->prepare($checkSql)) {
-        $checkStmt->bind_param("i", $userID);
-        $checkStmt->execute();
-        $checkResult = $checkStmt->get_result();
+            $stmt->close();
 
-        if ($checkResult->num_rows === 0) {
-            // User does not exist
-            echo json_encode(['success' => false, 'message' => 'User not found.']);
-            $checkStmt->close();
-            exit;
-        }
-
-        // Close the check statement
-        $checkStmt->close();
-    } else {
-        // Handle SQL preparation errors
-        error_log('SQL Prepare Error: ' . $conn->error);
-        echo json_encode(['success' => false, 'message' => 'An error occurred while checking the user.']);
-        exit;
-    }
-
-    // Prepare the DELETE statement
-    $deleteSql = "DELETE FROM `user` WHERE UserID = ?";
-    if ($deleteStmt = $conn->prepare($deleteSql)) {
-        $deleteStmt->bind_param("i", $userID);
-        $deleteSuccess = $deleteStmt->execute();
-
-        if ($deleteSuccess) {
-            echo json_encode(['success' => true]);
         } else {
-            // Deletion failed
-            error_log('Deletion Error: ' . $deleteStmt->error);
-            echo json_encode(['success' => false, 'message' => 'Failed to delete user.']);
+            // Return error response
+            echo json_encode(['success' => false, 'message' => 'Invalid user ID.']);
         }
-
-        // Close the delete statement
-        $deleteStmt->close();
-    } else {
-        // Handle SQL preparation errors
-        error_log('SQL Prepare Error: ' . $conn->error);
-        echo json_encode(['success' => false, 'message' => 'An error occurred while preparing the deletion.']);
     }
 
-} else {
-    // If the action is not recognized, return an error
-    echo '<p class="p-4 text-red-500">Invalid action.</p>';
+    $conn->close();
 }
 ?>
