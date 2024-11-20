@@ -185,7 +185,7 @@
         </div>
 
         <!-- Modal -->
-        <div id="error-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
+        <div id="error-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 backdrop-blur-sm">
             <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 max-w-md text-center">
                 <h2 class="text-red-600 font-bold text-lg mb-4">Error</h2>
                 <p id="modal-message" class="text-gray-700">Please fill out all required fields before proceeding.</p>
