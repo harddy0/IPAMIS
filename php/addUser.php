@@ -90,19 +90,11 @@
                 <div class="bg-red-500 text-white p-3 rounded mb-5"><?php echo $error_message; ?></div>
             <?php endif; ?>
 
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-20 h-20 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                    <img src="../images/profile-placeholder.png" alt="Profile Image" class="w-16 h-16 rounded-full">
-                </div>
-                <div>
-                    <a href="#" class="text-blue-600 text-sm underline">Add profile picture</a>
-                </div>
-            </div>
 
             <!-- Profile Information Section -->
             <form action="" method="POST" onsubmit="return checkPasswordMatch()">
-                <div class="bg-blue-500 p-6 rounded-lg mb-8">
-                    <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
+                <div class="bg-blue-800 p-6 rounded-lg mb-8">
+                    <div class="bg-blue-700 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-white">Employee ID Number</label>
@@ -145,15 +137,15 @@
 
                 <!-- Account Settings Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                    <div class="bg-blue-500 p-2 rounded-md">
+                    <div class="bg-blue-800 p-2 rounded-md">
                         <label class="text-white">Email Address</label>
                         <input type="email" name="email" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="EMAIL ADDRESS" required>
                     </div>
-                    <div class="bg-blue-500 p-2 rounded-md">
+                    <div class="bg-blue-800 p-2 rounded-md">
                         <label class="text-white">New Password</label>
                         <input type="password" name="password" id="password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="NEW PASSWORD" required>
                     </div>
-                    <div class="bg-blue-500 p-2 rounded-md">
+                    <div class="bg-blue-800 p-2 rounded-md">
                         <label class="text-white">Confirm Password</label>
                         <input type="password" name="confirm_password" id="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700" placeholder="CONFIRM PASSWORD" required>
                     </div>
