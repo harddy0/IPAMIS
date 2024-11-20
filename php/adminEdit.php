@@ -23,10 +23,42 @@
             const newPassword = document.getElementById("new_password").value;
             const confirmPassword = document.getElementById("confirm_password").value;
             if (newPassword !== confirmPassword) {
-                alert("Error: Passwords do not match. Please check and try again.");
+                showModal("Passwords do not match. Please check and try again.");
                 return false; // Prevents form submission
             }
             return true; // Allows form submission
+        }
+
+        function validateForm() {
+            const inputs = document.querySelectorAll("input[type='text'], input[type='email'], input[type='password']");
+            let isValid = true;
+
+            // Check if fields are empty
+            inputs.forEach(input => {
+                if (!input.value.trim() && !input.hasAttribute('readonly') && !input.disabled) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                showModal("Please fill out all required fields before proceeding.");
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+
+        function showModal(message) {
+            const modal = document.getElementById("error-modal");
+            const modalMessage = document.getElementById("modal-message");
+            modalMessage.textContent = message;
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden"; // Disable scrolling
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("error-modal");
+            modal.classList.add("hidden");
+            document.body.style.overflow = "auto"; // Re-enable scrolling
         }
     </script>
 </head>
@@ -92,14 +124,14 @@
                 <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
             </div>
 
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" onsubmit="return validatePassword()">
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" onsubmit="return validatePassword() && validateForm()">
                 <div class="bg-blue-800 p-6 rounded-lg mb-8">
                     <div class="bg-blue-700 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-white">Employee ID Number</label>
-                        <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" readonly>
-                    </div>
+                        <div>
+                            <label class="text-white">Employee ID Number</label>
+                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" readonly>
+                        </div>
                         <div>
                             <label class="text-white">User Type</label>
                             <input type="text" name="user_type" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserType'] ?? ''); ?>" disabled>
@@ -150,6 +182,17 @@
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
                 </div>
             </form>
+        </div>
+
+        <!-- Modal -->
+        <div id="error-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 backdrop-blur-sm">
+            <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 max-w-md text-center">
+                <h2 class="text-red-600 font-bold text-lg mb-4">Error</h2>
+                <p id="modal-message" class="text-gray-700">Please fill out all required fields before proceeding.</p>
+                <button onclick="closeModal()" class="mt-4 px-6 py-2 bg-red-600 text-white font-bold rounded hover:bg-red-500">
+                    Close
+                </button>
+            </div>
         </div>
 
         <div>
