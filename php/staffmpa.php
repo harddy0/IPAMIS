@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Manage Personal Account</title>
+    <title>Staff Manage Personal Account</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminMpa.css">
