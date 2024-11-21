@@ -25,7 +25,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </div>
                 <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                     <a href="staffaddSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add SOA</a>
-                    <a href="staffaddOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add Official Report</a>
+                    <a href="staffaddOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add Official Receipt</a>
                     <a href="staffaddFR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add Formality Report</a>
                 </div>
             </div>
@@ -38,7 +38,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </div>
                 <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                     <a href="staffviewSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View SOA</a>
-                    <a href="staffviewOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Official Report</a>
+                    <a href="staffviewOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Official Receipt</a>
                     <a href="staffviewFR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Formality Report</a>
                 </div>
             </div>

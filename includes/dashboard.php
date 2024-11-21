@@ -41,7 +41,7 @@
                     </div>
                     <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                         <a href="addSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add SOA</a>
-                        <a href="addOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add Official Report</a>
+                        <a href="addOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add Official Receipt</a>
                         <a href="addFR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">Add Formality Report</a>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                     </div>
                     <div class="submenu absolute left-full top-0 bg-blue-800 text-white hidden group-hover:flex flex-col shadow-lg">
                         <a href="viewSOA.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View SOA</a>
-                        <a href="viewOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Official Report</a>
+                        <a href="viewOR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Official Receipt</a>
                         <a href="viewFR.php" class="submenu-item px-4 py-2 hover:bg-yellow-500">View Formality Report</a>
                     </div>
                 </div>
