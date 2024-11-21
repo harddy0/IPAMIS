@@ -66,10 +66,29 @@ session_start();
     </div>
 </div>
 
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg p-6 shadow-lg w-1/3">
+        <h2 id="modal-title" class="text-xl font-bold mb-4"></h2>
+        <p id="modal-message" class="mb-6"></p>
+        <div class="flex justify-end">
+            <button id="modal-cancel-button" class="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2">Cancel</button>
+            <button id="modal-confirm-button" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Confirm</button>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const searchORInput = document.getElementById('search-or-input');
     const orTableBody = document.getElementById('or-table-body');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const modalCancelButton = document.getElementById('modal-cancel-button');
+    const modalConfirmButton = document.getElementById('modal-confirm-button');
+
+    let pendingDeleteCode = null;
 
     // Function to load OR data dynamically
     function loadORData(query = '') {
@@ -114,24 +133,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Confirm and Delete OR
     window.confirmDelete = function(orCode) {
-        if (confirm('Are you sure you want to delete this OR? This action cannot be undone.')) {
-            deleteOR(orCode);
-        }
+        pendingDeleteCode = orCode; // Save the code for deletion
+        modalTitle.textContent = 'Confirm Deletion';
+        modalMessage.textContent = 'Are you sure you want to delete this OR? This action cannot be undone.';
+        modalConfirmButton.textContent = 'Confirm';
+        modalConfirmButton.onclick = deleteOR;
+        toggleModal(true);
     }
 
-    function deleteOR(orCode) {
-        fetch(`or_search_download.php?reference=${encodeURIComponent(orCode)}&action=delete`, {
+    function deleteOR() {
+        fetch(`or_search_download.php?reference=${encodeURIComponent(pendingDeleteCode)}&action=delete`, {
             method: 'GET',
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
+                toggleModal(false); // Hide modal after response
                 if (data.success) {
                     loadORData(searchORInput.value.trim());
                 }
             })
-            .catch(error => console.error('Error deleting OR:', error));
+            .catch(error => {
+                toggleModal(false);
+                console.error('Error deleting OR:', error);
+            });
     }
+
+    function toggleModal(show) {
+        modal.classList.toggle('hidden', !show);
+    }
+
+    // Cancel button handler
+    modalCancelButton.addEventListener('click', function () {
+        toggleModal(false);
+    });
 
     // Event listener for search input
     searchORInput.addEventListener('input', function () {
