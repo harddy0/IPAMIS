@@ -148,7 +148,6 @@ include '../includes/db_connect.php';
                         method: 'POST',
                         data: { user_id: deleteUserId },
                         success: function(response) {
-                            alert(response);
                             fetchFaculty($('#search').val());
                             $('#modal-confirm-delete').addClass('hidden');
                         },
