@@ -7,17 +7,10 @@ session_start();
 // Include the database connection
 include '../includes/db_connect.php';
 
-// Optional: Implement authentication checks here
-// Example:
-// if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'Admin') {
-//     header('Location: login.php');
-//     exit;
-// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Include your head content here -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users - Admin & Staff</title>
@@ -27,7 +20,6 @@ include '../includes/db_connect.php';
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <!-- Include Axios for AJAX requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
     #usersContainer {
@@ -108,18 +100,22 @@ include '../includes/db_connect.php';
         </div>
     </div>
 
+    <!-- Include Modal -->
+    <?php include 'modal_staff.php'; ?>
+
     <!-- JavaScript for Live Search and Delete Functionality -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('search');
             const usersContainer = document.getElementById('usersContainer');
+            const deleteModal = document.getElementById('modal-confirm-delete');
+            const confirmDeleteBtn = document.getElementById('confirm-delete');
+            const cancelDeleteBtn = document.getElementById('cancel-delete');
+            let deleteUserId = null;
 
-            // Function to fetch and display users based on the search query
+            // Function to fetch and display users
             function fetchUsers(query = '') {
-                // Display loading message
                 usersContainer.innerHTML = '<p class="p-4 text-gray-700">Loading users...</p>';
-
-                // Use URLSearchParams to send form data
                 axios.post('adstaff_handler.php', new URLSearchParams({
                     action: 'search',
                     query: query
@@ -133,10 +129,10 @@ include '../includes/db_connect.php';
                 });
             }
 
-            // Initial fetch to display all users
+            // Initial fetch
             fetchUsers();
 
-            // Debounce function to limit the rate of function calls
+            // Debounce function
             function debounce(func, delay) {
                 let debounceTimer;
                 return function() {
@@ -147,39 +143,44 @@ include '../includes/db_connect.php';
                 }
             }
 
-            // Event listener for live search (on input with debounce)
+            // Search functionality
             searchInput.addEventListener('input', debounce(function() {
-                const query = this.value.trim();
-                fetchUsers(query);
-            }, 300)); // 300ms delay
+                fetchUsers(this.value.trim());
+            }, 300));
 
-            // Event delegation for delete buttons
+            // Delete button click (show modal)
             usersContainer.addEventListener('click', function(e) {
                 if (e.target && e.target.matches('button.delete-button')) {
-                    const userId = e.target.getAttribute('data-userid');
-                    const confirmDelete = confirm('Are you sure you want to delete this user?');
-                    if (confirmDelete) {
-                        // Send delete request via Axios
-                        axios.post('adstaff_handler.php', new URLSearchParams({
-                            action: 'delete',
-                            UserID: userId
-                        }))
-                        .then(function(response) {
-                            if (response.data.success) {
-                                alert('User deleted successfully.');
-                                // Refresh the user list
-                                const currentQuery = searchInput.value.trim();
-                                fetchUsers(currentQuery);
-                            } else {
-                                alert('Error deleting user: ' + response.data.message);
-                            }
-                        })
-                        .catch(function(error) {
-                            console.error('Error deleting user:', error);
-                            alert('An error occurred while deleting the user.');
-                        });
-                    }
+                    deleteUserId = e.target.getAttribute('data-userid');
+                    deleteModal.classList.remove('hidden');
                 }
+            });
+
+            // Confirm delete
+            confirmDeleteBtn.addEventListener('click', function() {
+                if (deleteUserId) {
+                    axios.post('adstaff_handler.php', new URLSearchParams({
+                        action: 'delete',
+                        UserID: deleteUserId
+                    }))
+                    .then(function(response) {
+                        if (response.data.success) {
+                            fetchUsers(searchInput.value.trim());
+                        } else {
+                            console.error(response.data.message);
+                        }
+                        deleteModal.classList.add('hidden');
+                    })
+                    .catch(function(error) {
+                        console.error('Error deleting user:', error);
+                        deleteModal.classList.add('hidden');
+                    });
+                }
+            });
+
+            // Cancel delete
+            cancelDeleteBtn.addEventListener('click', function() {
+                deleteModal.classList.add('hidden');
             });
         });
     </script>

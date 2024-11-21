@@ -71,18 +71,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param('i', $userId);
 
             if ($stmt->execute()) {
-                echo "Faculty member deleted successfully.";
+                //echo "Faculty member deleted successfully.";
             } else {
-                echo "Error deleting faculty member.";
+                //echo "Error deleting faculty member.";
             }
 
             // Close the statement
             $stmt->close();
         } else {
-            echo "Failed to prepare statement.";
+            //echo "Failed to prepare statement.";
         }
     } else {
-        echo "Invalid user ID.";
+        //echo "Invalid user ID.";
     }
 }
 

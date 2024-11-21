@@ -1,5 +1,5 @@
 <?php
-// manage_faculty.php
+// faculty.php 
 
 // Start the session if not already started
 if (session_status() == PHP_SESSION_NONE) {
@@ -16,38 +16,17 @@ include '../includes/db_connect.php';
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... (existing head content) ... -->
     <title>Manage Users - All Faculty</title>
     <!-- Include Tailwind CSS and other styles -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- ... (other CSS links) ... -->
-    <!-- Include jQuery for AJAX (you can also use vanilla JS or Fetch API) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Include your custom CSS files -->
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminVa.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <style>
-    .scroll {
-        scrollbar-width: thin; /* Firefox */
-        scrollbar-color: #1d4ed8 #f3f4f6; /* Firefox */
-    }
-    .scroll::-webkit-scrollbar {
-        width: 8px; /* Scrollbar width */
-    }
-    .scroll::-webkit-scrollbar-thumb {
-        background-color: #1d4ed8; /* Scrollbar thumb color */
-        border-radius: 4px;
-    }
-    .scroll::-webkit-scrollbar-track {
-        background-color: #f3f4f6; /* Scrollbar track color */
-    }
-</style>
 </head>
 <body class="overflow-hidden">
-
     <div class="main-wrapper">
         <!-- Sidebar -->
         <div class="fixed top-0 left-0 h-screen w-64">
@@ -104,9 +83,14 @@ include '../includes/db_connect.php';
         </div>
     </div>
 
+    <!-- Include Modal -->
+    <?php include 'modal_faculty.php'; ?>
+
     <!-- JavaScript Code -->
     <script>
         $(document).ready(function() {
+            let deleteUserId = null;
+
             // Function to fetch and display faculty members
             function fetchFaculty(query = '') {
                 $.ajax({
@@ -115,20 +99,19 @@ include '../includes/db_connect.php';
                     data: { query: query },
                     dataType: 'json',
                     success: function(data) {
-                        // Clear the table
                         $('#faculty-table').html('');
                         if (data.length > 0) {
                             $.each(data, function(index, faculty) {
                                 let facultyRow = `
-                                    <form class="grid grid-cols-12 gap-4 items-center p-4 border-b">
-                                        <input type="text" value="${faculty.UserID}" class="col-span-1 px-4 py-2 border rounded-md" readonly />
-                                        <input type="text" value="${faculty.Name}" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                                        <input type="text" value="${faculty.Campus}" class="col-span-3 px-4 py-2 border rounded-md" readonly />
-                                        <input type="text" value="${faculty.UserType}" class="col-span-2 px-4 py-2 border rounded-md" readonly />
-                                        <button type="button" class="delete-btn col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700" data-id="${faculty.UserID}">
+                                    <div class="grid grid-cols-12 gap-4 items-center p-4 border-b">
+                                        <div class="col-span-1">${faculty.UserID}</div>
+                                        <div class="col-span-3">${faculty.Name}</div>
+                                        <div class="col-span-3">${faculty.Campus}</div>
+                                        <div class="col-span-2">${faculty.UserType}</div>
+                                        <button class="delete-btn col-span-3 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700" data-id="${faculty.UserID}">
                                             Delete
                                         </button>
-                                    </form>
+                                    </div>
                                 `;
                                 $('#faculty-table').append(facultyRow);
                             });
@@ -142,7 +125,7 @@ include '../includes/db_connect.php';
                 });
             }
 
-            // Initial fetch of all faculty members
+            // Initial fetch
             fetchFaculty();
 
             // Search functionality
@@ -151,23 +134,34 @@ include '../includes/db_connect.php';
                 fetchFaculty(query);
             });
 
-            // Delete functionality (delegated event handler)
+            // Show modal on delete button click
             $('#faculty-table').on('click', '.delete-btn', function() {
-                let userId = $(this).data('id');
-                if (confirm('Are you sure you want to delete this faculty member?')) {
+                deleteUserId = $(this).data('id');
+                $('#modal-confirm-delete').removeClass('hidden');
+            });
+
+            // Handle delete confirmation
+            $('#confirm-delete').on('click', function() {
+                if (deleteUserId) {
                     $.ajax({
                         url: 'faculty_handler.php',
                         method: 'POST',
-                        data: { user_id: userId },
+                        data: { user_id: deleteUserId },
                         success: function(response) {
                             alert(response);
                             fetchFaculty($('#search').val());
+                            $('#modal-confirm-delete').addClass('hidden');
                         },
                         error: function(xhr, status, error) {
                             console.error('Error deleting faculty:', error);
                         }
                     });
                 }
+            });
+
+            // Handle cancel
+            $('#cancel-delete').on('click', function() {
+                $('#modal-confirm-delete').addClass('hidden');
             });
         });
     </script>
