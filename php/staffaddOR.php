@@ -1,5 +1,5 @@
 <?php
-// or.php
+// addOR.php
 
 // Display all errors for debugging purposes (Disable in production)
 ini_set('display_errors', 1);
@@ -26,62 +26,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
     // Validate form inputs
     if (empty($inventionDisclosureCode) || empty($referenceCode) || empty($dateReceived) || $fileExtension !== 'pdf') {
-        echo "<script>alert('All fields are required, and the file must be a PDF.');</script>";
+        // Set $modalMessage to the error message
+        $modalMessage = 'All fields are required, and the file must be a PDF.';
     } else {
-        // Read file content
-        $fileContent = file_get_contents($fileTmpPath);
+        // Check if the OR Reference Code already exists in the database
+        $orCheckStmt = $conn->prepare("SELECT eORNumber FROM electronicor WHERE eORNumber = ?");
+        $orCheckStmt->bind_param("s", $referenceCode);
+        $orCheckStmt->execute();
+        $orCheckStmt->store_result();
 
-        if ($fileContent === false) {
-            echo "<script>alert('Failed to read the uploaded file.');</script>";
+        if ($orCheckStmt->num_rows > 0) {
+            // OR Reference Code already exists
+            $modalMessage = 'An OR with this Reference Code already exists.';
         } else {
-            // Begin transaction
-            $conn->begin_transaction();
+            // Read file content
+            $fileContent = file_get_contents($fileTmpPath);
 
-            try {
-                // Insert into electronicor table
-                $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
-                $null = NULL;
-                $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
-                $stmt->send_long_data(3, $fileContent);
-                $stmt->execute();
-                $stmt->close();
+            if ($fileContent === false) {
+                $modalMessage = 'Failed to read the uploaded file.';
+            } else {
+                // Begin transaction
+                $conn->begin_transaction();
 
-                // Update invention_disclosure table with the new OR reference code
-                $updateDisclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
-                $updateDisclosure->bind_param("si", $referenceCode, $inventionDisclosureCode);
-                $updateDisclosure->execute();
-                $updateDisclosure->close();
+                try {
+                    // Insert into electronicor table
+                    $stmt = $conn->prepare("INSERT INTO electronicor (eORNumber, InventionDisclosureCode, eORDate, eOR) VALUES (?, ?, ?, ?)");
+                    $null = NULL;
+                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->send_long_data(3, $fileContent);
+                    $stmt->execute();
+                    $stmt->close();
 
-                // Check if an entry exists in ipasset table
-                $ipassetCheck = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
-                $ipassetCheck->bind_param("s", $inventionDisclosureCode);
-                $ipassetCheck->execute();
-                $ipassetCheck->store_result();
+                    // Update invention_disclosure table with the new OR reference code
+                    $updateDisclosure = $conn->prepare("UPDATE invention_disclosure SET eor_number = ? WHERE id = ?");
+                    $updateDisclosure->bind_param("si", $referenceCode, $inventionDisclosureCode);
+                    $updateDisclosure->execute();
+                    $updateDisclosure->close();
 
-                if ($ipassetCheck->num_rows > 0) {
-                    // If entry exists, update it with OR details
-                    $updateIpAsset = $conn->prepare("UPDATE ipasset SET eORRefCode = ?, eORAddedBy = ? WHERE InventionDisclosureCode = ?");
-                    $updateIpAsset->bind_param("sss", $referenceCode, $currentUser, $inventionDisclosureCode);
-                    $updateIpAsset->execute();
-                    $updateIpAsset->close();
-                } else {
-                    // Otherwise, insert a new entry in ipasset
-                    $newIPAssetCode = generateRandomCode();
-                    $insertIpAsset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, eORRefCode, eORAddedBy) VALUES (?, ?, ?, ?)");
-                    $insertIpAsset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $currentUser);
-                    $insertIpAsset->execute();
-                    $insertIpAsset->close();
+                    // Check if an entry exists in ipasset table
+                    $ipassetCheck = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
+                    $ipassetCheck->bind_param("s", $inventionDisclosureCode);
+                    $ipassetCheck->execute();
+                    $ipassetCheck->store_result();
+
+                    if ($ipassetCheck->num_rows > 0) {
+                        // If entry exists, update it with OR details
+                        $updateIpAsset = $conn->prepare("UPDATE ipasset SET eORRefCode = ?, eORAddedBy = ? WHERE InventionDisclosureCode = ?");
+                        $updateIpAsset->bind_param("sss", $referenceCode, $currentUser, $inventionDisclosureCode);
+                        $updateIpAsset->execute();
+                        $updateIpAsset->close();
+                    } else {
+                        // Otherwise, insert a new entry in ipasset
+                        $newIPAssetCode = generateRandomCode();
+                        $insertIpAsset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, eORRefCode, eORAddedBy) VALUES (?, ?, ?, ?)");
+                        $insertIpAsset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $currentUser);
+                        $insertIpAsset->execute();
+                        $insertIpAsset->close();
+                    }
+
+                    // Commit transaction
+                    $conn->commit();
+                    $modalMessage = 'File uploaded successfully!';
+                } catch (Exception $e) {
+                    // Rollback on error
+                    $conn->rollback();
+                    $modalMessage = 'Error uploading file: ' . $e->getMessage();
                 }
-
-                // Commit transaction
-                $conn->commit();
-                echo "<script>alert('File uploaded successfully!');</script>";
-            } catch (Exception $e) {
-                // Rollback on error
-                $conn->rollback();
-                echo "<script>alert('Error uploading file: " . $e->getMessage() . "');</script>";
             }
         }
+
+        $orCheckStmt->close();
     }
 }
 ?>
@@ -92,12 +106,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
     <!-- Head content remains the same -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Official Report</title>
+    <title>Add Official Receipt</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <!-- Include your custom CSS if any -->
     <link rel="stylesheet" href="../css/adminVa.css">
-    <link rel="stylesheet" href="../css/dashboard_staff.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -178,6 +192,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
         </div>
     </div>
+
+    <!-- Include modal.php -->
+    <?php include 'modal.php'; ?>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -268,13 +285,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             inventionIdField.value = item.id;
             inventorField.value = item.inventor;
 
-            // Always empty the OR Reference Code field
+            // Ensure OR Reference Code is always empty
             referenceCodeField.value = '';
-            referenceCodeField.readOnly = false;
-
-            dateReceivedField.readOnly = false;
-            fileInput.disabled = false;
-            uploadBtn.disabled = false;
 
             hideSuggestions();
         }
@@ -293,25 +305,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
             inventionIdField.value = '';
             inventorField.value = '';
             referenceCodeField.value = '';
-            referenceCodeField.readOnly = true;
             dateReceivedField.value = '';
-            dateReceivedField.readOnly = true;
             fileInput.value = '';
             fileNameDisplay.textContent = 'No file selected';
-            fileInput.disabled = true;
-            uploadBtn.disabled = true;
             searchInput.value = '';
         }
 
         // Clear the form when the Clear button is clicked
         clearBtn.addEventListener('click', resetForm);
 
-        // Hide suggestions if clicked outside
-        document.addEventListener('click', function (event) {
-            if (!event.target.closest('.relative')) {
-                hideSuggestions();
-            }
+        // Close modal when close button is clicked
+        document.getElementById('modal-close').addEventListener('click', function () {
+            document.getElementById('modal').classList.add('hidden');
         });
+
+        <?php if (isset($modalMessage)) : ?>
+            // Set the modal message and show it
+            document.getElementById('modal-message').textContent = '<?php echo addslashes($modalMessage); ?>';
+            document.getElementById('modal').classList.remove('hidden');
+        <?php endif; ?>
     });
     </script>
 

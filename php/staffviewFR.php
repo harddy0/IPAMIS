@@ -1,5 +1,5 @@
 <?php
-// manage_formality.php
+// viewFR.php
 
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -11,11 +11,11 @@ session_start();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>View IP Assets -  Formality Report</title>
+    <title>View IP Assets - Formality Report</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminVa.css">
-    <link rel="stylesheet" href="../css/dashboard_staff.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
 </head>
@@ -34,7 +34,7 @@ session_start();
 
         <!-- Main Content -->
         <div class="dashboard p-6">
-            <h2 class="text-3xl font-bold text-blue-900 mb-6">View IP Assets -  Formality Report</h2>
+            <h2 class="text-3xl font-bold text-blue-900 mb-6">View IP Assets - Formality Report</h2>
 
             <!-- Search Field -->
             <div class="mb-4">
@@ -66,10 +66,29 @@ session_start();
     </div>
 </div>
 
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white rounded-lg p-6 shadow-lg w-1/3">
+        <h2 id="modal-title" class="text-xl font-bold mb-4"></h2>
+        <p id="modal-message" class="mb-6"></p>
+        <div class="flex justify-end">
+            <button id="modal-cancel-button" class="px-4 py-2 bg-gray-500 text-white rounded-lg mr-2">Cancel</button>
+            <button id="modal-confirm-button" class="px-4 py-2 bg-blue-500 text-white rounded-lg">Confirm</button>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('search-formality-input');
     const formalityTableBody = document.getElementById('formality-table-body');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const modalCancelButton = document.getElementById('modal-cancel-button');
+    const modalConfirmButton = document.getElementById('modal-confirm-button');
+
+    let pendingDeleteCode = null;
 
     // Function to load Formality Report data dynamically
     function loadFormalityData(query = '') {
@@ -114,24 +133,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Confirm and Delete Formality Report
     window.confirmDelete = function(referenceCode) {
-        if (confirm('Are you sure you want to delete this Formality Report? This action cannot be undone.')) {
-            deleteFormality(referenceCode);
-        }
+        pendingDeleteCode = referenceCode; // Save the reference code for deletion
+        modalTitle.textContent = 'Confirm Deletion';
+        modalMessage.textContent = 'Are you sure you want to delete this Formality Report? This action cannot be undone.';
+        modalConfirmButton.textContent = 'Confirm';
+        modalConfirmButton.onclick = deleteFormality;
+        toggleModal(true);
     }
 
-    function deleteFormality(referenceCode) {
-        fetch(`formality_search_download.php?reference=${encodeURIComponent(referenceCode)}&action=delete`, {
+    function deleteFormality() {
+        fetch(`formality_search_download.php?reference=${encodeURIComponent(pendingDeleteCode)}&action=delete`, {
             method: 'GET',
         })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
+                toggleModal(false); // Hide modal after response
                 if (data.success) {
                     loadFormalityData(searchInput.value.trim());
                 }
             })
-            .catch(error => console.error('Error deleting Formality Report:', error));
+            .catch(error => {
+                toggleModal(false);
+                console.error('Error deleting Formality Report:', error);
+            });
     }
+
+    function toggleModal(show) {
+        modal.classList.toggle('hidden', !show);
+    }
+
+    // Cancel button handler
+    modalCancelButton.addEventListener('click', function () {
+        toggleModal(false);
+    });
 
     // Event listener for search input
     searchInput.addEventListener('input', function () {

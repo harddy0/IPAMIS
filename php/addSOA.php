@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
         if ($soaCheckStmt->num_rows > 0) {
             // SOA Reference Code already exists
-            $modalMessage = 'An SOA with this Reference Code already exists.';
+            $modalMessage = 'A SOA with this Reference Code already exists.';
         } else {
             // Read file content
             $fileContent = file_get_contents($fileTmpPath);

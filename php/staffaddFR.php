@@ -1,5 +1,5 @@
 <?php
-// formality.php
+// addFR.php
 
 // Display all errors for debugging purposes
 ini_set('display_errors', 1);
@@ -26,62 +26,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
     // Validate form inputs
     if (empty($inventionDisclosureCode) || empty($referenceCode) || empty($dateReceived) || $fileExtension !== 'pdf') {
-        echo "<script>alert('All fields are required, and the file must be a PDF.');</script>";
+        // Set $modalMessage to the error message
+        $modalMessage = 'All fields are required, and the file must be a PDF.';
     } else {
-        // Read file content
-        $fileContent = file_get_contents($fileTmpPath);
+        // Check if the Formality Report Reference Code already exists in the database
+        $frCheckStmt = $conn->prepare("SELECT DocumentNumber FROM formalityreport WHERE DocumentNumber = ?");
+        $frCheckStmt->bind_param("s", $referenceCode);
+        $frCheckStmt->execute();
+        $frCheckStmt->store_result();
 
-        if ($fileContent === false) {
-            echo "<script>alert('Failed to read the uploaded file.');</script>";
+        if ($frCheckStmt->num_rows > 0) {
+            // Reference Code already exists
+            $modalMessage = 'A Formality Report with this Reference Code already exists.';
         } else {
-            // Begin transaction
-            $conn->begin_transaction();
+            // Read file content
+            $fileContent = file_get_contents($fileTmpPath);
 
-            try {
-                // Insert into formalityreport table
-                $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
-                $null = NULL;
-                $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
-                $stmt->send_long_data(3, $fileContent);
-                $stmt->execute();
-                $stmt->close();
+            if ($fileContent === false) {
+                $modalMessage = 'Failed to read the uploaded file.';
+            } else {
+                // Begin transaction
+                $conn->begin_transaction();
 
-                // Update invention_disclosure table with the new Formality Report reference code
-                $updateDisclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
-                $updateDisclosure->bind_param("si", $referenceCode, $inventionDisclosureCode);
-                $updateDisclosure->execute();
-                $updateDisclosure->close();
+                try {
+                    // Insert into formalityreport table
+                    $stmt = $conn->prepare("INSERT INTO formalityreport (DocumentNumber, InventionDisclosureCode, ReceivedDate, Document) VALUES (?, ?, ?, ?)");
+                    $null = NULL;
+                    $stmt->bind_param("sssb", $referenceCode, $inventionDisclosureCode, $dateReceived, $null);
+                    $stmt->send_long_data(3, $fileContent);
+                    $stmt->execute();
+                    $stmt->close();
 
-                // Check if an entry exists in ipasset table
-                $ipassetCheck = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
-                $ipassetCheck->bind_param("s", $inventionDisclosureCode);
-                $ipassetCheck->execute();
-                $ipassetCheck->store_result();
+                    // Update invention_disclosure table with the new Formality Report reference code
+                    $updateDisclosure = $conn->prepare("UPDATE invention_disclosure SET document_number = ? WHERE id = ?");
+                    $updateDisclosure->bind_param("si", $referenceCode, $inventionDisclosureCode);
+                    $updateDisclosure->execute();
+                    $updateDisclosure->close();
 
-                if ($ipassetCheck->num_rows > 0) {
-                    // If entry exists, update it with Formality Report details
-                    $updateIpAsset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = ?, FormalityAddedBy = ? WHERE InventionDisclosureCode = ?");
-                    $updateIpAsset->bind_param("sss", $referenceCode, $currentUser, $inventionDisclosureCode);
-                    $updateIpAsset->execute();
-                    $updateIpAsset->close();
-                } else {
-                    // Otherwise, insert a new entry in ipasset
-                    $newIPAssetCode = generateRandomCode();
-                    $insertIpAsset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, FormalityRefCode, FormalityAddedBy) VALUES (?, ?, ?, ?)");
-                    $insertIpAsset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $currentUser);
-                    $insertIpAsset->execute();
-                    $insertIpAsset->close();
+                    // Check if an entry exists in ipasset table
+                    $ipassetCheck = $conn->prepare("SELECT IPAssetCode FROM ipasset WHERE InventionDisclosureCode = ?");
+                    $ipassetCheck->bind_param("s", $inventionDisclosureCode);
+                    $ipassetCheck->execute();
+                    $ipassetCheck->store_result();
+
+                    if ($ipassetCheck->num_rows > 0) {
+                        // If entry exists, update it with Formality Report details
+                        $updateIpAsset = $conn->prepare("UPDATE ipasset SET FormalityRefCode = ?, FormalityAddedBy = ? WHERE InventionDisclosureCode = ?");
+                        $updateIpAsset->bind_param("sss", $referenceCode, $currentUser, $inventionDisclosureCode);
+                        $updateIpAsset->execute();
+                        $updateIpAsset->close();
+                    } else {
+                        // Otherwise, insert a new entry in ipasset
+                        $newIPAssetCode = generateRandomCode();
+                        $insertIpAsset = $conn->prepare("INSERT INTO ipasset (IPAssetCode, InventionDisclosureCode, FormalityRefCode, FormalityAddedBy) VALUES (?, ?, ?, ?)");
+                        $insertIpAsset->bind_param("ssss", $newIPAssetCode, $inventionDisclosureCode, $referenceCode, $currentUser);
+                        $insertIpAsset->execute();
+                        $insertIpAsset->close();
+                    }
+
+                    // Commit transaction
+                    $conn->commit();
+                    $modalMessage = 'Formality Report uploaded successfully!';
+                } catch (Exception $e) {
+                    // Rollback on error
+                    $conn->rollback();
+                    $modalMessage = 'Error uploading file: ' . $e->getMessage();
                 }
-
-                // Commit transaction
-                $conn->commit();
-                echo "<script>alert('Formality Report uploaded successfully!');</script>";
-            } catch (Exception $e) {
-                // Rollback on error
-                $conn->rollback();
-                echo "<script>alert('Error uploading file: " . $e->getMessage() . "');</script>";
             }
         }
+
+        $frCheckStmt->close();
     }
 }
 ?>
@@ -97,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <!-- Include your custom CSS if any -->
     <link rel="stylesheet" href="../css/adminVa.css">
-    <link rel="stylesheet" href="../css/dashboard_staff.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -118,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
             <!-- Main Content Here-->
             <div class="p-6">
-
 
                 <h2 class="text-3xl font-bold text-blue-900 mb-6">Formality Report</h2>
 
@@ -179,6 +192,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
 
         </div>
     </div>
+
+    <!-- Include modal.php -->
+    <?php include 'modal.php'; ?>
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -271,6 +287,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file']) && isset($_P
         }
 
         clearBtn.addEventListener('click', resetForm);
+
+        // Close modal when close button is clicked
+        document.getElementById('modal-close').addEventListener('click', function () {
+            document.getElementById('modal').classList.add('hidden');
+        });
+
+        <?php if (isset($modalMessage)) : ?>
+            // Set the modal message and show it
+            document.getElementById('modal-message').textContent = '<?php echo addslashes($modalMessage); ?>';
+            document.getElementById('modal').classList.remove('hidden');
+        <?php endif; ?>
     });
     </script>
 
