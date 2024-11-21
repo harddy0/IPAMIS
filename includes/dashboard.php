@@ -18,7 +18,7 @@
                 <!-- Manage Personal Account -->
                 <a href="#" class="menu-item <?php echo $currentPage == 'adminMpa.php' ? 'active' : ''; ?>" onclick="window.location.href='adminMpa.php';">
                     <span class="icon"><i class="fas fa-user"></i></span>
-                    <div class="text ml-4">Manage Personal Account</div>
+                    <div class="text ml-3">Manage Personal Account</div>
                 </a>
 
                 <!-- Manage Users Menu -->

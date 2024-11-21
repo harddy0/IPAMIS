@@ -23,10 +23,42 @@
             const newPassword = document.getElementById("new_password").value;
             const confirmPassword = document.getElementById("confirm_password").value;
             if (newPassword !== confirmPassword) {
-                alert("Error: Passwords do not match. Please check and try again.");
+                showModal("Passwords do not match. Please check and try again.");
                 return false; // Prevents form submission
             }
             return true; // Allows form submission
+        }
+
+        function validateForm() {
+            const inputs = document.querySelectorAll("input[type='text'], input[type='email'], input[type='password']");
+            let isValid = true;
+
+            // Check if fields are empty
+            inputs.forEach(input => {
+                if (!input.value.trim() && !input.hasAttribute('readonly') && !input.disabled) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                showModal("Please fill out all required fields before proceeding.");
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+
+        function showModal(message) {
+            const modal = document.getElementById("error-modal");
+            const modalMessage = document.getElementById("modal-message");
+            modalMessage.textContent = message;
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden"; // Disable scrolling
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("error-modal");
+            modal.classList.add("hidden");
+            document.body.style.overflow = "auto"; // Re-enable scrolling
         }
     </script>
 </head>
@@ -92,23 +124,14 @@
                 <h2 class="text-2xl font-semibold text-gray-800">Edit Profile</h2>
             </div>
 
-            <div class="flex items-center gap-4 mb-8">
-                <div class="w-20 h-20 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                    <img src="../images/profile-placeholder.png" alt="Profile Image" class="w-16 h-16 rounded-full">
-                </div>
-                <div>
-                    <a href="#" class="text-blue-600 text-sm underline">Change profile picture</a>
-                </div>
-            </div>
-
-            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" onsubmit="return validatePassword()">
-                <div class="bg-blue-500 p-6 rounded-lg mb-8">
-                    <div class="bg-blue-900 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
+            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST" onsubmit="return validatePassword() && validateForm()">
+                <div class="bg-blue-800 p-6 rounded-lg mb-8">
+                    <div class="bg-blue-700 text-white text-center py-2 font-bold rounded mb-5">PROFILE INFORMATION</div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-white">Employee ID Number</label>
-                        <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" readonly>
-                    </div>
+                        <div>
+                            <label class="text-white">Employee ID Number</label>
+                            <input type="text" name="employee_id" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserID'] ?? ''); ?>" readonly>
+                        </div>
                         <div>
                             <label class="text-white">User Type</label>
                             <input type="text" name="user_type" class="p-3 bg-gray-200 rounded text-gray-700 w-full" value="<?php echo htmlspecialchars($user_data['UserType'] ?? ''); ?>" disabled>
@@ -141,15 +164,15 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-                    <div class="bg-blue-500 p-2 rounded-md">
+                    <div class="bg-blue-800 p-2 rounded-md">
                         <label class="text-white">Email Address</label>
                         <input type="email" name="email" class="w-full p-3 bg-gray-200 rounded text-gray-700" value="<?php echo htmlspecialchars($user_data['EmailAddress'] ?? ''); ?>">
                     </div>
-                    <div class="bg-blue-500 p-2 rounded-md">
+                    <div class="bg-blue-800 p-2 rounded-md">
                         <label class="text-white">New Password</label>
                         <input type="password" name="new_password" id="new_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
-                    <div class="bg-blue-500 p-2 rounded-md">
+                    <div class="bg-blue-800 p-2 rounded-md">
                         <label class="text-white">Confirm Password</label>
                         <input type="password" name="confirm_password" id="confirm_password" class="w-full p-3 bg-gray-200 rounded text-gray-700">
                     </div>
@@ -159,6 +182,17 @@
                     <button type="submit" class="px-10 py-3 bg-yellow-600 text-white font-bold rounded hover:bg-yellow-500">UPDATE</button>
                 </div>
             </form>
+        </div>
+
+        <!-- Modal -->
+        <div id="error-modal" class="hidden fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 backdrop-blur-sm">
+            <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 max-w-md text-center">
+                <h2 class="text-red-600 font-bold text-lg mb-4">Error</h2>
+                <p id="modal-message" class="text-gray-700">Please fill out all required fields before proceeding.</p>
+                <button onclick="closeModal()" class="mt-4 px-6 py-2 bg-red-600 text-white font-bold rounded hover:bg-red-500">
+                    Close
+                </button>
+            </div>
         </div>
 
         <div>

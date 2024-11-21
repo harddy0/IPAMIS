@@ -29,6 +29,22 @@ include '../includes/db_connect.php';
     <link rel="stylesheet" href="../css/footer.css">
     <!-- Include Axios for AJAX requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+    #usersContainer {
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: #1d4ed8 #f3f4f6; /* Firefox */
+    }
+    #usersContainer::-webkit-scrollbar {
+        width: 8px; /* Scrollbar width */
+    }
+    #usersContainer::-webkit-scrollbar-thumb {
+        background-color: #1d4ed8; /* Scrollbar thumb color */
+        border-radius: 4px;
+    }
+    #usersContainer::-webkit-scrollbar-track {
+        background-color: #f3f4f6; /* Scrollbar track color */
+    }
+</style>
 </head>
 <body class="overflow-hidden">
 
@@ -81,7 +97,7 @@ include '../includes/db_connect.php';
                     </div>
 
                     <!-- Scrollable Form Container -->
-                    <div id="usersContainer" class="overflow-y-auto max-h-96 space-y-4 bg-white rounded-b-lg">
+                    <div id="usersContainer" class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
                         <!-- User records will be dynamically inserted here -->
                         <p class="p-4 text-gray-700">Loading users...</p>
                     </div>

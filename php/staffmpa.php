@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Manage Personal Account</title>
+    <title>Staff Manage Personal Account</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="icon" href="../images/ctulogo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/adminMpa.css">
@@ -46,12 +46,10 @@ if ($result->num_rows > 0) {
         <div class="profile-container flex gap-6">
             <!-- Left Profile Card -->
             <div class="profile-left rounded-lg p-6 flex flex-col items-center w-1/4 shadow-lg">
-                <div class="profile-picture mb-4">
-                    <img src="<?php echo htmlspecialchars($userImagePath); ?>" alt="Profile Picture" class="w-24 h-24 rounded-full bg-black">
-                </div>
+
                 <div class="profile-info text-center">
-                    <p class="profile-name text-lg font-semibold text-gray-800"><?php echo htmlspecialchars($fullName); ?></p>
-                    <p class="profile-role text-sm text-gray-500">STAFF</p>
+                    <p class="profile-name text-lg font-semibold text-gray-800 mt-8"><?php echo htmlspecialchars($fullName); ?></p>
+                    <p class="profile-role text-sm text-gray-500 mb-14">STAFF</p>
                     <a href="staffEdit.php">
                         <button class="edit-profile bg-gold-500 text-white rounded mt-4 py-2 px-4 hover:bg-gold-600">
                             Edit Profile

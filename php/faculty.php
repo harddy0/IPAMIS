@@ -29,6 +29,22 @@ include '../includes/db_connect.php';
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <style>
+    .scroll {
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: #1d4ed8 #f3f4f6; /* Firefox */
+    }
+    .scroll::-webkit-scrollbar {
+        width: 8px; /* Scrollbar width */
+    }
+    .scroll::-webkit-scrollbar-thumb {
+        background-color: #1d4ed8; /* Scrollbar thumb color */
+        border-radius: 4px;
+    }
+    .scroll::-webkit-scrollbar-track {
+        background-color: #f3f4f6; /* Scrollbar track color */
+    }
+</style>
 </head>
 <body class="overflow-hidden">
 
@@ -78,7 +94,7 @@ include '../includes/db_connect.php';
                     </div>
 
                     <!-- Scrollable Form Container -->
-                    <div id="faculty-table" class="overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
+                    <div id="faculty-table" class="scroll overflow-y-auto max-h-64 space-y-4 bg-white rounded-b-lg">
                         <!-- Faculty records will be injected here via JavaScript -->
                     </div>
                 </div>
